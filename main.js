@@ -1,15 +1,41 @@
 let interval;
+let spinning = false;
 
-const buttons = document.querySelectorAll(".plus, .minus");
+// ====================
+// ボタン長押し
+// ====================
+
+const buttons =
+  document.querySelectorAll(
+    ".plus, .minus"
+  );
 
 buttons.forEach(button => {
 
-  button.addEventListener("mousedown", startChanging);
-  button.addEventListener("mouseup", stopChanging);
-  button.addEventListener("mouseleave", stopChanging);
+  button.addEventListener(
+    "mousedown",
+    startChanging
+  );
 
-  button.addEventListener("touchstart", startChanging);
-  button.addEventListener("touchend", stopChanging);
+  button.addEventListener(
+    "mouseup",
+    stopChanging
+  );
+
+  button.addEventListener(
+    "mouseleave",
+    stopChanging
+  );
+
+  button.addEventListener(
+    "touchstart",
+    startChanging
+  );
+
+  button.addEventListener(
+    "touchend",
+    stopChanging
+  );
 
 });
 
@@ -17,13 +43,18 @@ function startChanging(e) {
 
   const button = e.target;
 
-  const target = button.dataset.target;
-  const change = Number(button.dataset.change);
+  const target =
+    button.dataset.target;
+
+  const change =
+    Number(button.dataset.change);
 
   changeValue(target, change);
 
   interval = setInterval(() => {
+
     changeValue(target, change);
+
   }, 80);
 
 }
@@ -36,26 +67,99 @@ function stopChanging() {
 
 function changeValue(id, amount) {
 
-  const input = document.getElementById(id);
+  const input =
+    document.getElementById(id);
 
-  let value = Number(input.value);
+  let value =
+    Number(input.value);
 
   value += amount;
 
-  if (value < 1) {
-    value = 1;
+  if (value < 0) {
+
+    value = 0;
+
   }
 
   input.value = value;
 
 }
 
+// ====================
+// 要素取得
+// ====================
+
+const startBtn =
+  document.getElementById(
+    "startBtn"
+  );
+
+const stopBtn =
+  document.getElementById(
+    "stopBtn"
+  );
+
+const log =
+  document.getElementById(
+    "log"
+  );
+
+const used =
+  document.getElementById(
+    "used"
+  );
+
+const total =
+  document.getElementById(
+    "total"
+  );
+
+const balance =
+  document.getElementById(
+    "balance"
+  );
+
+const spinDisplay =
+  document.getElementById(
+    "spinDisplay"
+  );
+
+// ====================
+// スタート
+// ====================
+
+startBtn.addEventListener(
+  "click",
+  simulate
+);
+
+// ====================
+// 停止
+// ====================
+
+stopBtn.addEventListener(
+  "click",
+  () => {
+
+    spinning = false;
+
+  }
+);
+
+// ====================
+// プリセット
+// ====================
+
 function setPreset(type) {
+
+  // エヴァ風
 
   if (type === "eva") {
 
     hitRate.value = 319;
+
     breakRate.value = 70;
+
     continueRate.value = 81;
 
     payout1.value = 1500;
@@ -67,12 +171,25 @@ function setPreset(type) {
     payout3.value = 450;
     ratio3.value = 40;
 
+    ltRate.value = 10;
+    ltContinueRate.value = 90;
+
+    ltPayout1.value = 3000;
+    ltRatio1.value = 80;
+
+    ltPayout2.value = 4500;
+    ltRatio2.value = 20;
+
   }
+
+  // リゼロ風
 
   if (type === "rezero") {
 
     hitRate.value = 349;
+
     breakRate.value = 55;
+
     continueRate.value = 77;
 
     payout1.value = 1500;
@@ -84,12 +201,25 @@ function setPreset(type) {
     payout3.value = 0;
     ratio3.value = 0;
 
+    ltRate.value = 20;
+    ltContinueRate.value = 92;
+
+    ltPayout1.value = 3000;
+    ltRatio1.value = 100;
+
+    ltPayout2.value = 0;
+    ltRatio2.value = 0;
+
   }
+
+  // 北斗風
 
   if (type === "hokuto") {
 
     hitRate.value = 319;
+
     breakRate.value = 60;
+
     continueRate.value = 84;
 
     payout1.value = 1500;
@@ -101,69 +231,193 @@ function setPreset(type) {
     payout3.value = 450;
     ratio3.value = 10;
 
+    ltRate.value = 15;
+    ltContinueRate.value = 92;
+
+    ltPayout1.value = 3000;
+    ltRatio1.value = 70;
+
+    ltPayout2.value = 4500;
+    ltRatio2.value = 30;
+
+  }
+
+  // からくり風
+
+  if (type === "karakuri") {
+
+    hitRate.value = 399;
+
+    breakRate.value = 50;
+
+    continueRate.value = 75;
+
+    payout1.value = 1500;
+    ratio1.value = 30;
+
+    payout2.value = 3000;
+    ratio2.value = 70;
+
+    payout3.value = 0;
+    ratio3.value = 0;
+
+    ltRate.value = 40;
+    ltContinueRate.value = 96;
+
+    ltPayout1.value = 3000;
+    ltRatio1.value = 80;
+
+    ltPayout2.value = 6000;
+    ltRatio2.value = 20;
+
   }
 
 }
 
-const startBtn = document.getElementById("startBtn");
-const log = document.getElementById("log");
-const total = document.getElementById("total");
+// ====================
+// ランダム
+// ====================
 
-startBtn.addEventListener("click", simulate);
+function randomRange(min, max) {
 
-function simulate() {
+  return Math.floor(
+    Math.random() *
+    (max - min + 1)
+  ) + min;
 
-  const hitRate =
-    Number(document.getElementById("hitRate").value);
+}
 
-  const breakRate =
-    Number(document.getElementById("breakRate").value);
+// ====================
+// 演出
+// ====================
 
-  const continueRate =
-    Number(document.getElementById("continueRate").value);
+function showPayoutEffect(amount) {
 
-  const payout1 =
-    Number(document.getElementById("payout1").value);
+  const effect =
+    document.getElementById(
+      "payout-effect"
+    );
 
-  const ratio1 =
-    Number(document.getElementById("ratio1").value);
+  effect.textContent =
+    `+${amount}発`;
 
-  const payout2 =
-    Number(document.getElementById("payout2").value);
+  effect.classList.add("show");
 
-  const ratio2 =
-    Number(document.getElementById("ratio2").value);
+  document.body.classList.add(
+    "flash"
+  );
 
-  const payout3 =
-    Number(document.getElementById("payout3").value);
+  setTimeout(() => {
 
-  const ratio3 =
-    Number(document.getElementById("ratio3").value);
+    effect.classList.remove(
+      "show"
+    );
 
-  let spins = 0;
-  let totalPayout = 0;
+    document.body.classList.remove(
+      "flash"
+    );
+
+  }, 500);
+
+}
+
+// ====================
+// sleep
+// ====================
+
+function sleep(ms) {
+
+  return new Promise(resolve => {
+
+    setTimeout(resolve, ms);
+
+  });
+
+}
+
+// ====================
+// メイン処理
+// ====================
+
+async function simulate() {
+
+  if (spinning) return;
+
+  spinning = true;
 
   log.innerHTML = "";
 
-  while (true) {
+  let spins = 0;
+
+  let totalPayout = 0;
+
+  const spinPer250 =
+    Number(
+      document.getElementById(
+        "spinPer250"
+      ).value
+    );
+
+  const costPerSpin =
+    250 / spinPer250;
+
+  // ====================
+  // 通常時
+  // ====================
+
+  while (spinning) {
 
     spins++;
 
+    spinDisplay.textContent =
+      `${spins}回転`;
+
+    // ハマり警告
+
+    if (spins >= 1000) {
+
+      spinDisplay.classList.add(
+        "warning"
+      );
+
+    }
+
+    // 当たり抽選
+
     const hit =
-      Math.random() < (1 / hitRate);
+      Math.random() <
+      (
+        1 /
+        Number(hitRate.value)
+      );
 
     if (hit) {
+
+      spinning = false;
+
+      spinDisplay.classList.remove(
+        "warning"
+      );
 
       log.innerHTML +=
         `${spins}回転で当たり！<br>`;
 
+      // ====================
+      // 突破
+      // ====================
+
       const breakthrough =
-        Math.random() < (breakRate / 100);
+        Math.random() <
+        (
+          Number(
+            breakRate.value
+          ) / 100
+        );
 
       if (!breakthrough) {
 
         log.innerHTML +=
-          `突破失敗... 通常終了<br>`;
+          `突破失敗...<br>`;
 
         break;
 
@@ -171,6 +425,46 @@ function simulate() {
 
       log.innerHTML +=
         `RUSH突入！<br>`;
+
+      // ====================
+      // LT抽選
+      // ====================
+
+      let isLT = false;
+
+      const ltEnabled =
+        document.getElementById(
+          "ltEnabled"
+        ).checked;
+
+      let ltHit = false;
+
+      if (ltEnabled) {
+
+        ltHit =
+          Math.random() <
+          (
+            Number(
+              ltRate.value
+            ) / 100
+          );
+
+      }
+
+      if (ltHit) {
+
+        isLT = true;
+
+        log.innerHTML +=
+          `<div class="lt">
+            LT突入！！
+          </div>`;
+
+      }
+
+      // ====================
+      // RUSH
+      // ====================
 
       let rush = true;
 
@@ -181,30 +475,140 @@ function simulate() {
 
         let payout = 0;
 
-        if (rand < ratio1) {
+        // LT用
 
-          payout = payout1;
+        if (isLT) {
 
-        } else if (
-          rand < ratio1 + ratio2
-        ) {
+          const useRatio1 =
+            Number(
+              ltRatio1.value
+            );
 
-          payout = payout2;
+          const usePayout1 =
+            Number(
+              ltPayout1.value
+            );
 
-        } else {
+          const usePayout2 =
+            Number(
+              ltPayout2.value
+            );
 
-          payout = payout3;
+          if (rand < useRatio1) {
+
+            payout =
+              randomRange(
+                usePayout1 - 200,
+                usePayout1 + 200
+              );
+
+          } else {
+
+            payout =
+              randomRange(
+                usePayout2 - 300,
+                usePayout2 + 300
+              );
+
+          }
+
+        }
+
+        // 通常RUSH
+
+        else {
+
+          if (
+            rand <
+            Number(ratio1.value)
+          ) {
+
+            payout =
+              randomRange(
+                Number(
+                  payout1.value
+                ) - 100,
+
+                Number(
+                  payout1.value
+                ) + 100
+              );
+
+          } else if (
+
+            rand <
+
+            Number(ratio1.value) +
+            Number(ratio2.value)
+
+          ) {
+
+            payout =
+              randomRange(
+
+                Number(
+                  payout2.value
+                ) - 200,
+
+                Number(
+                  payout2.value
+                ) + 200
+
+              );
+
+          } else {
+
+            payout =
+              randomRange(
+
+                Number(
+                  payout3.value
+                ) - 50,
+
+                Number(
+                  payout3.value
+                ) + 50
+
+              );
+
+          }
 
         }
 
         totalPayout += payout;
 
+        total.textContent =
+          `総出玉: ${totalPayout}発`;
+
+        showPayoutEffect(
+          payout
+        );
+
         log.innerHTML +=
           `${payout}発獲得！<br>`;
 
+        await sleep(700);
+
+        // 継続抽選
+
+        const currentRate =
+
+          isLT
+
+            ? Number(
+                ltContinueRate.value
+              )
+
+            : Number(
+                continueRate.value
+              );
+
         const cont =
+
           Math.random() <
-          (continueRate / 100);
+          (
+            currentRate / 100
+          );
 
         if (!cont) {
 
@@ -217,13 +621,39 @@ function simulate() {
 
       }
 
-      break;
+    }
+
+    // ハマり演出
+
+    if (
+      spins % 300 === 0
+    ) {
+
+      log.innerHTML +=
+        `${spins}回転ハマり中...<br>`;
 
     }
 
+    await sleep(1);
+
   }
 
-  total.textContent =
-    `総出玉: ${totalPayout}発`;
+  // ====================
+  // 使用玉
+  // ====================
+
+  const usedBalls =
+    Math.floor(
+      spins * costPerSpin
+    );
+
+  const diff =
+    totalPayout - usedBalls;
+
+  used.textContent =
+    `使用玉: ${usedBalls}発`;
+
+  balance.textContent =
+    `差玉: ${diff}発`;
 
 }
