@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>カスタムパチンコシミュレーター</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>カスタムパチンコシミュレーター</h1>
+
+  <!-- プリセット -->
+
+  <div class="preset-buttons">
+
+    <button onclick="setPreset('eva')">
+      エヴァ風
+    </button>
+
+    <button onclick="setPreset('rezero')">
+      リゼロ風
+    </button>
+
+    <button onclick="setPreset('hokuto')">
+      北斗風
+    </button>
+
+  </div>
+
+  <!-- 当たり確率 -->
+
+  <div class="setting-row">
+
+    <span>当たり確率（1/x）</span>
+
+    <div class="control">
+
+      <button
+        class="minus"
+        data-target="hitRate"
+        data-change="-1"
+      >
+        −
+      </button>
+
+      <input
+        type="number"
+        id="hitRate"
+        value="319"
+      >
+
+      <button
+        class="plus"
+        data-target="hitRate"
+        data-change="1"
+      >
+        ＋
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- 突破率 -->
+
+  <div class="setting-row">
+
+    <span>突破率（%）</span>
+
+    <div class="control">
+
+      <button
+        class="minus"
+        data-target="breakRate"
+        data-change="-1"
+      >
+        −
+      </button>
+
+      <input
+        type="number"
+        id="breakRate"
+        value="60"
+      >
+
+      <button
+        class="plus"
+        data-target="breakRate"
+        data-change="1"
+      >
+        ＋
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- 継続率 -->
+
+  <div class="setting-row">
+
+    <span>継続率（%）</span>
+
+    <div class="control">
+
+      <button
+        class="minus"
+        data-target="continueRate"
+        data-change="-1"
+      >
+        −
+      </button>
+
+      <input
+        type="number"
+        id="continueRate"
+        value="81"
+      >
+
+      <button
+        class="plus"
+        data-target="continueRate"
+        data-change="1"
+      >
+        ＋
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- 出玉① -->
+
+  <div class="setting-row">
+
+    <span>出玉①</span>
+
+    <div class="control">
+
+      <button
+        class="minus"
+        data-target="payout1"
+        data-change="-100"
+      >
+        −
+      </button>
+
+      <input
+        type="number"
+        id="payout1"
+        value="1500"
+      >
+
+      <button
+        class="plus"
+        data-target="payout1"
+        data-change="100"
+      >
+        ＋
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- 割合① -->
+
+  <div class="setting-row">
+
+    <span>割合①（%）</span>
+
+    <div class="control">
+
+      <button
+        class="minus"
+        data-target="ratio1"
+        data-change="-1"
+      >
+        −
+      </button>
+
+      <input
+        type="number"
+        id="ratio1"
+        value="50"
+      >
+
+      <button
+        class="plus"
+        data-target="ratio1"
+        data-change="1"
+      >
+        ＋
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- 出玉② -->
+
+  <div class="setting-row">
+
+    <span>出玉②</span>
+
+    <div class="control">
+
+      <button
+        class="minus"
+        data-target="payout2"
+        data-change="-100"
+      >
+        −
+      </button>
+
+      <input
+        type="number"
+        id="payout2"
+        value="3000"
+      >
+
+      <button
+        class="plus"
+        data-target="payout2"
+        data-change="100"
+      >
+        ＋
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- 割合② -->
+
+  <div class="setting-row">
+
+    <span>割合②（%）</span>
+
+    <div class="control">
+
+      <button
+        class="minus"
+        data-target="ratio2"
+        data-change="-1"
+      >
+        −
+      </button>
+
+      <input
+        type="number"
+        id="ratio2"
+        value="10"
+      >
+
+      <button
+        class="plus"
+        data-target="ratio2"
+        data-change="1"
+      >
+        ＋
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- 出玉③ -->
+
+  <div class="setting-row">
+
+    <span>出玉③</span>
+
+    <div class="control">
+
+      <button
+        class="minus"
+        data-target="payout3"
+        data-change="-10"
+      >
+        −
+      </button>
+
+      <input
+        type="number"
+        id="payout3"
+        value="450"
+      >
+
+      <button
+        class="plus"
+        data-target="payout3"
+        data-change="10"
+      >
+        ＋
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- 割合③ -->
+
+  <div class="setting-row">
+
+    <span>割合③（%）</span>
+
+    <div class="control">
+
+      <button
+        class="minus"
+        data-target="ratio3"
+        data-change="-1"
+      >
+        −
+      </button>
+
+      <input
+        type="number"
+        id="ratio3"
+        value="40"
+      >
+
+      <button
+        class="plus"
+        data-target="ratio3"
+        data-change="1"
+      >
+        ＋
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- シミュレーション -->
+
+  <button id="startBtn">
+    シミュレーション開始
+  </button>
+
+  <!-- 結果 -->
+
+  <div class="result">
+
+    <h2>結果</h2>
+
+    <p id="log">
+      待機中...
+    </p>
+
+    <p id="total">
+      総出玉: 0発
+    </p>
+
+  </div>
+
+  <script src="main.js"></script>
+
+</body>
+</html>
