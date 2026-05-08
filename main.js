@@ -1,107 +1,31 @@
-let interval;
-let spinning = false;
-
-// ====================
-// ボタン長押し
-// ====================
-
-const buttons =
-  document.querySelectorAll(
-    ".plus, .minus"
-  );
-
-buttons.forEach(button => {
-
-  button.addEventListener(
-    "mousedown",
-    startChanging
-  );
-
-  button.addEventListener(
-    "mouseup",
-    stopChanging
-  );
-
-  button.addEventListener(
-    "mouseleave",
-    stopChanging
-  );
-
-  button.addEventListener(
-    "touchstart",
-    startChanging
-  );
-
-  button.addEventListener(
-    "touchend",
-    stopChanging
-  );
-
-});
-
-function startChanging(e) {
-
-  const button = e.target;
-
-  const target =
-    button.dataset.target;
-
-  const change =
-    Number(button.dataset.change);
-
-  changeValue(target, change);
-
-  interval = setInterval(() => {
-
-    changeValue(target, change);
-
-  }, 80);
-
-}
-
-function stopChanging() {
-
-  clearInterval(interval);
-
-}
-
-function changeValue(id, amount) {
-
-  const input =
-    document.getElementById(id);
-
-  let value =
-    Number(input.value);
-
-  value += amount;
-
-  if (value < 0) {
-
-    value = 0;
-
-  }
-
-  input.value = value;
-
-}
-
-// ====================
-// 要素取得
-// ====================
-
 const startBtn =
   document.getElementById(
     "startBtn"
   );
 
-const stopBtn =
+const retryBtn =
   document.getElementById(
-    "stopBtn"
+    "retryBtn"
   );
 
-const log =
+const backBtn =
   document.getElementById(
-    "log"
+    "backBtn"
+  );
+
+const settingScreen =
+  document.getElementById(
+    "settingScreen"
+  );
+
+const playScreen =
+  document.getElementById(
+    "playScreen"
+  );
+
+const spinDisplay =
+  document.getElementById(
+    "spinDisplay"
   );
 
 const used =
@@ -119,189 +43,350 @@ const balance =
     "balance"
   );
 
-const spinDisplay =
+const log =
   document.getElementById(
-    "spinDisplay"
+    "log"
   );
 
-// ====================
-// スタート
-// ====================
+const payoutEffect =
+  document.getElementById(
+    "payout-effect"
+  );
 
-startBtn.addEventListener(
-  "click",
-  simulate
-);
+const hitCountDisplay =
+  document.getElementById(
+    "hitCount"
+  );
 
-// ====================
-// 停止
-// ====================
+const maxChainDisplay =
+  document.getElementById(
+    "maxChain"
+  );
 
-stopBtn.addEventListener(
-  "click",
-  () => {
+const currentChainDisplay =
+  document.getElementById(
+    "currentChain"
+  );
 
-    spinning = false;
+const hitSound =
+  document.getElementById(
+    "hitSound"
+  );
+
+const rushSound =
+  document.getElementById(
+    "rushSound"
+  );
+
+/* ===================== */
+/* 長押し対応 */
+/* ===================== */
+
+let holdInterval = null;
+
+document
+  .querySelectorAll(
+    ".plus, .minus"
+  )
+  .forEach(button => {
+
+    const changeValue = () => {
+
+      const target =
+        document.getElementById(
+          button.dataset.target
+        );
+
+      const change =
+        Number(
+          button.dataset.change
+        );
+
+      let value =
+        Number(target.value);
+
+      value += change;
+
+      if (value < 0) {
+        value = 0;
+      }
+
+      target.value = value;
+
+      updateRatio();
+    };
+
+    button.addEventListener(
+      "click",
+      changeValue
+    );
+
+    button.addEventListener(
+      "mousedown",
+      () => {
+
+        holdInterval =
+          setInterval(
+            changeValue,
+            80
+          );
+
+      }
+    );
+
+    button.addEventListener(
+      "mouseup",
+      () => {
+
+        clearInterval(
+          holdInterval
+        );
+
+      }
+    );
+
+    button.addEventListener(
+      "mouseleave",
+      () => {
+
+        clearInterval(
+          holdInterval
+        );
+
+      }
+    );
+
+    button.addEventListener(
+      "touchstart",
+      () => {
+
+        holdInterval =
+          setInterval(
+            changeValue,
+            80
+          );
+
+      }
+    );
+
+    button.addEventListener(
+      "touchend",
+      () => {
+
+        clearInterval(
+          holdInterval
+        );
+
+      }
+    );
+
+  });
+
+/* ===================== */
+/* 割合制限 */
+/* ===================== */
+
+const ratioInputs = [
+
+  document.getElementById(
+    "ratio1"
+  ),
+
+  document.getElementById(
+    "ratio2"
+  ),
+
+  document.getElementById(
+    "ratio3"
+  ),
+
+  document.getElementById(
+    "ratio4"
+  )
+
+];
+
+function updateRatio() {
+
+  let totalRatio = 0;
+
+  ratioInputs.forEach(
+    input => {
+
+      totalRatio +=
+        Number(input.value);
+
+    }
+  );
+
+  if (totalRatio > 100) {
+
+    alert(
+      "割合は100%以下にしてください"
+    );
+
+    return;
 
   }
-);
 
-// ====================
-// プリセット
-// ====================
+  document.getElementById(
+    "ratioTotal"
+  ).textContent =
 
-function setPreset(type) {
+    `通常合計：${totalRatio}%`;
 
-  // エヴァ風
+  document.getElementById(
+    "ratioRemain"
+  ).textContent =
 
-  if (type === "eva") {
-
-    hitRate.value = 319;
-
-    breakRate.value = 70;
-
-    continueRate.value = 81;
-
-    payout1.value = 1500;
-    ratio1.value = 50;
-
-    payout2.value = 3000;
-    ratio2.value = 10;
-
-    payout3.value = 450;
-    ratio3.value = 40;
-
-    ltRate.value = 10;
-    ltContinueRate.value = 90;
-
-    ltPayout1.value = 3000;
-    ltRatio1.value = 80;
-
-    ltPayout2.value = 4500;
-    ltRatio2.value = 20;
-
-  }
-
-  // リゼロ風
-
-  if (type === "rezero") {
-
-    hitRate.value = 349;
-
-    breakRate.value = 55;
-
-    continueRate.value = 77;
-
-    payout1.value = 1500;
-    ratio1.value = 100;
-
-    payout2.value = 0;
-    ratio2.value = 0;
-
-    payout3.value = 0;
-    ratio3.value = 0;
-
-    ltRate.value = 20;
-    ltContinueRate.value = 92;
-
-    ltPayout1.value = 3000;
-    ltRatio1.value = 100;
-
-    ltPayout2.value = 0;
-    ltRatio2.value = 0;
-
-  }
-
-  // 北斗風
-
-  if (type === "hokuto") {
-
-    hitRate.value = 319;
-
-    breakRate.value = 60;
-
-    continueRate.value = 84;
-
-    payout1.value = 1500;
-    ratio1.value = 70;
-
-    payout2.value = 3000;
-    ratio2.value = 20;
-
-    payout3.value = 450;
-    ratio3.value = 10;
-
-    ltRate.value = 15;
-    ltContinueRate.value = 92;
-
-    ltPayout1.value = 3000;
-    ltRatio1.value = 70;
-
-    ltPayout2.value = 4500;
-    ltRatio2.value = 30;
-
-  }
-
-  // からくり風
-
-  if (type === "karakuri") {
-
-    hitRate.value = 399;
-
-    breakRate.value = 50;
-
-    continueRate.value = 75;
-
-    payout1.value = 1500;
-    ratio1.value = 30;
-
-    payout2.value = 3000;
-    ratio2.value = 70;
-
-    payout3.value = 0;
-    ratio3.value = 0;
-
-    ltRate.value = 40;
-    ltContinueRate.value = 96;
-
-    ltPayout1.value = 3000;
-    ltRatio1.value = 80;
-
-    ltPayout2.value = 6000;
-    ltRatio2.value = 20;
-
-  }
+    `残り：${100-totalRatio}%`;
 
 }
 
-// ====================
-// ランダム
-// ====================
+ratioInputs.forEach(
+  input => {
 
-function randomRange(min, max) {
+    input.addEventListener(
+      "input",
+      updateRatio
+    );
+
+  }
+);
+
+updateRatio();
+
+/* ===================== */
+/* ログ軽量化 */
+/* ===================== */
+
+const logs = [];
+
+function addLog(text) {
+
+  logs.push(text);
+
+  if (logs.length > 50) {
+
+    logs.shift();
+
+  }
+
+  log.innerHTML =
+    logs.join("<br>");
+
+}
+
+/* ===================== */
+/* ランダム */
+/* ===================== */
+
+function randomRange(min,max) {
 
   return Math.floor(
+
     Math.random() *
-    (max - min + 1)
+
+    (max-min+1)
+
   ) + min;
 
 }
 
-// ====================
-// 演出
-// ====================
+/* ===================== */
+/* 出玉振り分け */
+/* ===================== */
+
+function getRandomPayout() {
+
+  const table = [
+
+    {
+      payout:
+        Number(
+          payout1.value
+        ),
+
+      ratio:
+        Number(
+          ratio1.value
+        )
+    },
+
+    {
+      payout:
+        Number(
+          payout2.value
+        ),
+
+      ratio:
+        Number(
+          ratio2.value
+        )
+    },
+
+    {
+      payout:
+        Number(
+          payout3.value
+        ),
+
+      ratio:
+        Number(
+          ratio3.value
+        )
+    },
+
+    {
+      payout:
+        Number(
+          payout4.value
+        ),
+
+      ratio:
+        Number(
+          ratio4.value
+        )
+    }
+
+  ];
+
+  const rand =
+    Math.random() * 100;
+
+  let cumulative = 0;
+
+  for (const item of table) {
+
+    cumulative +=
+      item.ratio;
+
+    if (rand <= cumulative) {
+
+      return randomRange(
+        item.payout - 100,
+        item.payout + 100
+      );
+
+    }
+
+  }
+
+  return 0;
+
+}
+
+/* ===================== */
+/* 演出 */
+/* ===================== */
 
 function showPayoutEffect(amount) {
 
-  const effect =
-    document.getElementById(
-      "payout-effect"
-    );
+  payoutEffect.textContent =
 
-  effect.textContent =
     `+${amount}発`;
 
-  effect.classList.add("show");
+  payoutEffect.style.opacity = 1;
 
   document.body.classList.add(
     "flash"
@@ -309,35 +394,110 @@ function showPayoutEffect(amount) {
 
   setTimeout(() => {
 
-    effect.classList.remove(
-      "show"
-    );
-
     document.body.classList.remove(
       "flash"
     );
 
-  }, 500);
+  },300);
+
+  setTimeout(() => {
+
+    payoutEffect.style.opacity = 0;
+
+  },1000);
 
 }
 
-// ====================
-// sleep
-// ====================
+/* ===================== */
+/* グラフ */
+/* ===================== */
 
-function sleep(ms) {
+function updateChart(data) {
 
-  return new Promise(resolve => {
+  const canvas =
+    document.getElementById(
+      "historyChart"
+    );
 
-    setTimeout(resolve, ms);
+  const ctx =
+    canvas.getContext("2d");
 
-  });
+  canvas.width =
+    canvas.offsetWidth;
+
+  canvas.height = 300;
+
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  if (data.length < 2)
+    return;
+
+  const max =
+    Math.max(...data);
+
+  const min =
+    Math.min(...data);
+
+  ctx.beginPath();
+
+  data.forEach(
+    (value,index) => {
+
+      const x =
+
+        (
+          canvas.width /
+          (data.length - 1)
+        ) * index;
+
+      const y =
+
+        canvas.height -
+
+        (
+          (
+            value - min
+          ) /
+
+          (
+            max - min || 1
+          )
+        ) *
+
+        canvas.height;
+
+      if (index === 0) {
+
+        ctx.moveTo(x,y);
+
+      } else {
+
+        ctx.lineTo(x,y);
+
+      }
+
+    }
+  );
+
+  ctx.lineWidth = 4;
+
+  ctx.strokeStyle =
+    "#00ff66";
+
+  ctx.stroke();
 
 }
 
-// ====================
-// メイン処理
-// ====================
+/* ===================== */
+/* シミュレーション */
+/* ===================== */
+
+let spinning = false;
 
 async function simulate() {
 
@@ -345,47 +505,49 @@ async function simulate() {
 
   spinning = true;
 
+  logs.length = 0;
+
   log.innerHTML = "";
+
+  playScreen.scrollTo(
+    0,
+    0
+  );
+
+  settingScreen.style.display =
+    "none";
+
+  playScreen.style.display =
+    "block";
+
+  retryBtn.style.display =
+    "none";
 
   let spins = 0;
 
+  let usedBalls = 0;
+
   let totalPayout = 0;
 
-  const spinPer250 =
-    Number(
-      document.getElementById(
-        "spinPer250"
-      ).value
-    );
+  let hitCount = 0;
 
-  const costPerSpin =
-    250 / spinPer250;
+  let currentChain = 0;
 
-  // ====================
-  // 通常時
-  // ====================
+  let maxChain = 0;
 
-  while (spinning) {
+  const history = [];
+
+  while (true) {
 
     spins++;
 
     spinDisplay.textContent =
       `${spins}回転`;
 
-    // ハマり警告
-
-    if (spins >= 1000) {
-
-      spinDisplay.classList.add(
-        "warning"
-      );
-
-    }
-
-    // 当たり抽選
-
     const hit =
+
       Math.random() <
+
       (
         1 /
         Number(hitRate.value)
@@ -393,21 +555,23 @@ async function simulate() {
 
     if (hit) {
 
-      spinning = false;
+      hitCount++;
 
-      spinDisplay.classList.remove(
-        "warning"
+      hitCountDisplay.textContent =
+        hitCount;
+
+      hitSound.currentTime = 0;
+
+      hitSound.play();
+
+      addLog(
+        `${spins}回転で当たり！`
       );
 
-      log.innerHTML +=
-        `${spins}回転で当たり！<br>`;
-
-      // ====================
-      // 突破
-      // ====================
-
       const breakthrough =
+
         Math.random() <
+
         (
           Number(
             breakRate.value
@@ -416,244 +580,185 @@ async function simulate() {
 
       if (!breakthrough) {
 
-        log.innerHTML +=
-          `突破失敗...<br>`;
+        addLog(
+          "突破失敗..."
+        );
 
         break;
 
       }
 
-      log.innerHTML +=
-        `RUSH突入！<br>`;
+      rushSound.currentTime = 0;
 
-      // ====================
-      // LT抽選
-      // ====================
+      rushSound.play();
 
-      let isLT = false;
-
-      const ltEnabled =
-        document.getElementById(
-          "ltEnabled"
-        ).checked;
-
-      let ltHit = false;
-
-      if (ltEnabled) {
-
-        ltHit =
-          Math.random() <
-          (
-            Number(
-              ltRate.value
-            ) / 100
-          );
-
-      }
-
-      if (ltHit) {
-
-        isLT = true;
-
-        log.innerHTML +=
-          `<div class="lt">
-            LT突入！！
-          </div>`;
-
-      }
-
-      // ====================
-      // RUSH
-      // ====================
+      addLog(
+        "RUSH突入！"
+      );
 
       let rush = true;
 
       while (rush) {
 
-        const rand =
-          Math.random() * 100;
+        currentChain++;
 
-        let payout = 0;
+        if (
+          currentChain >
+          maxChain
+        ) {
 
-        // LT用
-
-        if (isLT) {
-
-          const useRatio1 =
-            Number(
-              ltRatio1.value
-            );
-
-          const usePayout1 =
-            Number(
-              ltPayout1.value
-            );
-
-          const usePayout2 =
-            Number(
-              ltPayout2.value
-            );
-
-          if (rand < useRatio1) {
-
-            payout =
-              randomRange(
-                usePayout1 - 200,
-                usePayout1 + 200
-              );
-
-          } else {
-
-            payout =
-              randomRange(
-                usePayout2 - 300,
-                usePayout2 + 300
-              );
-
-          }
+          maxChain =
+            currentChain;
 
         }
 
-        // 通常RUSH
+        currentChainDisplay.textContent =
+          currentChain;
 
-        else {
+        maxChainDisplay.textContent =
+          maxChain;
 
-          if (
-            rand <
-            Number(ratio1.value)
-          ) {
-
-            payout =
-              randomRange(
-                Number(
-                  payout1.value
-                ) - 100,
-
-                Number(
-                  payout1.value
-                ) + 100
-              );
-
-          } else if (
-
-            rand <
-
-            Number(ratio1.value) +
-            Number(ratio2.value)
-
-          ) {
-
-            payout =
-              randomRange(
-
-                Number(
-                  payout2.value
-                ) - 200,
-
-                Number(
-                  payout2.value
-                ) + 200
-
-              );
-
-          } else {
-
-            payout =
-              randomRange(
-
-                Number(
-                  payout3.value
-                ) - 50,
-
-                Number(
-                  payout3.value
-                ) + 50
-
-              );
-
-          }
-
-        }
+        const payout =
+          getRandomPayout();
 
         totalPayout += payout;
 
         total.textContent =
+
           `総出玉: ${totalPayout}発`;
 
         showPayoutEffect(
           payout
         );
 
-        log.innerHTML +=
-          `${payout}発獲得！<br>`;
+        addLog(
+          `${payout}発獲得！`
+        );
 
-        await sleep(700);
+        history.push(
+          totalPayout
+        );
 
-        // 継続抽選
+        updateChart(
+          history
+        );
 
-        const currentRate =
+        if (payout >= 5000) {
 
-          isLT
+          document.body.classList.add(
+            "super-hit"
+          );
 
-            ? Number(
-                ltContinueRate.value
-              )
+          setTimeout(() => {
 
-            : Number(
-                continueRate.value
-              );
+            document.body.classList.remove(
+              "super-hit"
+            );
+
+          },1500);
+
+        }
 
         const cont =
 
           Math.random() <
+
           (
-            currentRate / 100
+            Number(
+              continueRate.value
+            ) / 100
           );
 
         if (!cont) {
 
           rush = false;
 
-          log.innerHTML +=
-            `RUSH終了<br>`;
+          addLog(
+            "RUSH終了"
+          );
 
         }
 
+        await new Promise(
+          resolve =>
+
+            setTimeout(
+              resolve,
+              300
+            )
+        );
+
       }
 
-    }
-
-    // ハマり演出
-
-    if (
-      spins % 300 === 0
-    ) {
-
-      log.innerHTML +=
-        `${spins}回転ハマり中...<br>`;
+      break;
 
     }
 
-    await sleep(1);
+    await new Promise(
+      resolve =>
+
+        setTimeout(
+          resolve,
+          1
+        )
+    );
 
   }
 
-  // ====================
-  // 使用玉
-  // ====================
+  usedBalls = Math.floor(
 
-  const usedBalls =
-    Math.floor(
-      spins * costPerSpin
-    );
+    spins *
+
+    (
+      250 /
+      Number(
+        spinPer250.value
+      )
+    )
+
+  );
 
   const diff =
     totalPayout - usedBalls;
 
   used.textContent =
+
     `使用玉: ${usedBalls}発`;
 
   balance.textContent =
+
     `差玉: ${diff}発`;
 
+  retryBtn.style.display =
+    "block";
+
+  spinning = false;
+
 }
+
+/* ===================== */
+/* ボタン */
+/* ===================== */
+
+startBtn.addEventListener(
+  "click",
+  simulate
+);
+
+retryBtn.addEventListener(
+  "click",
+  simulate
+);
+
+backBtn.addEventListener(
+  "click",
+  () => {
+
+    playScreen.style.display =
+      "none";
+
+    settingScreen.style.display =
+      "block";
+
+  }
+);

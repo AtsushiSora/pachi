@@ -2,134 +2,438 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>カスタムパチンコシミュレーター</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="style.css">
+  <title>
+    パチンコシミュレーター
+  </title>
+
+  <link rel="stylesheet"
+        href="style.css">
+
+  <link rel="manifest"
+        href="manifest.json">
 </head>
+
 <body>
 
-  <h1>カスタムパチンコシミュレーター</h1>
+<!-- ===================== -->
+<!-- 設定画面 -->
+<!-- ===================== -->
 
-  <!-- プリセット -->
+<div id="settingScreen">
+
+  <h1>
+    パチンコシミュレーター
+  </h1>
+
+  <!-- 基本設定 -->
 
   <div class="section">
 
-    <h2>プリセット</h2>
+    <h2>
+      基本設定
+    </h2>
 
-    <div class="preset-buttons">
+    <!-- 当たり -->
 
-      <button onclick="setPreset('eva')">エヴァ風</button>
-      <button onclick="setPreset('rezero')">リゼロ風</button>
-      <button onclick="setPreset('hokuto')">北斗風</button>
-      <button onclick="setPreset('madoka')">まどか風</button>
-      <button onclick="setPreset('karakuri')">からくり風</button>
-      <button onclick="setPreset('umi')">海風</button>
-      <button onclick="setPreset('garo')">牙狼風</button>
-      <button onclick="setPreset('sympho')">シンフォ風</button>
+    <div class="setting-row">
+
+      <span>
+        当たり確率
+      </span>
+
+      <div class="control">
+
+        <button class="minus"
+                data-target="hitRate"
+                data-change="-1">
+          −
+        </button>
+
+        <input type="number"
+               id="hitRate"
+               value="319">
+
+        <button class="plus"
+                data-target="hitRate"
+                data-change="1">
+          ＋
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- 突破率 -->
+
+    <div class="setting-row">
+
+      <span>
+        突破率 (%)
+      </span>
+
+      <div class="control">
+
+        <button class="minus"
+                data-target="breakRate"
+                data-change="-1">
+          −
+        </button>
+
+        <input type="number"
+               id="breakRate"
+               value="60">
+
+        <button class="plus"
+                data-target="breakRate"
+                data-change="1">
+          ＋
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- 継続率 -->
+
+    <div class="setting-row">
+
+      <span>
+        継続率 (%)
+      </span>
+
+      <div class="control">
+
+        <button class="minus"
+                data-target="continueRate"
+                data-change="-1">
+          −
+        </button>
+
+        <input type="number"
+               id="continueRate"
+               value="81">
+
+        <button class="plus"
+                data-target="continueRate"
+                data-change="1">
+          ＋
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- 回転率 -->
+
+    <div class="setting-row">
+
+      <span>
+        250玉回転数
+      </span>
+
+      <div class="control">
+
+        <button class="minus"
+                data-target="spinPer250"
+                data-change="-1">
+          −
+        </button>
+
+        <input type="number"
+               id="spinPer250"
+               value="17">
+
+        <button class="plus"
+                data-target="spinPer250"
+                data-change="1">
+          ＋
+        </button>
+
+      </div>
 
     </div>
 
   </div>
 
-  <!-- 基本スペック -->
+  <!-- 通常RUSH -->
 
   <div class="section">
 
-    <h2>基本スペック</h2>
+    <h2>
+      通常RUSH
+    </h2>
 
-    <!-- 当たり確率 -->
-    <!-- 突破率 -->
-    <!-- 継続率 -->
-    <!-- 250玉回転率 -->
+    <p id="ratioTotal">
+      通常合計：100%
+    </p>
 
-  </div>
-
-  <!-- LT設定 -->
-
-  <div class="section">
-
-    <h2>LT設定</h2>
-
-    <!-- LTモード -->
-    <!-- LT突入率 -->
-    <!-- LT継続率 -->
-
-  </div>
-
-  <!-- 通常RUSH出玉 -->
-
-  <div class="section">
-
-    <h2>通常RUSH出玉</h2>
+    <p id="ratioRemain">
+      残り：0%
+    </p>
 
     <!-- 出玉① -->
-    <!-- 割合① -->
+
+    <div class="setting-row">
+
+      <span>
+        出玉①
+      </span>
+
+      <div class="control">
+
+        <button class="minus"
+                data-target="payout1"
+                data-change="-100">
+          −
+        </button>
+
+        <input type="number"
+               id="payout1"
+               value="1500">
+
+        <button class="plus"
+                data-target="payout1"
+                data-change="100">
+          ＋
+        </button>
+
+        <input type="number"
+               id="ratio1"
+               value="50">
+
+        <span>%</span>
+
+      </div>
+
+    </div>
+
     <!-- 出玉② -->
-    <!-- 割合② -->
+
+    <div class="setting-row">
+
+      <span>
+        出玉②
+      </span>
+
+      <div class="control">
+
+        <button class="minus"
+                data-target="payout2"
+                data-change="-100">
+          −
+        </button>
+
+        <input type="number"
+               id="payout2"
+               value="3000">
+
+        <button class="plus"
+                data-target="payout2"
+                data-change="100">
+          ＋
+        </button>
+
+        <input type="number"
+               id="ratio2"
+               value="30">
+
+        <span>%</span>
+
+      </div>
+
+    </div>
+
     <!-- 出玉③ -->
-    <!-- 割合③ -->
+
+    <div class="setting-row">
+
+      <span>
+        出玉③
+      </span>
+
+      <div class="control">
+
+        <button class="minus"
+                data-target="payout3"
+                data-change="-100">
+          −
+        </button>
+
+        <input type="number"
+               id="payout3"
+               value="450">
+
+        <button class="plus"
+                data-target="payout3"
+                data-change="100">
+          ＋
+        </button>
+
+        <input type="number"
+               id="ratio3"
+               value="15">
+
+        <span>%</span>
+
+      </div>
+
+    </div>
+
+    <!-- 出玉④ -->
+
+    <div class="setting-row">
+
+      <span>
+        出玉④
+      </span>
+
+      <div class="control">
+
+        <button class="minus"
+                data-target="payout4"
+                data-change="-100">
+          −
+        </button>
+
+        <input type="number"
+               id="payout4"
+               value="6000">
+
+        <button class="plus"
+                data-target="payout4"
+                data-change="100">
+          ＋
+        </button>
+
+        <input type="number"
+               id="ratio4"
+               value="5">
+
+        <span>%</span>
+
+      </div>
+
+    </div>
 
   </div>
 
-  <!-- LT出玉 -->
+  <!-- START -->
 
-  <div class="section">
+  <button id="startBtn">
+    シミュレーション開始
+  </button>
 
-    <h2>LT出玉</h2>
+</div>
 
-    <!-- LT出玉① -->
-    <!-- LT割合① -->
-    <!-- LT出玉② -->
-    <!-- LT割合② -->
+<!-- ===================== -->
+<!-- 実践画面 -->
+<!-- ===================== -->
+
+<div id="playScreen"
+     style="display:none;">
+
+  <h1>
+    実践中
+  </h1>
+
+  <!-- カウンター -->
+
+  <div class="counter-grid">
+
+    <div class="counter-box">
+
+      <p>
+        大当たり
+      </p>
+
+      <h3 id="hitCount">
+        0
+      </h3>
+
+    </div>
+
+    <div class="counter-box">
+
+      <p>
+        最大連
+      </p>
+
+      <h3 id="maxChain">
+        0
+      </h3>
+
+    </div>
+
+    <div class="counter-box">
+
+      <p>
+        現在連
+      </p>
+
+      <h3 id="currentChain">
+        0
+      </h3>
+
+    </div>
 
   </div>
 
-  <!-- ボタン -->
+  <!-- 回転 -->
 
-  <div class="section">
-
-    <button id="startBtn">
-      ▶ START
-    </button>
-
-    <button id="stopBtn">
-      ■ STOP
-    </button>
-
+  <div id="spinDisplay">
+    0回転
   </div>
 
   <!-- 結果 -->
 
-  <div class="section result">
-
-    <h2>結果</h2>
-
-    <p id="spinDisplay">
-      0回転
-    </p>
-
-    <div id="payout-effect">
-      +0発
-    </div>
-
-    <p id="used">
-      使用玉: 0発
-    </p>
-
-    <p id="total">
-      総出玉: 0発
-    </p>
-
-    <p id="balance">
-      差玉: 0発
-    </p>
-
-    <p id="log"></p>
-
+  <div id="used">
+    使用玉: 0発
   </div>
 
-  <script src="main.js"></script>
+  <div id="total">
+    総出玉: 0発
+  </div>
+
+  <div id="balance">
+    差玉: 0発
+  </div>
+
+  <!-- ログ -->
+
+  <div id="log"></div>
+
+  <!-- グラフ -->
+
+  <canvas id="historyChart"></canvas>
+
+  <!-- ボタン -->
+
+  <button id="retryBtn">
+    🔁 もう一度！
+  </button>
+
+  <button id="backBtn">
+    ← 設定へ戻る
+  </button>
+
+</div>
+
+<!-- 演出 -->
+
+<div id="payout-effect"></div>
+
+<!-- 音 -->
+
+<audio id="hitSound"
+       src="hit.mp3"></audio>
+
+<audio id="rushSound"
+       src="rush.mp3"></audio>
+
+<script src="main.js"></script>
 
 </body>
 </html>
