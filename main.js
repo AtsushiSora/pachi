@@ -29,6 +29,11 @@ const spinDisplay =
     "spinDisplay"
   );
 
+const chain =
+  document.getElementById(
+    "chain"
+  );
+
 const used =
   document.getElementById(
     "used"
@@ -905,6 +910,8 @@ async function simulate() {
 
   let totalPayout = 0;
 
+  let chainCount = 0;
+
   const spinPer250Value =
 
     Number(
@@ -1177,6 +1184,11 @@ async function simulate() {
           }
 
         }
+
+        chainCount++;
+
+chain.textContent =
+  `連チャン: ${chainCount}回`;
 
         totalPayout += payout;
 
