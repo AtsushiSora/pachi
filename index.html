@@ -1,29 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <title>Pachi Simulator</title>
 
-  <title>
-    Pachi Simulator
-  </title>
-
-  <link
-    rel="manifest"
-    href="manifest.json"
-  >
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -34,620 +18,307 @@
 
   <div id="settingScreen">
 
-    <h1>
-      🎰 Pachi Simulator
-    </h1>
+    <h1>🎰 Pachi Simulator</h1>
 
-    <!-- ===================== -->
     <!-- ワンタップ設定 -->
-    <!-- ===================== -->
 
     <div class="section">
 
-      <h2>
-        ワンタップ設定
-      </h2>
+      <h2>ワンタップ設定</h2>
 
       <div class="preset-buttons">
 
-        <button onclick="setPreset('eva')">
-          エヴァ風
-        </button>
-
-        <button onclick="setPreset('rezero')">
-          リゼロ風
-        </button>
-
-        <button onclick="setPreset('arami')">
-          荒波LT風
-        </button>
-
-        <button onclick="setPreset('ama')">
-          甘デジ風
-        </button>
-
-        <button onclick="setPreset('umi')">
-          海風
-        </button>
-
-        <button onclick="setPreset('karakuri')">
-          からくり風
-        </button>
-
-        <button onclick="setPreset('boukyou')">
-          暴凶星風
-        </button>
-
-        <button onclick="setPreset('madoka')">
-          まどマギ風
-        </button>
+        <button onclick="setPreset('eva')">エヴァ風</button>
+        <button onclick="setPreset('rezero')">リゼロ風</button>
+        <button onclick="setPreset('arami')">荒波LT風</button>
+        <button onclick="setPreset('ama')">甘デジ風</button>
+        <button onclick="setPreset('umi')">海風</button>
+        <button onclick="setPreset('karakuri')">からくり風</button>
+        <button onclick="setPreset('boukyou')">暴凶星風</button>
+        <button onclick="setPreset('madoka')">まどマギ風</button>
 
       </div>
 
     </div>
 
-    <!-- ===================== -->
     <!-- 基本設定 -->
-    <!-- ===================== -->
 
     <div class="section">
 
-      <h2>
-        基本設定
-      </h2>
-
-      <!-- 当たり -->
+      <h2>基本設定</h2>
 
       <div class="setting-row">
-
-        <span>
-          当たる確率
-        </span>
+        <span>当たる確率</span>
 
         <div class="control">
-
-          <button
-            class="minus"
-            data-target="hitRate"
-            data-change="-1"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            id="hitRate"
-            value="319"
-          >
-
-          <button
-            class="plus"
-            data-target="hitRate"
-            data-change="1"
-          >
-            ＋
-          </button>
-
+          <button class="minus" data-target="hitRate" data-change="-1">−</button>
+          <input type="number" id="hitRate" value="319">
+          <button class="plus" data-target="hitRate" data-change="1">＋</button>
         </div>
-
       </div>
 
-      <!-- 突破率 -->
-
       <div class="setting-row">
-
-        <span>
-          突破率(%)
-        </span>
+        <span>突破率(%)</span>
 
         <div class="control">
-
-          <button
-            class="minus"
-            data-target="breakRate"
-            data-change="-1"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            id="breakRate"
-            value="60"
-          >
-
-          <button
-            class="plus"
-            data-target="breakRate"
-            data-change="1"
-          >
-            ＋
-          </button>
-
+          <button class="minus" data-target="breakRate" data-change="-1">−</button>
+          <input type="number" id="breakRate" value="60">
+          <button class="plus" data-target="breakRate" data-change="1">＋</button>
         </div>
-
       </div>
 
-      <!-- 継続率 -->
-
       <div class="setting-row">
-
-        <span>
-          継続率(%)
-        </span>
+        <span>継続率(%)</span>
 
         <div class="control">
-
-          <button
-            class="minus"
-            data-target="continueRate"
-            data-change="-1"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            id="continueRate"
-            value="81"
-          >
-
-          <button
-            class="plus"
-            data-target="continueRate"
-            data-change="1"
-          >
-            ＋
-          </button>
-
+          <button class="minus" data-target="continueRate" data-change="-1">−</button>
+          <input type="number" id="continueRate" value="81">
+          <button class="plus" data-target="continueRate" data-change="1">＋</button>
         </div>
-
       </div>
 
-      <!-- 回転率 -->
-
       <div class="setting-row">
-
-        <span>
-          250玉あたり回転数
-        </span>
+        <span>250玉あたり回転数</span>
 
         <div class="control">
-
-          <button
-            class="minus"
-            data-target="spinPer250"
-            data-change="-1"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            id="spinPer250"
-            value="17"
-          >
-
-          <button
-            class="plus"
-            data-target="spinPer250"
-            data-change="1"
-          >
-            ＋
-          </button>
-
+          <button class="minus" data-target="spinPer250" data-change="-1">−</button>
+          <input type="number" id="spinPer250" value="17">
+          <button class="plus" data-target="spinPer250" data-change="1">＋</button>
         </div>
-
       </div>
 
     </div>
 
-    <!-- ===================== -->
-    <!-- 通常出玉 -->
-    <!-- ===================== -->
+    <!-- 通常RUSH出玉 -->
 
     <div class="section">
 
-      <h2>
-        通常RUSH出玉
-      </h2>
+      <h2>通常RUSH出玉</h2>
 
-      <div id="ratioTotal">
-        通常合計：100%
-      </div>
-
-      <div id="ratioRemain">
-        残り：0%
-      </div>
-
-      <!-- 出玉1 -->
+      <div id="ratioTotal">通常合計：100%</div>
+      <div id="ratioRemain">残り：0%</div>
 
       <div class="setting-row">
-
-        <span>
-          出玉①
-        </span>
+        <span>出玉①</span>
 
         <div class="control">
+          <button class="minus" data-target="payout1" data-change="-500">−</button>
+          <input type="number" id="payout1" value="1500">
+          <button class="plus" data-target="payout1" data-change="500">＋</button>
 
-          <button
-            class="minus"
-            data-target="payout1"
-            data-change="-500"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            id="payout1"
-            value="1500"
-          >
-
-          <button
-            class="plus"
-            data-target="payout1"
-            data-change="500"
-          >
-            ＋
-          </button>
-
-          <button
-            class="minus"
-            data-target="ratio1"
-            data-change="-1"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            id="ratio1"
-            value="100"
-          >
-
-          <button
-            class="plus"
-            data-target="ratio1"
-            data-change="1"
-          >
-            ＋
-          </button>
-
+          <button class="minus" data-target="ratio1" data-change="-1">−</button>
+          <input type="number" id="ratio1" value="100">
+          <button class="plus" data-target="ratio1" data-change="1">＋</button>
           %
-
         </div>
-
       </div>
 
-      <!-- 出玉2 -->
-
       <div class="setting-row">
-
-        <span>
-          出玉②
-        </span>
+        <span>出玉②</span>
 
         <div class="control">
 
           <label class="switch">
-
-            <input
-              type="checkbox"
-              id="enablePayout2"
-              checked
-            >
-
-            <span class="slider">
-            </span>
-
+            <input type="checkbox" id="enablePayout2" checked>
+            <span class="slider"></span>
           </label>
 
-          <button
-            class="minus"
-            data-target="payout2"
-            data-change="-500"
-          >
-            −
-          </button>
+          <button class="minus" data-target="payout2" data-change="-500">−</button>
+          <input type="number" id="payout2" value="3000">
+          <button class="plus" data-target="payout2" data-change="500">＋</button>
 
-          <input
-            type="number"
-            id="payout2"
-            value="3000"
-          >
-
-          <button
-            class="plus"
-            data-target="payout2"
-            data-change="500"
-          >
-            ＋
-          </button>
-
-          <button
-            class="minus"
-            data-target="ratio2"
-            data-change="-1"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            id="ratio2"
-            value="0"
-          >
-
-          <button
-            class="plus"
-            data-target="ratio2"
-            data-change="1"
-          >
-            ＋
-          </button>
-
+          <button class="minus" data-target="ratio2" data-change="-1">−</button>
+          <input type="number" id="ratio2" value="0">
+          <button class="plus" data-target="ratio2" data-change="1">＋</button>
           %
 
         </div>
-
       </div>
 
-      <!-- 出玉3 -->
-
       <div class="setting-row">
-
-        <span>
-          出玉③
-        </span>
+        <span>出玉③</span>
 
         <div class="control">
 
           <label class="switch">
-
-            <input
-              type="checkbox"
-              id="enablePayout3"
-            >
-
-            <span class="slider">
-            </span>
-
+            <input type="checkbox" id="enablePayout3">
+            <span class="slider"></span>
           </label>
 
-          <button
-            class="minus"
-            data-target="payout3"
-            data-change="-500"
-          >
-            −
-          </button>
+          <button class="minus" data-target="payout3" data-change="-500">−</button>
+          <input type="number" id="payout3" value="4500">
+          <button class="plus" data-target="payout3" data-change="500">＋</button>
 
-          <input
-            type="number"
-            id="payout3"
-            value="4500"
-          >
-
-          <button
-            class="plus"
-            data-target="payout3"
-            data-change="500"
-          >
-            ＋
-          </button>
-
-          <button
-            class="minus"
-            data-target="ratio3"
-            data-change="-1"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            id="ratio3"
-            value="0"
-          >
-
-          <button
-            class="plus"
-            data-target="ratio3"
-            data-change="1"
-          >
-            ＋
-          </button>
-
+          <button class="minus" data-target="ratio3" data-change="-1">−</button>
+          <input type="number" id="ratio3" value="0">
+          <button class="plus" data-target="ratio3" data-change="1">＋</button>
           %
 
         </div>
-
       </div>
 
-      <!-- 出玉4 -->
-
       <div class="setting-row">
-
-        <span>
-          出玉④
-        </span>
+        <span>出玉④</span>
 
         <div class="control">
 
           <label class="switch">
-
-            <input
-              type="checkbox"
-              id="enablePayout4"
-            >
-
-            <span class="slider">
-            </span>
-
+            <input type="checkbox" id="enablePayout4">
+            <span class="slider"></span>
           </label>
 
-          <button
-            class="minus"
-            data-target="payout4"
-            data-change="-500"
-          >
-            −
-          </button>
+          <button class="minus" data-target="payout4" data-change="-500">−</button>
+          <input type="number" id="payout4" value="6000">
+          <button class="plus" data-target="payout4" data-change="500">＋</button>
 
-          <input
-            type="number"
-            id="payout4"
-            value="6000"
-          >
-
-          <button
-            class="plus"
-            data-target="payout4"
-            data-change="500"
-          >
-            ＋
-          </button>
-
-          <button
-            class="minus"
-            data-target="ratio4"
-            data-change="-1"
-          >
-            −
-          </button>
-
-          <input
-            type="number"
-            id="ratio4"
-            value="0"
-          >
-
-          <button
-            class="plus"
-            data-target="ratio4"
-            data-change="1"
-          >
-            ＋
-          </button>
-
+          <button class="minus" data-target="ratio4" data-change="-1">−</button>
+          <input type="number" id="ratio4" value="0">
+          <button class="plus" data-target="ratio4" data-change="1">＋</button>
           %
 
         </div>
-
       </div>
 
     </div>
 
-    <!-- ===================== -->
-    <!-- LT -->
-    <!-- ===================== -->
+    <!-- LT設定 -->
 
     <div class="section">
 
-      <h2>
-        LT設定
-      </h2>
-
-      <!-- LT ON/OFF -->
+      <h2>LT設定</h2>
 
       <div class="setting-row">
-
-        <span>
-          LT ON/OFF
-        </span>
+        <span>LT ON/OFF</span>
 
         <label class="switch">
-
-          <input
-            type="checkbox"
-            id="ltEnabled"
-            checked
-          >
-
-          <span class="slider">
-          </span>
-
+          <input type="checkbox" id="ltEnabled" checked>
+          <span class="slider"></span>
         </label>
-
       </div>
 
-      <!-- LT突入率 -->
+      <div class="setting-row">
+        <span>LT突入率(%)</span>
+
+        <div class="control">
+          <button class="minus" data-target="ltRate" data-change="-1">−</button>
+          <input type="number" id="ltRate" value="20">
+          <button class="plus" data-target="ltRate" data-change="1">＋</button>
+        </div>
+      </div>
 
       <div class="setting-row">
+        <span>LT継続率(%)</span>
 
-        <span>
-          LT突入率(%)
-        </span>
+        <div class="control">
+          <button class="minus" data-target="ltContinueRate" data-change="-1">−</button>
+          <input type="number" id="ltContinueRate" value="95">
+          <button class="plus" data-target="ltContinueRate" data-change="1">＋</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LT出玉 -->
+
+    <div class="section">
+
+      <h2>LT出玉</h2>
+
+      <div id="ltRatioTotal">LT合計：100%</div>
+      <div id="ltRatioRemain">残り：0%</div>
+
+      <div class="setting-row">
+        <span>LT出玉①</span>
 
         <div class="control">
 
-          <button
-            class="minus"
-            data-target="ltRate"
-            data-change="-1"
-          >
-            −
-          </button>
+          <label class="switch">
+            <input type="checkbox" id="enableLtPayout1" checked>
+            <span class="slider"></span>
+          </label>
 
-          <input
-            type="number"
-            id="ltRate"
-            value="20"
-          >
-
-          <button
-            class="plus"
-            data-target="ltRate"
-            data-change="1"
-          >
-            ＋
-          </button>
+          <input type="number" id="ltPayout1" value="3000">
+          <input type="number" id="ltRatio1" value="80">
+          %
 
         </div>
-
       </div>
 
-      <!-- LT継続率 -->
-
       <div class="setting-row">
-
-        <span>
-          LT継続率(%)
-        </span>
+        <span>LT出玉②</span>
 
         <div class="control">
 
-          <button
-            class="minus"
-            data-target="ltContinueRate"
-            data-change="-1"
-          >
-            −
-          </button>
+          <label class="switch">
+            <input type="checkbox" id="enableLtPayout2" checked>
+            <span class="slider"></span>
+          </label>
 
-          <input
-            type="number"
-            id="ltContinueRate"
-            value="95"
-          >
-
-          <button
-            class="plus"
-            data-target="ltContinueRate"
-            data-change="1"
-          >
-            ＋
-          </button>
+          <input type="number" id="ltPayout2" value="4500">
+          <input type="number" id="ltRatio2" value="20">
+          %
 
         </div>
-
       </div>
+
+    </div>
+
+    <!-- スタート -->
+
+    <button id="startBtn" class="start-button">
+      ▶ シミュレーション開始
+    </button>
+
+  </div>
+
+  <!-- ===================== -->
+  <!-- プレイ画面 -->
+  <!-- ===================== -->
+
+  <div id="playScreen" style="display:none;">
+
+    <h1>🎰 シミュレーション中</h1>
+
+    <div id="spinDisplay">0回転</div>
+
+    <div id="used">使用玉: 0発</div>
+
+    <div id="total">総出玉: 0発</div>
+
+    <div id="balance">差玉: 0発</div>
+
+    <div id="payout-effect"></div>
+
+    <div id="log"></div>
+
+    <div class="play-buttons">
+
+      <button id="retryBtn" style="display:none;">
+        もう一回
+      </button>
+
+      <button id="backBtn">
+        設定に戻る
+      </button>
 
     </div>
 
   </div>
 
-</body>
+  <!-- 音 -->
 
+  <audio id="hitSound" preload="auto">
+    <source src="hit.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="rushSound" preload="auto">
+    <source src="rush.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- JS -->
+
+  <script src="main.js"></script>
+
+</body>
 </html>
+```
