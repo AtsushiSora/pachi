@@ -1,1318 +1,395 @@
-// =====================
+// ========================
 // 状態
-// =====================
-
+// ========================
 let spinning = false;
-
 const logs = [];
 
-// =====================
-// 画面
-// =====================
+// ========================
+// 画面要素
+// ========================
+const settingScreen = document.getElementById("settingScreen");
+const playScreen    = document.getElementById("playScreen");
+const spinDisplay   = document.getElementById("spinDisplay");
+const chain         = document.getElementById("chain");
+const used          = document.getElementById("used");
+const total         = document.getElementById("total");
+const balance       = document.getElementById("balance");
+const log           = document.getElementById("log");
+const payoutEffect  = document.getElementById("payout-effect");
+const modeTag       = document.getElementById("modeTag");
+const playStatus    = document.getElementById("playStatus");
+const hitSound      = document.getElementById("hitSound");
+const rushSound     = document.getElementById("rushSound");
+const ratioTotal    = document.getElementById("ratioTotal");
+const ratioRemain   = document.getElementById("ratioRemain");
+const ltRatioTotal  = document.getElementById("ltRatioTotal");
+const ltRatioRemain = document.getElementById("ltRatioRemain");
 
-const settingScreen =
-  document.getElementById(
-    "settingScreen"
-  );
-
-const playScreen =
-  document.getElementById(
-    "playScreen"
-  );
-
-// =====================
-// 表示
-// =====================
-
-const spinDisplay =
-  document.getElementById(
-    "spinDisplay"
-  );
-
-const chain =
-  document.getElementById(
-    "chain"
-  );
-
-const used =
-  document.getElementById(
-    "used"
-  );
-
-const total =
-  document.getElementById(
-    "total"
-  );
-
-const balance =
-  document.getElementById(
-    "balance"
-  );
-
-const log =
-  document.getElementById(
-    "log"
-  );
-
-const payoutEffect =
-  document.getElementById(
-    "payout-effect"
-  );
-
-// =====================
-// 音
-// =====================
-
-const hitSound =
-  document.getElementById(
-    "hitSound"
-  );
-
-const rushSound =
-  document.getElementById(
-    "rushSound"
-  );
-
-// =====================
-// 割合表示
-// =====================
-
-const ratioTotal =
-  document.getElementById(
-    "ratioTotal"
-  );
-
-const ratioRemain =
-  document.getElementById(
-    "ratioRemain"
-  );
-
-const ltRatioTotal =
-  document.getElementById(
-    "ltRatioTotal"
-  );
-
-const ltRatioRemain =
-  document.getElementById(
-    "ltRatioRemain"
-  );
-
-// =====================
+// ========================
 // ±ボタン
-// =====================
+// ========================
+document.querySelectorAll(".step-btn").forEach(btn => {
+  btn.addEventListener("click", () => changeValue(btn));
+});
 
-document
-  .querySelectorAll(
-    ".plus, .minus"
-  )
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        changeValue(button);
-
-      }
-    );
-
-  });
-
-// =====================
+// ========================
 // 数値変更
-// =====================
-
+// ========================
 function changeValue(button) {
+  const target = document.getElementById(button.dataset.target);
+  let value = Number(target.value);
+  value += Number(button.dataset.change);
+  if (value < 0) value = 0;
 
-  const target =
-    document.getElementById(
-      button.dataset.target
-    );
-
-  let value =
-    Number(target.value);
-
-  value += Number(
-    button.dataset.change
-  );
-
-  if (value < 0) {
-
-    value = 0;
-
+  // 通常割合上限
+  if (["ratio1","ratio2","ratio3","ratio4"].includes(target.id)) {
+    const others =
+      (target.id !== "ratio1" ? Number(ratio1.value) : 0) +
+      (enablePayout2.checked && target.id !== "ratio2" ? Number(ratio2.value) : 0) +
+      (enablePayout3.checked && target.id !== "ratio3" ? Number(ratio3.value) : 0) +
+      (enablePayout4.checked && target.id !== "ratio4" ? Number(ratio4.value) : 0);
+    if (value + others > 100) value = 100 - others;
   }
 
-  // =====================
-  // 通常割合制限
-  // =====================
-
-  if (
-    target.id === "ratio1" ||
-    target.id === "ratio2" ||
-    target.id === "ratio3" ||
-    target.id === "ratio4"
-  ) {
-
-    const totalWithoutCurrent =
-
-      (target.id !== "ratio1"
-        ? Number(ratio1.value)
-        : 0)
-
-      +
-
-      (enablePayout2.checked &&
-      target.id !== "ratio2"
-        ? Number(ratio2.value)
-        : 0)
-
-      +
-
-      (enablePayout3.checked &&
-      target.id !== "ratio3"
-        ? Number(ratio3.value)
-        : 0)
-
-      +
-
-      (enablePayout4.checked &&
-      target.id !== "ratio4"
-        ? Number(ratio4.value)
-        : 0);
-
-    if (
-      value +
-      totalWithoutCurrent >
-      100
-    ) {
-
-      value =
-        100 -
-        totalWithoutCurrent;
-
-    }
-
-  }
-
-  // =====================
-  // LT割合制限
-  // =====================
-
-  if (
-    target.id === "ltRatio1" ||
-    target.id === "ltRatio2"
-  ) {
-
-    const totalWithoutCurrent =
-
-      (enableLtPayout1.checked &&
-      target.id !== "ltRatio1"
-        ? Number(
-            ltRatio1.value
-          )
-        : 0)
-
-      +
-
-      (enableLtPayout2.checked &&
-      target.id !== "ltRatio2"
-        ? Number(
-            ltRatio2.value
-          )
-        : 0);
-
-    if (
-      value +
-      totalWithoutCurrent >
-      100
-    ) {
-
-      value =
-        100 -
-        totalWithoutCurrent;
-
-    }
-
+  // LT割合上限
+  if (["ltRatio1","ltRatio2"].includes(target.id)) {
+    const others =
+      (enableLtPayout1.checked && target.id !== "ltRatio1" ? Number(ltRatio1.value) : 0) +
+      (enableLtPayout2.checked && target.id !== "ltRatio2" ? Number(ltRatio2.value) : 0);
+    if (value + others > 100) value = 100 - others;
   }
 
   target.value = value;
-
   updateRatioTotal();
-
   saveSettings();
-
 }
 
-// =====================
+// ========================
 // 割合更新
-// =====================
-
+// ========================
 function updateRatioTotal() {
-
-  // 通常
-
   const normalTotal =
+    Number(ratio1.value) +
+    (enablePayout2.checked ? Number(ratio2.value) : 0) +
+    (enablePayout3.checked ? Number(ratio3.value) : 0) +
+    (enablePayout4.checked ? Number(ratio4.value) : 0);
 
-    Number(ratio1.value)
-
-    +
-
-    (enablePayout2.checked
-      ? Number(ratio2.value)
-      : 0)
-
-    +
-
-    (enablePayout3.checked
-      ? Number(ratio3.value)
-      : 0)
-
-    +
-
-    (enablePayout4.checked
-      ? Number(ratio4.value)
-      : 0);
-
-  ratioTotal.textContent =
-
-    `通常合計：${normalTotal}%`;
-
-  ratioRemain.textContent =
-
-    `残り：${100 - normalTotal}%`;
-
-  ratioTotal.className =
-
-    normalTotal === 100
-      ? "just"
-      : "over";
-
-  ratioRemain.className =
-
-    normalTotal === 100
-      ? "zero"
-      : "";
-
-  // LT
+  ratioTotal.textContent  = `合計 ${normalTotal}%`;
+  ratioRemain.textContent = `残り ${100 - normalTotal}%`;
+  ratioRemain.className   = normalTotal === 100 ? "ok" : "over";
 
   const ltTotal =
+    (enableLtPayout1.checked ? Number(ltRatio1.value) : 0) +
+    (enableLtPayout2.checked ? Number(ltRatio2.value) : 0);
 
-    (enableLtPayout1.checked
-      ? Number(
-          ltRatio1.value
-        )
-      : 0)
-
-    +
-
-    (enableLtPayout2.checked
-      ? Number(
-          ltRatio2.value
-        )
-      : 0);
-
-  ltRatioTotal.textContent =
-
-    `LT合計：${ltTotal}%`;
-
-  ltRatioRemain.textContent =
-
-    `残り：${100 - ltTotal}%`;
-
-  ltRatioTotal.className =
-
-    ltTotal === 100
-      ? "just"
-      : "over";
-
-  ltRatioRemain.className =
-
-    ltTotal === 100
-      ? "zero"
-      : "";
-
+  ltRatioTotal.textContent  = `合計 ${ltTotal}%`;
+  ltRatioRemain.textContent = `残り ${100 - ltTotal}%`;
+  ltRatioRemain.className   = ltTotal === 100 ? "ok" : "over";
 }
 
-// =====================
-// 保存
-// =====================
-
+// ========================
+// 設定保存
+// ========================
 function saveSettings() {
-
-  document
-    .querySelectorAll("input")
-    .forEach(input => {
-
-      if (
-        input.type ===
-        "checkbox"
-      ) {
-
-        localStorage.setItem(
-          input.id,
-          input.checked
-        );
-
-      } else {
-
-        localStorage.setItem(
-          input.id,
-          input.value
-        );
-
-      }
-
-    });
-
-}
-
-// =====================
-// 読み込み
-// =====================
-
-function loadSettings() {
-
-  document
-    .querySelectorAll("input")
-    .forEach(input => {
-
-      const saved =
-        localStorage.getItem(
-          input.id
-        );
-
-      if (saved !== null) {
-
-        if (
-          input.type ===
-          "checkbox"
-        ) {
-
-          input.checked =
-            saved === "true";
-
-        } else {
-
-          input.value = saved;
-
-        }
-
-      }
-
-    });
-
-}
-
-// =====================
-// ログ
-// =====================
-
-function addLog(text) {
-
-  logs.push(text);
-
-  if (logs.length > 50) {
-
-    logs.shift();
-
-  }
-
-  log.innerHTML =
-    logs.join("<br>");
-
-}
-
-// =====================
-// ランダム
-// =====================
-
-function randomRange(min, max) {
-
-  return Math.floor(
-
-    Math.random() *
-
-    (max - min + 1)
-
-  ) + min;
-
-}
-
-// =====================
-// 演出
-// =====================
-
-function showPayoutEffect(
-  amount
-) {
-
-  payoutEffect.textContent =
-
-    `+${amount}発`;
-
-  payoutEffect.classList.add(
-    "show"
-  );
-
-  document.body.classList.add(
-    "flash"
-  );
-
-  setTimeout(() => {
-
-    payoutEffect.classList.remove(
-      "show"
+  document.querySelectorAll("input").forEach(input => {
+    localStorage.setItem(
+      input.id,
+      input.type === "checkbox" ? input.checked : input.value
     );
-
-    document.body.classList.remove(
-      "flash"
-    );
-
-  }, 600);
-
-}
-
-// =====================
-// sleep
-// =====================
-
-function sleep(ms) {
-
-  return new Promise(resolve => {
-
-    setTimeout(resolve, ms);
-
   });
-
 }
 
-// =====================
+// ========================
+// 設定読込
+// ========================
+function loadSettings() {
+  document.querySelectorAll("input").forEach(input => {
+    const saved = localStorage.getItem(input.id);
+    if (saved !== null) {
+      if (input.type === "checkbox") input.checked = saved === "true";
+      else input.value = saved;
+    }
+  });
+}
+
+// ========================
+// ログ追加
+// ========================
+function addLog(text, cls = "log-normal") {
+  const div = document.createElement("div");
+  div.className = cls;
+  div.textContent = text;
+  log.appendChild(div);
+  if (log.children.length > 60) log.removeChild(log.firstChild);
+  log.parentElement.scrollTop = log.parentElement.scrollHeight;
+}
+
+// ========================
+// ランダム
+// ========================
+function randomRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// ========================
+// 数値表示ヘルパー
+// ========================
+function setVal(el, num, unit, cls) {
+  el.innerHTML = `${num.toLocaleString()}<span class="stat-u">${unit}</span>`;
+  if (cls) el.className = `stat-val ${cls}`;
+}
+
+// ========================
+// モード表示
+// ========================
+function setMode(mode) {
+  modeTag.className = `mode-tag mode-${mode}`;
+  if (mode === "normal") modeTag.textContent = "通常";
+  if (mode === "rush")   modeTag.textContent = "RUSH";
+  if (mode === "lt")     modeTag.textContent = "LT RUSH";
+}
+
+// ========================
+// 演出
+// ========================
+function showPayoutEffect(amount) {
+  payoutEffect.textContent = `+${amount.toLocaleString()}`;
+  payoutEffect.classList.remove("show");
+  void payoutEffect.offsetWidth;
+  payoutEffect.classList.add("show");
+
+  document.body.classList.add("body-flash");
+  setTimeout(() => document.body.classList.remove("body-flash"), 350);
+}
+
+// ========================
+// sleep
+// ========================
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// ========================
 // プリセット
-// =====================
-
+// ========================
 function setPreset(type) {
-
-  // =====================
-  // エヴァ風
-  // =====================
-
-  if (type === "eva") {
-
-    hitRate.value = 319;
-
-    breakRate.value = 70;
-
-    continueRate.value = 81;
-
-    payout1.value = 1500;
-    ratio1.value = 50;
-
-    payout2.value = 3000;
-    ratio2.value = 30;
-
-    payout3.value = 4500;
-    ratio3.value = 15;
-
-    payout4.value = 6000;
-    ratio4.value = 5;
-
-    enablePayout2.checked =
-      true;
-
-    enablePayout3.checked =
-      true;
-
-    enablePayout4.checked =
-      true;
-
-    ltEnabled.checked = true;
-
-    ltRate.value = 20;
-
-    ltContinueRate.value =
-      95;
-
-    ltPayout1.value = 3000;
-    ltRatio1.value = 80;
-
-    ltPayout2.value = 4500;
-    ltRatio2.value = 20;
-
-  }
-
-  // =====================
-  // リゼロ風
-  // =====================
-
-  if (type === "rezero") {
-
-    hitRate.value = 349;
-
-    breakRate.value = 55;
-
-    continueRate.value = 77;
-
-    payout1.value = 1500;
-    ratio1.value = 100;
-
-    enablePayout2.checked =
-      false;
-
-    enablePayout3.checked =
-      false;
-
-    enablePayout4.checked =
-      false;
-
-    ltEnabled.checked = true;
-
-    ltRate.value = 35;
-
-    ltContinueRate.value =
-      92;
-
-    ltPayout1.value = 3000;
-    ltRatio1.value = 90;
-
-    ltPayout2.value = 6000;
-    ltRatio2.value = 10;
-
-  }
-
-  // =====================
-  // 荒波LT
-  // =====================
-
-  if (type === "arami") {
-
-    hitRate.value = 399;
-
-    breakRate.value = 50;
-
-    continueRate.value = 76;
-
-    payout1.value = 1500;
-    ratio1.value = 70;
-
-    payout2.value = 3000;
-    ratio2.value = 20;
-
-    payout3.value = 6000;
-    ratio3.value = 10;
-
-    enablePayout2.checked =
-      true;
-
-    enablePayout3.checked =
-      true;
-
-    enablePayout4.checked =
-      false;
-
-    ltEnabled.checked = true;
-
-    ltRate.value = 40;
-
-    ltContinueRate.value =
-      96;
-
-    ltPayout1.value = 3000;
-    ltRatio1.value = 70;
-
-    ltPayout2.value = 6000;
-    ltRatio2.value = 30;
-
-  }
-
-  // =====================
-  // 甘デジ
-  // =====================
-
-  if (type === "ama") {
-
-    hitRate.value = 99;
-
-    breakRate.value = 100;
-
-    continueRate.value = 70;
-
-    payout1.value = 500;
-    ratio1.value = 70;
-
-    payout2.value = 1500;
-    ratio2.value = 30;
-
-    enablePayout2.checked =
-      true;
-
-    enablePayout3.checked =
-      false;
-
-    enablePayout4.checked =
-      false;
-
-    ltEnabled.checked = false;
-
-  }
-
-  // =====================
-  // 海風
-  // =====================
-
-  if (type === "umi") {
-
-    hitRate.value = 319;
-
-    breakRate.value = 100;
-
-    continueRate.value = 65;
-
-    payout1.value = 1500;
-    ratio1.value = 100;
-
-    enablePayout2.checked =
-      false;
-
-    enablePayout3.checked =
-      false;
-
-    enablePayout4.checked =
-      false;
-
-    ltEnabled.checked = false;
-
-  }
-
-  // =====================
-  // からくり風
-  // =====================
-
-  if (type === "karakuri") {
-
-    hitRate.value = 399;
-
-    breakRate.value = 51;
-
-    continueRate.value = 80;
-
-    payout1.value = 1500;
-    ratio1.value = 50;
-
-    payout2.value = 3000;
-    ratio2.value = 30;
-
-    payout3.value = 4500;
-    ratio3.value = 15;
-
-    payout4.value = 9000;
-    ratio4.value = 5;
-
-    enablePayout2.checked =
-      true;
-
-    enablePayout3.checked =
-      true;
-
-    enablePayout4.checked =
-      true;
-
-    ltEnabled.checked = true;
-
-    ltRate.value = 35;
-
-    ltContinueRate.value =
-      95;
-
-    ltPayout1.value = 4500;
-
-    ltRatio1.value = 70;
-
-    ltPayout2.value = 9000;
-
-    ltRatio2.value = 30;
-
-  }
-
-  // =====================
-  // 暴凶星風
-  // =====================
-
-  if (type === "boukyou") {
-
-    hitRate.value = 319;
-
-    breakRate.value = 60;
-
-    continueRate.value = 75;
-
-    payout1.value = 3000;
-    ratio1.value = 100;
-
-    enablePayout2.checked =
-      false;
-
-    enablePayout3.checked =
-      false;
-
-    enablePayout4.checked =
-      false;
-
-    ltEnabled.checked = false;
-
-  }
-
-  // =====================
-  // まどマギ風
-  // =====================
-
-  if (type === "madoka") {
-
-    hitRate.value = 199;
-
-    breakRate.value = 75;
-
-    continueRate.value = 82;
-
-    payout1.value = 1500;
-    ratio1.value = 60;
-
-    payout2.value = 3000;
-    ratio2.value = 30;
-
-    payout3.value = 4500;
-    ratio3.value = 10;
-
-    enablePayout2.checked =
-      true;
-
-    enablePayout3.checked =
-      true;
-
-    enablePayout4.checked =
-      false;
-
-    ltEnabled.checked = true;
-
-    ltRate.value = 20;
-
-    ltContinueRate.value =
-      92;
-
-    ltPayout1.value = 3000;
-
-    ltRatio1.value = 80;
-
-    ltPayout2.value = 6000;
-
-    ltRatio2.value = 20;
-
-  }
-
+  const p = {
+    eva:      { hitRate:319, breakRate:70,  continueRate:81, spinPer250:17,
+                p1:1500, r1:50,  p2:3000, r2:30,  p3:4500, r3:15,  p4:6000, r4:5,
+                e2:true,  e3:true,  e4:true,
+                lt:true,  ltRate:20, ltCont:95,
+                lp1:3000, lr1:80, lp2:4500, lr2:20, le1:true, le2:true },
+    rezero:   { hitRate:349, breakRate:55,  continueRate:77, spinPer250:17,
+                p1:1500, r1:100, p2:3000, r2:0,   p3:4500, r3:0,   p4:6000, r4:0,
+                e2:false, e3:false, e4:false,
+                lt:true,  ltRate:35, ltCont:92,
+                lp1:3000, lr1:90, lp2:6000, lr2:10, le1:true, le2:true },
+    arami:    { hitRate:399, breakRate:50,  continueRate:76, spinPer250:17,
+                p1:1500, r1:70,  p2:3000, r2:20,  p3:6000, r3:10,  p4:6000, r4:0,
+                e2:true,  e3:true,  e4:false,
+                lt:true,  ltRate:30, ltCont:88,
+                lp1:3000, lr1:70, lp2:6000, lr2:30, le1:true, le2:true },
+    ama:      { hitRate:99,  breakRate:65,  continueRate:70, spinPer250:20,
+                p1:1000, r1:100, p2:3000, r2:0,   p3:4500, r3:0,   p4:6000, r4:0,
+                e2:false, e3:false, e4:false,
+                lt:false, ltRate:20, ltCont:95,
+                lp1:3000, lr1:80, lp2:4500, lr2:20, le1:true, le2:true },
+    umi:      { hitRate:249, breakRate:60,  continueRate:73, spinPer250:17,
+                p1:1500, r1:80,  p2:3000, r2:20,  p3:4500, r3:0,   p4:6000, r4:0,
+                e2:true,  e3:false, e4:false,
+                lt:false, ltRate:20, ltCont:95,
+                lp1:3000, lr1:80, lp2:4500, lr2:20, le1:true, le2:true },
+    karakuri: { hitRate:319, breakRate:65,  continueRate:80, spinPer250:17,
+                p1:2000, r1:60,  p2:4000, r2:30,  p3:6000, r3:10,  p4:6000, r4:0,
+                e2:true,  e3:true,  e4:false,
+                lt:true,  ltRate:35, ltCont:95,
+                lp1:4500, lr1:70, lp2:9000, lr2:30, le1:true, le2:true },
+    boukyou:  { hitRate:319, breakRate:60,  continueRate:75, spinPer250:17,
+                p1:3000, r1:100, p2:3000, r2:0,   p3:4500, r3:0,   p4:6000, r4:0,
+                e2:false, e3:false, e4:false,
+                lt:false, ltRate:20, ltCont:95,
+                lp1:3000, lr1:80, lp2:4500, lr2:20, le1:true, le2:true },
+    madoka:   { hitRate:199, breakRate:75,  continueRate:82, spinPer250:17,
+                p1:1500, r1:60,  p2:3000, r2:30,  p3:4500, r3:10,  p4:6000, r4:0,
+                e2:true,  e3:true,  e4:false,
+                lt:true,  ltRate:20, ltCont:92,
+                lp1:3000, lr1:80, lp2:6000, lr2:20, le1:true, le2:true },
+  };
+  const s = p[type];
+  if (!s) return;
+  hitRate.value = s.hitRate;  breakRate.value = s.breakRate;
+  continueRate.value = s.continueRate; spinPer250.value = s.spinPer250;
+  payout1.value = s.p1; ratio1.value = s.r1;
+  payout2.value = s.p2; ratio2.value = s.r2;
+  payout3.value = s.p3; ratio3.value = s.r3;
+  payout4.value = s.p4; ratio4.value = s.r4;
+  enablePayout2.checked = s.e2; enablePayout3.checked = s.e3; enablePayout4.checked = s.e4;
+  ltEnabled.checked = s.lt; ltRate.value = s.ltRate; ltContinueRate.value = s.ltCont;
+  ltPayout1.value = s.lp1; ltRatio1.value = s.lr1;
+  ltPayout2.value = s.lp2; ltRatio2.value = s.lr2;
+  enableLtPayout1.checked = s.le1; enableLtPayout2.checked = s.le2;
   updateRatioTotal();
-
   saveSettings();
-
 }
 
-// =====================
-// START
-// =====================
+// ========================
+// ボタンイベント
+// ========================
+document.getElementById("startBtn").addEventListener("click", simulate);
+document.getElementById("retryBtn").addEventListener("click", simulate);
+document.getElementById("backBtn").addEventListener("click", () => {
+  spinning = false;
+  playScreen.style.display    = "none";
+  settingScreen.style.display = "block";
+});
 
-startBtn.addEventListener(
-  "click",
-  simulate
-);
-
-// =====================
-// RETRY
-// =====================
-
-retryBtn.addEventListener(
-  "click",
-  () => {
-
-    simulate();
-
-  }
-);
-
-// =====================
-// 戻る
-// =====================
-
-backBtn.addEventListener(
-  "click",
-  () => {
-
-    spinning = false;
-
-    playScreen.style.display =
-      "none";
-
-    settingScreen.style.display =
-      "block";
-
-  }
-);
-
-// =====================
+// ========================
 // シミュレーション
-// =====================
-
+// ========================
 async function simulate() {
-
   if (spinning) return;
-
   spinning = true;
 
-  // =====================
-  // 完全リセット
-  // =====================
-
-  spinDisplay.textContent =
-    "回転開始";
-
-  used.textContent =
-    "使用玉: 0発";
-
-  total.textContent =
-    "総出玉: 0発";
-
-  balance.textContent =
-    "差玉: 0発";
-
+  // リセット
   log.innerHTML = "";
-
   logs.length = 0;
-
   payoutEffect.textContent = "";
+  payoutEffect.classList.remove("show");
+  document.body.classList.remove("body-flash");
+  document.getElementById("retryBtn").style.display = "none";
+  setMode("normal");
+  setVal(chain,   0, "回");
+  setVal(total,   0, "玉", "val-up");
+  setVal(used,    0, "玉", "val-dim");
+  setVal(balance, 0, "玉");
+  spinDisplay.textContent = "0回転";
+  spinDisplay.classList.remove("warning");
+  playStatus.textContent = "実行中";
 
-  document.body.classList.remove(
-    "super-hit"
-  );
+  settingScreen.style.display = "none";
+  playScreen.style.display    = "block";
 
-  document.body.classList.remove(
-    "flash"
-  );
-
-  // =====================
-
-  retryBtn.style.display =
-    "none";
-
-  settingScreen.style.display =
-    "none";
-
-  playScreen.style.display =
-    "block";
-
-  let spins = 0;
-
+  let spins       = 0;
   let totalPayout = 0;
+  let chainCount  = 0;
+  const costPerSpin = 250 / Number(spinPer250.value);
 
-  let chainCount = 0;
-
-  const spinPer250Value =
-
-    Number(
-      spinPer250.value
-    );
-
-  const costPerSpin =
-
-    250 /
-    spinPer250Value;
-
-  // =====================
-  // 通常
-  // =====================
-
+  // ========================
+  // 通常ループ
+  // ========================
   while (spinning) {
-
     spins++;
+    spinDisplay.innerHTML = `${spins.toLocaleString()}<span class="spin-unit">回転</span>`;
 
-    spinDisplay.textContent =
+    if (spins >= 1000) spinDisplay.classList.add("warning");
 
-      `${spins}回転`;
-
-    // ハマり
-
-    if (spins >= 1000) {
-
-      spinDisplay.classList.add(
-        "warning"
-      );
-
-    }
-
-    const hit =
-
-      Math.random() <
-
-      (
-        1 /
-        Number(hitRate.value)
-      );
+    const hit = Math.random() < (1 / Number(hitRate.value));
 
     if (hit) {
-
-      spinDisplay.classList.remove(
-        "warning"
-      );
-
+      spinDisplay.classList.remove("warning");
       hitSound.currentTime = 0;
+      hitSound.play().catch(() => {});
 
-      hitSound.play();
+      addLog(`${spins.toLocaleString()}回転で当たり！`, "log-hit");
 
-      addLog(
-        `${spins}回転で当たり！`
-      );
-
-      // 突破
-
-      const breakthrough =
-
-        Math.random() <
-
-        (
-          Number(
-            breakRate.value
-          ) / 100
-        );
-
+      const breakthrough = Math.random() < (Number(breakRate.value) / 100);
       if (!breakthrough) {
-
-        addLog(
-          "突破失敗..."
-        );
-
+        addLog("突破失敗…", "log-fail");
         break;
-
       }
 
       rushSound.currentTime = 0;
+      rushSound.play().catch(() => {});
+      addLog("RUSH突入！", "log-rush");
 
-      rushSound.play();
-
-      addLog(
-        "RUSH突入！"
-      );
-
-      // LT
-
+      // LT判定
       let isLT = false;
-
-      if (
-        ltEnabled.checked
-      ) {
-
-        const ltHit =
-
-          Math.random() <
-
-          (
-            Number(
-              ltRate.value
-            ) / 100
-          );
-
-        if (ltHit) {
-
-          isLT = true;
-
-          addLog(
-            `
-            <div class="lt">
-              LT突入！！
-            </div>
-            `
-          );
-
-        }
-
+      if (ltEnabled.checked && Math.random() < (Number(ltRate.value) / 100)) {
+        isLT = true;
+        addLog("⚡ LT突入！！", "log-lt");
       }
 
-      // =====================
-      // RUSH
-      // =====================
+      setMode(isLT ? "lt" : "rush");
 
+      // ========================
+      // RUSHループ
+      // ========================
       let rush = true;
-
-      while (
-        rush &&
-        spinning
-      ) {
-
-        const rand =
-          Math.random() * 100;
-
+      while (rush && spinning) {
+        const rand = Math.random() * 100;
         let payout = 0;
 
-        const payouts = [
+        const pool = isLT
+          ? [
+              { en: enableLtPayout1.checked, val: Number(ltPayout1.value), ratio: Number(ltRatio1.value) },
+              { en: enableLtPayout2.checked, val: Number(ltPayout2.value), ratio: Number(ltRatio2.value) },
+            ]
+          : [
+              { en: true,                    val: Number(payout1.value),   ratio: Number(ratio1.value) },
+              { en: enablePayout2.checked,   val: Number(payout2.value),   ratio: Number(ratio2.value) },
+              { en: enablePayout3.checked,   val: Number(payout3.value),   ratio: Number(ratio3.value) },
+              { en: enablePayout4.checked,   val: Number(payout4.value),   ratio: Number(ratio4.value) },
+            ];
 
-          {
-            enabled: true,
-
-            payout:
-              Number(
-                payout1.value
-              ),
-
-            ratio:
-              Number(
-                ratio1.value
-              )
-          },
-
-          {
-            enabled:
-              enablePayout2.checked,
-
-            payout:
-              Number(
-                payout2.value
-              ),
-
-            ratio:
-              Number(
-                ratio2.value
-              )
-          },
-
-          {
-            enabled:
-              enablePayout3.checked,
-
-            payout:
-              Number(
-                payout3.value
-              ),
-
-            ratio:
-              Number(
-                ratio3.value
-              )
-          },
-
-          {
-            enabled:
-              enablePayout4.checked,
-
-            payout:
-              Number(
-                payout4.value
-              ),
-
-            ratio:
-              Number(
-                ratio4.value
-              )
-          }
-
-        ];
-
-        const ltPayouts = [
-
-          {
-            enabled:
-              enableLtPayout1.checked,
-
-            payout:
-              Number(
-                ltPayout1.value
-              ),
-
-            ratio:
-              Number(
-                ltRatio1.value
-              )
-          },
-
-          {
-            enabled:
-              enableLtPayout2.checked,
-
-            payout:
-              Number(
-                ltPayout2.value
-              ),
-
-            ratio:
-              Number(
-                ltRatio2.value
-              )
-          }
-
-        ];
-
-        const targetArray =
-
-          isLT
-            ? ltPayouts
-            : payouts;
-
-        let cumulative = 0;
-
-        for (
-          const item
-          of targetArray
-        ) {
-
-          if (
-            !item.enabled
-          ) continue;
-
-          cumulative +=
-            item.ratio;
-
-          if (
-            rand <
-            cumulative
-          ) {
-
-            payout =
-              randomRange(
-
-                item.payout - 100,
-
-                item.payout + 100
-
-              );
-
+        let cum = 0;
+        for (const item of pool) {
+          if (!item.en) continue;
+          cum += item.ratio;
+          if (rand < cum) {
+            payout = randomRange(item.val - 100, item.val + 100);
             break;
-
           }
-
         }
 
         chainCount++;
-
-chain.textContent =
-  `連チャン: ${chainCount}回`;
-
         totalPayout += payout;
+        const usedNow = Math.floor(spins * costPerSpin);
+        const diff    = totalPayout - usedNow;
 
-        total.textContent =
+        setVal(chain,   chainCount,         "回",  "val-hi");
+        setVal(total,   totalPayout,        "玉",  "val-up");
+        setVal(used,    usedNow,            "玉",  "val-dim");
+        setVal(balance, Math.abs(diff),     "玉",  diff >= 0 ? "val-up" : "val-dn");
 
-          `総出玉: ${totalPayout}発`;
-
-        showPayoutEffect(
-          payout
-        );
-
-        addLog(
-          `${payout}発獲得！`
-        );
-
-        // 爆連
-
-        if (payout >= 5000) {
-
-          document.body.classList.add(
-            "super-hit"
-          );
-
-          setTimeout(() => {
-
-            document.body.classList.remove(
-              "super-hit"
-            );
-
-          }, 1500);
-
-        }
+        showPayoutEffect(payout);
+        addLog(`+${payout.toLocaleString()}玉`, "log-payout");
 
         await sleep(700);
 
-        // 継続
-
-        const currentRate =
-
-          isLT
-
-            ? Number(
-                ltContinueRate.value
-              )
-
-            : Number(
-                continueRate.value
-              );
-
-        const cont =
-
-          Math.random() <
-
-          (
-            currentRate / 100
-          );
-
-        if (!cont) {
-
+        // 継続判定
+        const contRate = isLT ? Number(ltContinueRate.value) : Number(continueRate.value);
+        if (Math.random() >= contRate / 100) {
           rush = false;
-
-          addLog(
-            "RUSH終了"
-          );
-
+          setMode("normal");
+          addLog("RUSH終了", "log-end");
         }
-
       }
-
       break;
-
     }
 
-    // ハマりログ
-
-    if (
-      spins % 300 === 0
-    ) {
-
-      addLog(
-        `${spins}回転ハマり中...`
-      );
-
-    }
-
+    if (spins % 300 === 0) addLog(`${spins.toLocaleString()}回転…`, "log-hama");
     await sleep(1);
-
   }
 
   spinning = false;
 
-  // =====================
-  // 使用玉
-  // =====================
+  // 最終集計
+  const usedBalls = Math.floor(spins * costPerSpin);
+  const diff      = totalPayout - usedBalls;
+  setVal(used,    usedBalls,       "玉", "val-dim");
+  setVal(balance, Math.abs(diff),  "玉", diff >= 0 ? "val-up" : "val-dn");
 
-  const usedBalls =
+  addLog(
+    diff >= 0
+      ? `結果 +${diff.toLocaleString()}玉`
+      : `結果 -${Math.abs(diff).toLocaleString()}玉`,
+    diff >= 0 ? "log-payout" : "log-fail"
+  );
 
-    Math.floor(
-      spins *
-      costPerSpin
-    );
-
-  const diff =
-
-    totalPayout -
-    usedBalls;
-
-  used.textContent =
-
-    `使用玉: ${usedBalls}発`;
-
-  balance.textContent =
-
-    `差玉: ${diff}発`;
-
-  retryBtn.style.display =
-    "block";
-
+  playStatus.textContent = "完了";
+  document.getElementById("retryBtn").style.display = "block";
 }
 
-// =====================
+// ========================
 // 初期化
-// =====================
-
+// ========================
 loadSettings();
-
 updateRatioTotal();
