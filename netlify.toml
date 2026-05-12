@@ -1,0 +1,59 @@
+# ========================
+# Netlify 設定ファイル
+# ========================
+
+[build]
+  publish = "."
+
+# ========================
+# セキュリティヘッダー
+# ========================
+[[headers]]
+  for = "/*"
+
+  [headers.values]
+
+    # ── CSP ──────────────────────────────────────────
+    # 許可するリソースの出所を明示的に制限する
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src  'self'
+                  'unsafe-inline'
+                  https://pagead2.googlesyndication.com
+                  https://googleads.g.doubleclick.net
+                  https://www.googletagservices.com
+                  https://adservice.google.com;
+      style-src   'self'
+                  'unsafe-inline'
+                  https://fonts.googleapis.com;
+      font-src    'self'
+                  https://fonts.gstatic.com;
+      img-src     'self'
+                  data:
+                  https://pagead2.googlesyndication.com
+                  https://googleads.g.doubleclick.net;
+      frame-src   https://googleads.g.doubleclick.net
+                  https://tpc.googlesyndication.com;
+      connect-src 'self'
+                  https://pagead2.googlesyndication.com;
+    """
+
+    # ── クリックジャッキング対策 ──────────────────────
+    # 他サイトのiframe内に埋め込まれるのを防ぐ
+    X-Frame-Options = "SAMEORIGIN"
+
+    # ── MIMEタイプ偽装対策 ───────────────────────────
+    # ブラウザがファイルの種類を勝手に判定するのを防ぐ
+    X-Content-Type-Options = "nosniff"
+
+    # ── リファラー制限 ───────────────────────────────
+    # 外部サイトへのリンク時にURLを漏らさない
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # ── HTTPS強制 ────────────────────────────────────
+    # 一度アクセスしたらHTTPS以外を拒否（1年間）
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+    # ── 権限ポリシー ─────────────────────────────────
+    # 不要なブラウザ機能へのアクセスを制限
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

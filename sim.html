@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>シミュレーション | ICHIGEKI〜スロパチ〜</title>
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ========== 設定画面 ========== -->
+<div id="settingScreen">
+
+  <div class="page-header">
+    <span class="app-name">ICHIGEKI</span>
+    <span class="app-version">シミュレーション</span>
+  </div>
+
+  <div class="setting-content">
+
+    <!-- クイック設定 -->
+    <section class="card">
+      <h2 class="card-title">クイック設定</h2>
+      <div class="preset-grid">
+        <button class="preset-btn" onclick="setPreset('eva')">エヴァ風</button>
+        <button class="preset-btn" onclick="setPreset('rezero')">リゼロ風</button>
+        <button class="preset-btn" onclick="setPreset('arami')">荒波LT風</button>
+        <button class="preset-btn" onclick="setPreset('ama')">甘デジ風</button>
+        <button class="preset-btn" onclick="setPreset('umi')">海風</button>
+        <button class="preset-btn" onclick="setPreset('karakuri')">からくり風</button>
+        <button class="preset-btn" onclick="setPreset('boukyou')">暴凶星風</button>
+        <button class="preset-btn" onclick="setPreset('madoka')">まどマギ風</button>
+      </div>
+    </section>
+
+    <!-- 基本設定 -->
+    <section class="card">
+      <h2 class="card-title">基本設定</h2>
+
+      <div class="row">
+        <span class="row-label">当たり確率</span>
+        <div class="stepper">
+          <button class="step-btn minus" data-target="hitRate" data-change="-1">−</button>
+          <div class="step-val"><span class="val-prefix">1/</span><input type="number" id="hitRate" value="319"></div>
+          <button class="step-btn plus"  data-target="hitRate" data-change="1">＋</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <span class="row-label">突破率</span>
+        <div class="stepper">
+          <button class="step-btn minus" data-target="breakRate" data-change="-1">−</button>
+          <div class="step-val"><input type="number" id="breakRate" value="60"><span class="val-suffix">%</span></div>
+          <button class="step-btn plus"  data-target="breakRate" data-change="1">＋</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <span class="row-label">継続率</span>
+        <div class="stepper">
+          <button class="step-btn minus" data-target="continueRate" data-change="-1">−</button>
+          <div class="step-val"><input type="number" id="continueRate" value="81"><span class="val-suffix">%</span></div>
+          <button class="step-btn plus"  data-target="continueRate" data-change="1">＋</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <span class="row-label">250玉あたり回転数</span>
+        <div class="stepper">
+          <button class="step-btn minus" data-target="spinPer250" data-change="-1">−</button>
+          <div class="step-val"><input type="number" id="spinPer250" value="17"><span class="val-suffix">回</span></div>
+          <button class="step-btn plus"  data-target="spinPer250" data-change="1">＋</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 通常RUSH出玉 -->
+    <section class="card">
+      <h2 class="card-title">通常RUSH出玉</h2>
+      <div class="ratio-bar">
+        <span id="ratioTotal">合計 100%</span>
+        <span id="ratioRemain" class="ok">残り 0%</span>
+      </div>
+
+      <div class="payout-item">
+        <div class="payout-head">
+          <span class="payout-label">出玉①</span>
+        </div>
+        <div class="payout-controls">
+          <div class="stepper">
+            <button class="step-btn minus" data-target="payout1" data-change="-500">−</button>
+            <div class="step-val"><input type="number" id="payout1" value="1500"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="payout1" data-change="500">＋</button>
+          </div>
+          <div class="stepper">
+            <button class="step-btn minus" data-target="ratio1" data-change="-1">−</button>
+            <div class="step-val"><input type="number" id="ratio1" value="100"><span class="val-suffix">%</span></div>
+            <button class="step-btn plus"  data-target="ratio1" data-change="1">＋</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="payout-item">
+        <div class="payout-head">
+          <span class="payout-label">出玉②</span>
+          <label class="tog"><input type="checkbox" id="enablePayout2" checked><span class="tog-track"></span></label>
+        </div>
+        <div class="payout-controls">
+          <div class="stepper">
+            <button class="step-btn minus" data-target="payout2" data-change="-500">−</button>
+            <div class="step-val"><input type="number" id="payout2" value="3000"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="payout2" data-change="500">＋</button>
+          </div>
+          <div class="stepper">
+            <button class="step-btn minus" data-target="ratio2" data-change="-1">−</button>
+            <div class="step-val"><input type="number" id="ratio2" value="0"><span class="val-suffix">%</span></div>
+            <button class="step-btn plus"  data-target="ratio2" data-change="1">＋</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="payout-item">
+        <div class="payout-head">
+          <span class="payout-label">出玉③</span>
+          <label class="tog"><input type="checkbox" id="enablePayout3"><span class="tog-track"></span></label>
+        </div>
+        <div class="payout-controls">
+          <div class="stepper">
+            <button class="step-btn minus" data-target="payout3" data-change="-500">−</button>
+            <div class="step-val"><input type="number" id="payout3" value="4500"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="payout3" data-change="500">＋</button>
+          </div>
+          <div class="stepper">
+            <button class="step-btn minus" data-target="ratio3" data-change="-1">−</button>
+            <div class="step-val"><input type="number" id="ratio3" value="0"><span class="val-suffix">%</span></div>
+            <button class="step-btn plus"  data-target="ratio3" data-change="1">＋</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="payout-item">
+        <div class="payout-head">
+          <span class="payout-label">出玉④</span>
+          <label class="tog"><input type="checkbox" id="enablePayout4"><span class="tog-track"></span></label>
+        </div>
+        <div class="payout-controls">
+          <div class="stepper">
+            <button class="step-btn minus" data-target="payout4" data-change="-500">−</button>
+            <div class="step-val"><input type="number" id="payout4" value="6000"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="payout4" data-change="500">＋</button>
+          </div>
+          <div class="stepper">
+            <button class="step-btn minus" data-target="ratio4" data-change="-1">−</button>
+            <div class="step-val"><input type="number" id="ratio4" value="0"><span class="val-suffix">%</span></div>
+            <button class="step-btn plus"  data-target="ratio4" data-change="1">＋</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LT設定 -->
+    <section class="card">
+      <div class="card-title-row">
+        <h2 class="card-title">LT設定</h2>
+        <label class="tog"><input type="checkbox" id="ltEnabled" checked><span class="tog-track"></span></label>
+      </div>
+
+      <div class="row">
+        <span class="row-label">LT突入率</span>
+        <div class="stepper">
+          <button class="step-btn minus" data-target="ltRate" data-change="-1">−</button>
+          <div class="step-val"><input type="number" id="ltRate" value="20"><span class="val-suffix">%</span></div>
+          <button class="step-btn plus"  data-target="ltRate" data-change="1">＋</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <span class="row-label">LT継続率</span>
+        <div class="stepper">
+          <button class="step-btn minus" data-target="ltContinueRate" data-change="-1">−</button>
+          <div class="step-val"><input type="number" id="ltContinueRate" value="95"><span class="val-suffix">%</span></div>
+          <button class="step-btn plus"  data-target="ltContinueRate" data-change="1">＋</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LT出玉 -->
+    <section class="card">
+      <h2 class="card-title">LT出玉</h2>
+      <div class="ratio-bar">
+        <span id="ltRatioTotal">合計 100%</span>
+        <span id="ltRatioRemain" class="ok">残り 0%</span>
+      </div>
+
+      <div class="payout-item">
+        <div class="payout-head">
+          <span class="payout-label">LT出玉①</span>
+          <label class="tog"><input type="checkbox" id="enableLtPayout1" checked><span class="tog-track"></span></label>
+        </div>
+        <div class="payout-controls">
+          <div class="stepper">
+            <button class="step-btn minus" data-target="ltPayout1" data-change="-500">−</button>
+            <div class="step-val"><input type="number" id="ltPayout1" value="3000"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="ltPayout1" data-change="500">＋</button>
+          </div>
+          <div class="stepper">
+            <button class="step-btn minus" data-target="ltRatio1" data-change="-1">−</button>
+            <div class="step-val"><input type="number" id="ltRatio1" value="80"><span class="val-suffix">%</span></div>
+            <button class="step-btn plus"  data-target="ltRatio1" data-change="1">＋</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="payout-item">
+        <div class="payout-head">
+          <span class="payout-label">LT出玉②</span>
+          <label class="tog"><input type="checkbox" id="enableLtPayout2" checked><span class="tog-track"></span></label>
+        </div>
+        <div class="payout-controls">
+          <div class="stepper">
+            <button class="step-btn minus" data-target="ltPayout2" data-change="-500">−</button>
+            <div class="step-val"><input type="number" id="ltPayout2" value="4500"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="ltPayout2" data-change="500">＋</button>
+          </div>
+          <div class="stepper">
+            <button class="step-btn minus" data-target="ltRatio2" data-change="-1">−</button>
+            <div class="step-val"><input type="number" id="ltRatio2" value="20"><span class="val-suffix">%</span></div>
+            <button class="step-btn plus"  data-target="ltRatio2" data-change="1">＋</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <button id="startBtn" class="start-btn">シミュレーション開始</button>
+
+  </div>
+</div>
+
+
+<!-- ========== プレイ画面 ========== -->
+<div id="playScreen" style="display:none;">
+
+  <div class="page-header">
+    <span class="app-name">ICHIGEKI</span>
+    <span class="app-version" id="playStatus">実行中</span>
+  </div>
+
+  <div id="spinDisplay" class="spin-display">0<span class="spin-unit">回転</span></div>
+  <div id="modeTag" class="mode-tag mode-normal">通常</div>
+
+  <div class="stats-grid">
+    <div class="stat-cell">
+      <div class="stat-lbl">連チャン</div>
+      <div id="chain" class="stat-val">0<span class="stat-u">回</span></div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-lbl">総出玉</div>
+      <div id="total" class="stat-val val-up">0<span class="stat-u">玉</span></div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-lbl">使用玉</div>
+      <div id="used" class="stat-val val-dim">0<span class="stat-u">玉</span></div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-lbl">差玉</div>
+      <div id="balance" class="stat-val">0<span class="stat-u">玉</span></div>
+    </div>
+  </div>
+
+  <div class="log-box">
+    <div id="log"></div>
+  </div>
+
+  <div id="payout-effect" class="payout-fx"></div>
+
+  <div class="action-area">
+    <button id="retryBtn" class="retry-btn" style="display:none;">もう一回</button>
+    <button id="backBtn"  class="back-btn">← 設定に戻る</button>
+  </div>
+
+</div>
+
+<audio id="hitSound"  preload="auto"><source src="hit.mp3"  type="audio/mpeg"></audio>
+<audio id="rushSound" preload="auto"><source src="rush.mp3" type="audio/mpeg"></audio>
+
+<script src="presets.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

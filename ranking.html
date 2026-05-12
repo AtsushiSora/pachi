@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ランキング | ICHIGEKI〜スロパチ〜</title>
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .ranking-content {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 14px 100px;
+    }
+
+    /* スペック表示 */
+    .spec-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .spec-label {
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .spec-values {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .spec-item {
+      text-align: center;
+    }
+
+    .spec-item-label {
+      font-size: 9px;
+      color: #444;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+
+    .spec-item-val {
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    /* チャレンジボタン */
+    .challenge-btn {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      background: #e8e8e8;
+      border: none;
+      border-radius: 12px;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0e0e0e;
+      letter-spacing: 1px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.15s;
+      margin-bottom: 24px;
+    }
+
+    .challenge-btn:hover,
+    .challenge-btn:active {
+      background: #ccc;
+    }
+
+    /* ランキングリスト */
+    .ranking-header {
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+
+    .ranking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+    }
+
+    .ranking-num {
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      color: #555;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .ranking-num.top1 { color: #e8e8e8; }
+    .ranking-num.top2 { color: #888; }
+    .ranking-num.top3 { color: #666; }
+
+    .ranking-name {
+      flex: 1;
+      font-size: 14px;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    .ranking-score {
+      font-family: "DM Mono", monospace;
+      font-size: 15px;
+      color: #e8e8e8;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .ranking-score span {
+      font-size: 10px;
+      color: #444;
+      margin-left: 2px;
+    }
+
+    .ranking-empty {
+      text-align: center;
+      padding: 40px 0;
+      font-size: 13px;
+      color: #333;
+      letter-spacing: 1px;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      font-size: 13px;
+      color: #333;
+      text-decoration: none;
+      padding: 14px;
+      border: 1px solid #222;
+      border-radius: 10px;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: #555; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <span class="app-name">ICHIGEKI</span>
+    <span class="app-version">ランキング</span>
+  </div>
+
+  <div class="ranking-content">
+
+    <!-- 固定スペック -->
+    <div class="spec-card">
+      <div>
+        <div class="spec-label">チャレンジスペック（固定）</div>
+        <div class="spec-values">
+          <div class="spec-item">
+            <div class="spec-item-label">確率</div>
+            <div class="spec-item-val">1/319</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-item-label">突破率</div>
+            <div class="spec-item-val">60%</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-item-label">継続率</div>
+            <div class="spec-item-val">81%</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-item-label">出玉</div>
+            <div class="spec-item-val">1500玉</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- チャレンジボタン -->
+    <a href="challenge.html" class="challenge-btn">🎰 チャレンジする</a>
+
+    <!-- ランキング -->
+    <div class="ranking-header">全国ランキング TOP10</div>
+
+    <div class="ranking-list" id="rankingList">
+      <div class="ranking-empty">まだランキングデータがありません</div>
+    </div>
+
+    <a href="index.html" class="back-link">← トップに戻る</a>
+
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://cyvfbeppvumyqexrnqcr.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5dmZiZXBwdnVteXFleHJucWNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NTE3MDUsImV4cCI6MjA5NDEyNzcwNX0.GBmnaN_EkpzWY27GmdJOMO-5y5uybidwf9zwEXvz1Wc";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadRanking() {
+      const { data, error } = await supabase
+        .from("ranking")
+        .select("nickname, score")
+        .order("score", { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+      renderRanking(data);
+    }
+
+    function renderRanking(data) {
+      const list = document.getElementById("rankingList");
+      if (!data || data.length === 0) {
+        list.innerHTML = '<div class="ranking-empty">まだランキングデータがありません</div>';
+        return;
+      }
+      list.innerHTML = data.map((item, i) => `
+        <div class="ranking-item">
+          <div class="ranking-num ${i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : ''}">${i + 1}</div>
+          <div class="ranking-name">${item.nickname}</div>
+          <div class="ranking-score">${item.score.toLocaleString()}<span>玉</span></div>
+        </div>
+      `).join("");
+    }
+
+    loadRanking();
+  </script>
+
+</body>
+</html>
