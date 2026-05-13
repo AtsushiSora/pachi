@@ -220,10 +220,10 @@
   <script>
     const SUPABASE_URL = "https://cyvfbeppvumyqexrnqcr.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5dmZiZXBwdnVteXFleHJucWNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NTE3MDUsImV4cCI6MjA5NDEyNzcwNX0.GBmnaN_EkpzWY27GmdJOMO-5y5uybidwf9zwEXvz1Wc";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function loadRanking() {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("ranking")
         .select("nickname, score")
         .order("score", { ascending: false })
