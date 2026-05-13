@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>チャレンジ | ICHIGEKI〜スロパチ〜</title>
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    .challenge-wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 14px 100px;
+    }
+
+    /* スペック表示 */
+    .spec-bar {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .spec-item {
+      text-align: center;
+    }
+
+    .spec-item-label {
+      font-size: 9px;
+      color: #444;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+
+    .spec-item-val {
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      color: #888;
+    }
+
+    /* スピン表示 */
+    .spin-display {
+      font-family: "DM Mono", monospace;
+      font-size: 56px;
+      font-weight: 500;
+      color: #e8e8e8;
+      text-align: center;
+      padding: 24px 20px 10px;
+      letter-spacing: -1px;
+      transition: color 0.3s;
+    }
+
+    .spin-display.warning {
+      color: #f44336;
+      animation: warnPulse 0.7s ease-in-out infinite;
+    }
+
+    @keyframes warnPulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.5; }
+    }
+
+    .spin-unit {
+      font-size: 18px;
+      color: #444;
+      margin-left: 4px;
+    }
+
+    .mode-tag {
+      display: block;
+      width: fit-content;
+      margin: 0 auto 16px;
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      transition: all 0.3s;
+    }
+
+    .mode-normal { background: #1a1a1a; color: #555; border: 1px solid #2a2a2a; }
+    .mode-rush   { background: #1a0e00; color: #ff9100; border: 1px solid #3a2000; }
+    .mode-lt     { background: #001a1a; color: #00e5ff; border: 1px solid #003a3a; }
+
+    /* ステータス */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: #2a2a2a;
+      margin: 0 0 14px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #2a2a2a;
+    }
+
+    .stat-cell {
+      background: #0e0e0e;
+      padding: 14px;
+    }
+
+    .stat-lbl {
+      font-size: 10px;
+      color: #444;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+
+    .stat-val {
+      font-family: "DM Mono", monospace;
+      font-size: 22px;
+      font-weight: 500;
+      color: #e8e8e8;
+      transition: color 0.2s;
+    }
+
+    .stat-val.val-up  { color: #4caf50; }
+    .stat-val.val-dn  { color: #f44336; }
+    .stat-val.val-hi  { color: #ff9100; }
+    .stat-val.val-dim { color: #444; }
+
+    .stat-u {
+      font-size: 11px;
+      color: #444;
+      margin-left: 2px;
+    }
+
+    /* ログ */
+    .log-box {
+      background: #111;
+      border-radius: 12px;
+      padding: 12px 14px;
+      min-height: 120px;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #1a1a1a;
+      margin-bottom: 14px;
+    }
+
+    .log-box::-webkit-scrollbar { width: 3px; }
+    .log-box::-webkit-scrollbar-track { background: transparent; }
+    .log-box::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+
+    #log div {
+      font-size: 13px;
+      padding: 2px 0;
+      line-height: 1.8;
+    }
+
+    .log-normal  { color: #333; }
+    .log-hit     { color: #ff9100; }
+    .log-rush    { color: #ff9100; font-weight: 700; }
+    .log-lt      { color: #00e5ff; font-weight: 700; }
+    .log-payout  { color: #4caf50; }
+    .log-fail    { color: #f44336; }
+    .log-end     { color: #333; }
+    .log-hama    { color: #2a2a2a; }
+
+    /* 演出 */
+    .payout-fx {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-family: "DM Mono", monospace;
+      font-size: 52px;
+      font-weight: 500;
+      color: #4caf50;
+      pointer-events: none;
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    .payout-fx.show {
+      animation: fxPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes fxPop {
+      0%   { transform: translate(-50%,-50%) scale(0);    opacity: 0; }
+      50%  { transform: translate(-50%,-50%) scale(1.1);  opacity: 1; }
+      100% { transform: translate(-50%,-50%) scale(0.95); opacity: 0; }
+    }
+
+    /* アクション */
+    .action-area {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .start-btn {
+      width: 100%;
+      height: 56px;
+      background: #e8e8e8;
+      color: #0e0e0e;
+      border: none;
+      border-radius: 12px;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .start-btn:hover, .start-btn:active { background: #ccc; }
+
+    .back-btn {
+      width: 100%;
+      height: 46px;
+      background: transparent;
+      color: #444;
+      border: 1px solid #222;
+      border-radius: 12px;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn:hover { color: #666; border-color: #333; }
+
+    /* ニックネーム入力モーダル */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 360px;
+      transform: translateY(20px);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.show .modal {
+      transform: translateY(0);
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #e8e8e8;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .modal-score {
+      font-family: "DM Mono", monospace;
+      font-size: 32px;
+      font-weight: 500;
+      color: #4caf50;
+      margin-bottom: 20px;
+    }
+
+    .modal-score span {
+      font-size: 14px;
+      color: #444;
+      margin-left: 4px;
+    }
+
+    .modal-label {
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .modal-input {
+      width: 100%;
+      height: 48px;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #e8e8e8;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 16px;
+      padding: 0 14px;
+      outline: none;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    .modal-input:focus {
+      border-color: #555;
+    }
+
+    .modal-submit {
+      width: 100%;
+      height: 50px;
+      background: #e8e8e8;
+      color: #0e0e0e;
+      border: none;
+      border-radius: 10px;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 10px;
+    }
+
+    .modal-submit:hover { background: #ccc; }
+    .modal-submit:disabled { background: #333; color: #555; cursor: not-allowed; }
+
+    .modal-skip {
+      width: 100%;
+      height: 42px;
+      background: transparent;
+      color: #444;
+      border: 1px solid #222;
+      border-radius: 10px;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .modal-skip:hover { color: #666; }
+
+    .modal-error {
+      font-size: 12px;
+      color: #f44336;
+      margin-bottom: 10px;
+      display: none;
+    }
+  </style>
+  <link rel="stylesheet" crossorigin href="/assets/style-CpZBxy6t.css">
+</head>
+<body>
+
+  <div class="page-header">
+    <span class="app-name">ICHIGEKI</span>
+    <span class="app-version" id="pageStatus">チャレンジ</span>
+  </div>
+
+  <div class="challenge-wrap">
+
+    <!-- 固定スペック -->
+    <div class="spec-bar">
+      <div class="spec-item">
+        <div class="spec-item-label">確率</div>
+        <div class="spec-item-val">1/319</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-item-label">突破率</div>
+        <div class="spec-item-val">60%</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-item-label">継続率</div>
+        <div class="spec-item-val">81%</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-item-label">出玉</div>
+        <div class="spec-item-val">1500玉</div>
+      </div>
+    </div>
+
+    <!-- スピン表示 -->
+    <div id="spinDisplay" class="spin-display">0<span class="spin-unit">回転</span></div>
+    <div id="modeTag" class="mode-tag mode-normal">通常</div>
+
+    <!-- ステータス -->
+    <div class="stats-grid">
+      <div class="stat-cell">
+        <div class="stat-lbl">連チャン</div>
+        <div id="chain" class="stat-val">0<span class="stat-u">回</span></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-lbl">総出玉</div>
+        <div id="total" class="stat-val val-up">0<span class="stat-u">玉</span></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-lbl">使用玉</div>
+        <div id="used" class="stat-val val-dim">0<span class="stat-u">玉</span></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-lbl">差玉</div>
+        <div id="balance" class="stat-val">0<span class="stat-u">玉</span></div>
+      </div>
+    </div>
+
+    <!-- ログ -->
+    <div class="log-box">
+      <div id="log"></div>
+    </div>
+
+    <!-- 演出 -->
+    <div id="payout-effect" class="payout-fx"></div>
+
+    <!-- アクション -->
+    <div class="action-area">
+      <button id="startBtn" class="start-btn">🎰 チャレンジ開始</button>
+      <a href="ranking.html" class="back-btn">← ランキングに戻る</a>
+    </div>
+
+  </div>
+
+  <!-- ニックネーム入力モーダル -->
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-title">結果を登録する</div>
+      <div class="modal-score" id="modalScore">0<span>玉</span></div>
+      <div class="modal-label">ニックネーム</div>
+      <input
+        type="text"
+        id="nicknameInput"
+        class="modal-input"
+        placeholder="名前を入力（最大10文字）"
+        maxlength="10"
+      >
+      <div id="modalError" class="modal-error">ニックネームを入力してください</div>
+      <button id="modalSubmit" class="modal-submit">ランキングに登録</button>
+      <button id="modalSkip" class="modal-skip">登録せずに終わる</button>
+    </div>
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // ========================
+    // Supabase初期化
+    // ========================
+    const SUPABASE_URL = "https://cyvfbeppvumyqexrnqcr.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5dmZiZXBwdnVteXFleHJucWNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NTE3MDUsImV4cCI6MjA5NDEyNzcwNX0.GBmnaN_EkpzWY27GmdJOMO-5y5uybidwf9zwEXvz1Wc";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ========================
+    // 固定スペック
+    // ========================
+    const SPEC = {
+      hitRate:      319,
+      breakRate:    60,
+      continueRate: 81,
+      payout:       1500,
+      spinPer250:   17,
+    };
+
+    // ========================
+    // 状態
+    // ========================
+    let spinning   = false;
+    let finalScore = 0;
+
+    // ========================
+    // 要素
+    // ========================
+    const spinDisplay  = document.getElementById("spinDisplay");
+    const modeTag      = document.getElementById("modeTag");
+    const chain        = document.getElementById("chain");
+    const total        = document.getElementById("total");
+    const used         = document.getElementById("used");
+    const balance      = document.getElementById("balance");
+    const log          = document.getElementById("log");
+    const payoutEffect = document.getElementById("payout-effect");
+    const startBtn     = document.getElementById("startBtn");
+    const pageStatus   = document.getElementById("pageStatus");
+
+    // モーダル
+    const modalOverlay  = document.getElementById("modalOverlay");
+    const modalScore    = document.getElementById("modalScore");
+    const modalSubmit   = document.getElementById("modalSubmit");
+    const modalSkip     = document.getElementById("modalSkip");
+    const nicknameInput = document.getElementById("nicknameInput");
+    const modalError    = document.getElementById("modalError");
+
+    // ========================
+    // ヘルパー
+    // ========================
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    function setVal(el, num, unit, cls) {
+      el.innerHTML = `${num.toLocaleString()}<span class="stat-u">${unit}</span>`;
+      if (cls) el.className = `stat-val ${cls}`;
+    }
+
+    function setMode(mode) {
+      modeTag.className = `mode-tag mode-${mode}`;
+      if (mode === "normal") modeTag.textContent = "通常";
+      if (mode === "rush")   modeTag.textContent = "RUSH";
+      if (mode === "lt")     modeTag.textContent = "LT RUSH";
+    }
+
+    function addLog(text, cls = "log-normal") {
+      const div = document.createElement("div");
+      div.className = cls;
+      div.textContent = text;
+      log.appendChild(div);
+      if (log.children.length > 60) log.removeChild(log.firstChild);
+      log.parentElement.scrollTop = log.parentElement.scrollHeight;
+    }
+
+    function showPayoutEffect(amount) {
+      payoutEffect.textContent = `+${amount.toLocaleString()}`;
+      payoutEffect.classList.remove("show");
+      void payoutEffect.offsetWidth;
+      payoutEffect.classList.add("show");
+    }
+
+    function randomRange(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // ========================
+    // シミュレーション
+    // ========================
+    startBtn.addEventListener("click", simulate);
+
+    async function simulate() {
+      if (spinning) return;
+      spinning = true;
+      finalScore = 0;
+
+      // リセット
+      log.innerHTML = "";
+      payoutEffect.classList.remove("show");
+      setMode("normal");
+      setVal(chain,   0, "回");
+      setVal(total,   0, "玉", "val-up");
+      setVal(used,    0, "玉", "val-dim");
+      setVal(balance, 0, "玉");
+      spinDisplay.innerHTML = `0<span class="spin-unit">回転</span>`;
+      spinDisplay.classList.remove("warning");
+      startBtn.disabled = true;
+      startBtn.textContent = "実行中...";
+      pageStatus.textContent = "実行中";
+
+      let spins       = 0;
+      let totalPayout = 0;
+      let chainCount  = 0;
+      const costPerSpin = 250 / SPEC.spinPer250;
+
+      // 通常ループ
+      while (spinning) {
+        spins++;
+        spinDisplay.innerHTML = `${spins.toLocaleString()}<span class="spin-unit">回転</span>`;
+
+        if (spins >= 1000) spinDisplay.classList.add("warning");
+
+        const hit = Math.random() < (1 / SPEC.hitRate);
+
+        if (hit) {
+          spinDisplay.classList.remove("warning");
+          addLog(`${spins.toLocaleString()}回転で当たり！`, "log-hit");
+
+          const breakthrough = Math.random() < (SPEC.breakRate / 100);
+          if (!breakthrough) {
+            addLog("突破失敗…", "log-fail");
+            break;
+          }
+
+          addLog("RUSH突入！", "log-rush");
+          setMode("rush");
+
+          // RUSHループ
+          let rush = true;
+          while (rush && spinning) {
+            const payout = randomRange(SPEC.payout - 100, SPEC.payout + 100);
+
+            chainCount++;
+            totalPayout += payout;
+            const usedNow = Math.floor(spins * costPerSpin);
+            const diff    = totalPayout - usedNow;
+
+            setVal(chain,   chainCount,     "回",  "val-hi");
+            setVal(total,   totalPayout,    "玉",  "val-up");
+            setVal(used,    usedNow,        "玉",  "val-dim");
+            setVal(balance, Math.abs(diff), "玉",  diff >= 0 ? "val-up" : "val-dn");
+
+            showPayoutEffect(payout);
+            addLog(`+${payout.toLocaleString()}玉`, "log-payout");
+
+            await sleep(700);
+
+            const cont = Math.random() < (SPEC.continueRate / 100);
+            if (!cont) {
+              rush = false;
+              setMode("normal");
+              addLog("RUSH終了", "log-end");
+            }
+          }
+          break;
+        }
+
+        if (spins % 300 === 0) addLog(`${spins.toLocaleString()}回転…`, "log-hama");
+        await sleep(1);
+      }
+
+      spinning = false;
+
+      // 最終集計
+      const usedBalls = Math.floor(spins * costPerSpin);
+      const diff      = totalPayout - usedBalls;
+      finalScore      = totalPayout;
+
+      setVal(used,    usedBalls,       "玉", "val-dim");
+      setVal(balance, Math.abs(diff),  "玉", diff >= 0 ? "val-up" : "val-dn");
+      addLog(
+        diff >= 0 ? `結果 +${diff.toLocaleString()}玉` : `結果 -${Math.abs(diff).toLocaleString()}玉`,
+        diff >= 0 ? "log-payout" : "log-fail"
+      );
+
+      pageStatus.textContent = "完了";
+      startBtn.textContent   = "もう一回";
+      startBtn.disabled      = false;
+
+      // モーダル表示
+      showModal(finalScore);
+    }
+
+    // ========================
+    // モーダル
+    // ========================
+    function showModal(score) {
+      modalScore.innerHTML = `${score.toLocaleString()}<span>玉</span>`;
+      nicknameInput.value  = "";
+      modalError.style.display = "none";
+      modalOverlay.classList.add("show");
+    }
+
+    function hideModal() {
+      modalOverlay.classList.remove("show");
+    }
+
+    modalSubmit.addEventListener("click", async () => {
+      const nickname = nicknameInput.value.trim();
+      if (!nickname) {
+        modalError.style.display = "block";
+        return;
+      }
+      modalError.style.display  = "none";
+      modalSubmit.disabled      = true;
+      modalSubmit.textContent   = "登録中...";
+
+      try {
+        const { error } = await supabaseClient
+          .from("ranking")
+          .insert([{ nickname, score: finalScore }]);
+
+        if (error) throw error;
+
+        hideModal();
+        window.location.href = "ranking.html";
+      } catch (e) {
+        modalSubmit.disabled    = false;
+        modalSubmit.textContent = "ランキングに登録";
+        modalError.textContent  = "登録に失敗しました。もう一度お試しください。";
+        modalError.style.display = "block";
+      }
+    });
+
+    modalSkip.addEventListener("click", () => {
+      hideModal();
+    });
+  </script>
+
+</body>
+</html>

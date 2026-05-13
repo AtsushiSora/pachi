@@ -88,14 +88,31 @@ function updateRatioTotal() {
 }
 
 // ========================
+// 暗号化ユーティリティ
+// ========================
+import CryptoJS from "crypto-js";
+const ENCRYPT_KEY = import.meta.env.VITE_ENCRYPT_KEY || "fallback-key";
+
+function encrypt(value) {
+  return CryptoJS.AES.encrypt(String(value), ENCRYPT_KEY).toString();
+}
+
+function decrypt(cipher) {
+  try {
+    const bytes = CryptoJS.AES.decrypt(cipher, ENCRYPT_KEY);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  } catch {
+    return null;
+  }
+}
+
+// ========================
 // 設定保存
 // ========================
 function saveSettings() {
   document.querySelectorAll("input").forEach(input => {
-    localStorage.setItem(
-      input.id,
-      input.type === "checkbox" ? input.checked : input.value
-    );
+    const value = input.type === "checkbox" ? input.checked : input.value;
+    localStorage.setItem(input.id, encrypt(value));
   });
 }
 
@@ -104,11 +121,12 @@ function saveSettings() {
 // ========================
 function loadSettings() {
   document.querySelectorAll("input").forEach(input => {
-    const saved = localStorage.getItem(input.id);
-    if (saved !== null) {
-      if (input.type === "checkbox") input.checked = saved === "true";
-      else input.value = saved;
-    }
+    const cipher = localStorage.getItem(input.id);
+    if (cipher === null) return;
+    const saved = decrypt(cipher);
+    if (saved === null) return;
+    if (input.type === "checkbox") input.checked = saved === "true";
+    else input.value = saved;
   });
 }
 
