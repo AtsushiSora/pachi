@@ -356,7 +356,7 @@
 
     .ranking-item {
       display: grid;
-      grid-template-columns: 34px minmax(0, 1fr) auto auto;
+      grid-template-columns: 34px minmax(0, 1fr) minmax(88px, auto) auto;
       align-items: center;
       gap: 10px;
       padding: 12px 12px;
@@ -412,6 +412,10 @@
       color: #ff9100;
       text-align: center;
       white-space: nowrap;
+    }
+
+    .ranking-metrics {
+      min-width: 0;
     }
 
     .ranking-sub {
@@ -479,8 +483,12 @@
 
       .podium-card {
         min-height: 86px;
-        order: initial;
+        order: unset;
       }
+
+      .podium-card.rank-1 { order: 1; }
+      .podium-card.rank-2 { order: 2; }
+      .podium-card.rank-3 { order: 3; }
 
       .player-grid {
         grid-template-columns: 1fr;
@@ -489,6 +497,46 @@
       .ranking-panel .section-head {
         align-items: flex-start;
         flex-direction: column;
+      }
+
+      .ranking-item {
+        grid-template-columns: 34px minmax(0, 1fr) auto;
+        grid-template-areas:
+          "rank name score"
+          "rank name chain";
+        gap: 5px 9px;
+        padding: 11px;
+      }
+
+      .ranking-num {
+        grid-area: rank;
+        align-self: center;
+      }
+
+      .ranking-name {
+        grid-area: name;
+        align-self: center;
+      }
+
+      .ranking-metrics {
+        grid-area: score;
+        align-self: end;
+      }
+
+      .ranking-score {
+        font-size: 14px;
+      }
+
+      .ranking-sub {
+        display: none;
+      }
+
+      .ranking-chain {
+        grid-area: chain;
+        justify-self: end;
+        min-width: 0;
+        padding: 2px 7px;
+        font-size: 11px;
       }
     }
   </style>
@@ -765,7 +813,7 @@
         <div class="ranking-item">
           <div class="ranking-num ${i === 0 ? "top1" : i === 1 ? "top2" : i === 2 ? "top3" : ""}">${i + 1}</div>
           <div class="ranking-name">${escapeHtml(item.nickname || "NO NAME")}${item.local_only ? " LOCAL" : ""}</div>
-          <div>
+          <div class="ranking-metrics">
             <div class="ranking-score">${formatRankValue(item)}</div>
             <div class="ranking-sub">${mode.getSub(item)}</div>
           </div>
