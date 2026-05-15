@@ -1,7 +1,7 @@
 window.ICHIGEKI_ADS = {
-  enabled: false,
+  enabled: true,
   provider: "adsense",
-  adsenseClient: "",
+  adsenseClient: "ca-pub-2599640417413447",
   slots: {
     footer: "",
     register: "",

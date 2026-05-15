@@ -15,7 +15,7 @@
   function loadAdsense() {
     if (scriptLoading) return scriptLoading;
     scriptLoading = new Promise((resolve, reject) => {
-      const existing = document.querySelector("script[data-ichigeki-adsense]");
+      const existing = document.querySelector("script[data-ichigeki-adsense], script[src*='pagead2.googlesyndication.com/pagead/js/adsbygoogle.js']");
       if (existing) {
         resolve();
         return;
