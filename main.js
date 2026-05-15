@@ -24,6 +24,10 @@ const ratioTotal    = document.getElementById("ratioTotal");
 const ratioRemain   = document.getElementById("ratioRemain");
 const ltRatioTotal  = document.getElementById("ltRatioTotal");
 const ltRatioRemain = document.getElementById("ltRatioRemain");
+const retryBtn      = document.getElementById("retryBtn");
+const simAdOverlay  = document.getElementById("simAdOverlay");
+const simAdNextBtn  = document.getElementById("simAdNextBtn");
+let retryCount      = Number(sessionStorage.getItem("ichigekiSimRetryCount") || 0);
 
 // ========================
 // ±ボタン
@@ -264,12 +268,47 @@ function setPreset(type) {
 // ボタンイベント
 // ========================
 document.getElementById("startBtn").addEventListener("click", simulate);
-document.getElementById("retryBtn").addEventListener("click", simulate);
+retryBtn.addEventListener("click", handleRetry);
 document.getElementById("backBtn").addEventListener("click", () => {
   spinning = false;
   playScreen.style.display    = "none";
   settingScreen.style.display = "block";
 });
+
+function handleRetry() {
+  if (spinning) return;
+  retryCount++;
+  sessionStorage.setItem("ichigekiSimRetryCount", String(retryCount));
+  if (retryCount % 5 === 0) {
+    showRetryAd();
+    return;
+  }
+  simulate();
+}
+
+function showRetryAd() {
+  let seconds = 3;
+  simAdNextBtn.disabled = true;
+  simAdNextBtn.textContent = `もう一回を開始（${seconds}）`;
+  simAdOverlay.classList.add("show");
+
+  const timer = setInterval(() => {
+    seconds--;
+    if (seconds > 0) {
+      simAdNextBtn.textContent = `もう一回を開始（${seconds}）`;
+      return;
+    }
+    clearInterval(timer);
+    simAdNextBtn.disabled = false;
+    simAdNextBtn.textContent = "もう一回を開始";
+  }, 1000);
+
+  simAdNextBtn.onclick = () => {
+    clearInterval(timer);
+    simAdOverlay.classList.remove("show");
+    simulate();
+  };
+}
 
 // ========================
 // シミュレーション
@@ -284,7 +323,7 @@ async function simulate() {
   payoutEffect.textContent = "";
   payoutEffect.classList.remove("show");
   document.body.classList.remove("body-flash");
-  document.getElementById("retryBtn").style.display = "none";
+  retryBtn.style.display = "none";
   setMode("normal");
   setVal(chain,   0, "回");
   setVal(total,   0, "玉", "val-up");
@@ -417,7 +456,7 @@ async function simulate() {
   );
 
   playStatus.textContent = "完了";
-  document.getElementById("retryBtn").style.display = "block";
+  retryBtn.style.display = "block";
 }
 
 // ========================

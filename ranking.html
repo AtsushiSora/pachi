@@ -251,9 +251,10 @@
 
     .podium {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 0.92fr 1.08fr 0.92fr;
       gap: 8px;
       margin-bottom: 10px;
+      align-items: end;
     }
 
     .podium-card {
@@ -266,11 +267,49 @@
       flex-direction: column;
       justify-content: space-between;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
     .podium-card.rank-1 {
-      background: linear-gradient(180deg, rgba(255, 145, 0, 0.14), #111 72%);
+      order: 2;
+      min-height: 138px;
+      background: linear-gradient(180deg, rgba(255, 145, 0, 0.18), #111 72%);
       border-color: #5a3510;
+    }
+
+    .podium-card.rank-2 { order: 1; }
+    .podium-card.rank-3 { order: 3; }
+
+    .podium-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 42%);
+      pointer-events: none;
+    }
+
+    .podium-medal {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1d1d1d;
+      border: 1px solid #333;
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      color: #888;
+    }
+
+    .rank-1 .podium-medal {
+      width: 42px;
+      height: 42px;
+      color: #ffb347;
+      border-color: #7a4a12;
+      background: rgba(255, 145, 0, 0.1);
     }
 
     .podium-rank {
@@ -293,9 +332,14 @@
 
     .podium-score {
       font-family: "DM Mono", monospace;
-      font-size: 17px;
+      font-size: 18px;
       color: #f0f0f0;
       overflow-wrap: anywhere;
+    }
+
+    .rank-1 .podium-score {
+      font-size: 21px;
+      color: #fff;
     }
 
     .podium-chain {
@@ -435,6 +479,7 @@
 
       .podium-card {
         min-height: 86px;
+        order: initial;
       }
 
       .player-grid {
@@ -676,6 +721,7 @@
       podium.hidden = top3.length === 0;
       podium.innerHTML = top3.map((item, i) => `
         <div class="podium-card rank-${i + 1}">
+          <div class="podium-medal">${i + 1}</div>
           <div class="podium-rank">#${i + 1}</div>
           <div class="podium-name">${escapeHtml(item.nickname || "NO NAME")}</div>
           <div class="podium-score">${formatRankValue(item)}</div>
