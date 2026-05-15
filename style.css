@@ -82,6 +82,18 @@ body {
   margin-right: 8px;
 }
 
+.footer-ad-band.ad-live {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.footer-ad-band .adsbygoogle {
+  width: 100%;
+  min-height: 58px;
+}
+
 /* ======================== */
 /* ヘッダー                 */
 /* ======================== */

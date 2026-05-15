@@ -197,6 +197,7 @@
       gap: 6px;
       align-items: center;
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
 
     .rank-tab {
@@ -214,6 +215,32 @@
     }
 
     .rank-tab.active {
+      background: #e8e8e8;
+      border-color: #e8e8e8;
+      color: #0e0e0e;
+    }
+
+    .rank-mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .rank-mode-tab {
+      min-height: 38px;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 999px;
+      color: #777;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .rank-mode-tab.active {
       background: #e8e8e8;
       border-color: #e8e8e8;
       color: #0e0e0e;
@@ -340,6 +367,14 @@
       white-space: nowrap;
     }
 
+    .ranking-sub {
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      color: #666;
+      text-align: right;
+      white-space: nowrap;
+    }
+
     .ranking-empty,
     .ranking-error {
       background: #111;
@@ -409,7 +444,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" crossorigin href="/assets/style-DHthJuBw.css">
+  <link rel="stylesheet" crossorigin href="/assets/style-CPKt2hB9.css">
 </head>
 <body>
 
@@ -483,6 +518,11 @@
           <button class="rank-tab" type="button" data-limit="30">TOP30</button>
         </div>
       </div>
+      <div class="rank-mode-tabs" aria-label="ランキング種目">
+        <button class="rank-mode-tab active" type="button" data-mode="score">一撃</button>
+        <button class="rank-mode-tab" type="button" data-mode="chain">連チャン</button>
+        <button class="rank-mode-tab" type="button" data-mode="spins">ハマり</button>
+      </div>
       <div id="podium" class="podium" hidden></div>
       <div class="ranking-list" id="rankingList">
         <div class="ranking-empty">ランキングを読み込んでいます</div>
@@ -492,7 +532,7 @@
     <a href="index.html" class="back-link">← トップに戻る</a>
   </main>
 
-  <footer class="footer-ad-band"><span>AD</span>広告枠</footer>
+  <footer class="footer-ad-band" data-ad-placement="footer"><span>AD</span>広告枠</footer>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -512,7 +552,36 @@
     const playerUpdated = document.getElementById("playerUpdated");
     const challengeStartBtn = document.getElementById("challengeStartBtn");
     const rankTabs = document.querySelectorAll(".rank-tab");
+    const rankModeTabs = document.querySelectorAll(".rank-mode-tab");
     let rankingLimit = 10;
+    let rankingMode = "score";
+
+    const RANK_MODES = {
+      score: {
+        title: "一撃ランキング",
+        order: "score",
+        valueLabel: "玉",
+        empty: "最初の一撃を登録してみよう",
+        getValue: item => Number(item.score || 0),
+        getSub: item => `${Number(item.chain_count || 0).toLocaleString()}連`,
+      },
+      chain: {
+        title: "連チャン王",
+        order: "chain_count",
+        valueLabel: "連",
+        empty: "最初の連チャン記録を作ろう",
+        getValue: item => Number(item.chain_count || 0),
+        getSub: item => `${Number(item.score || 0).toLocaleString()}玉`,
+      },
+      spins: {
+        title: "ハマり王",
+        order: "spins",
+        valueLabel: "回転",
+        empty: "深いハマりも記録になる",
+        getValue: item => Number(item.spins || 0),
+        getSub: item => `${Number(item.score || 0).toLocaleString()}玉`,
+      },
+    };
 
     function escapeHtml(value) {
       return String(value)
@@ -531,6 +600,15 @@
     function formatChain(value) {
       const num = Number(value) || 0;
       return `${num.toLocaleString()}連`;
+    }
+
+    function getRankMode() {
+      return RANK_MODES[rankingMode] || RANK_MODES.score;
+    }
+
+    function formatRankValue(item) {
+      const mode = getRankMode();
+      return `${mode.getValue(item).toLocaleString()}<span class="score-unit">${mode.valueLabel}</span>`;
     }
 
     function formatDate(value) {
@@ -591,35 +669,38 @@
     }
 
     function renderPodium(data) {
+      const mode = getRankMode();
       const top3 = data.slice(0, 3);
       podium.hidden = top3.length === 0;
       podium.innerHTML = top3.map((item, i) => `
         <div class="podium-card rank-${i + 1}">
           <div class="podium-rank">#${i + 1}</div>
           <div class="podium-name">${escapeHtml(item.nickname || "NO NAME")}</div>
-          <div class="podium-score">${Number(item.score || 0).toLocaleString()}<span class="score-unit">玉</span></div>
-          <div class="podium-chain">${formatChain(item.chain_count)}</div>
+          <div class="podium-score">${formatRankValue(item)}</div>
+          <div class="podium-chain">${mode.getSub(item)}</div>
         </div>
       `).join("");
     }
 
     function mergeRankingData(remoteData) {
+      const mode = getRankMode();
       const merged = [...(remoteData || []), ...readLocalRanking()];
       return merged
-        .sort((a, b) => Number(b.score || 0) - Number(a.score || 0))
+        .sort((a, b) => mode.getValue(b) - mode.getValue(a))
         .slice(0, rankingLimit);
     }
 
     function renderRanking(data, source = "online") {
+      const mode = getRankMode();
       const rankingData = mergeRankingData(data);
-      rankingTitle.textContent = `全国ランキング TOP${rankingLimit}`;
+      rankingTitle.textContent = `${mode.title} TOP${rankingLimit}`;
       if (!rankingData || rankingData.length === 0) {
         podium.hidden = true;
         rankingStatus.textContent = "0件";
         rankingList.innerHTML = `
           <div class="ranking-empty">
             まだランキングデータがありません<br>
-            最初の一撃を登録してみよう
+            ${mode.empty}
           </div>
         `;
         return;
@@ -636,22 +717,26 @@
         <div class="ranking-item">
           <div class="ranking-num ${i === 0 ? "top1" : i === 1 ? "top2" : i === 2 ? "top3" : ""}">${i + 1}</div>
           <div class="ranking-name">${escapeHtml(item.nickname || "NO NAME")}${item.local_only ? " LOCAL" : ""}</div>
-          <div class="ranking-score">${Number(item.score || 0).toLocaleString()}<span class="score-unit">玉</span></div>
+          <div>
+            <div class="ranking-score">${formatRankValue(item)}</div>
+            <div class="ranking-sub">${mode.getSub(item)}</div>
+          </div>
           <div class="ranking-chain">${formatChain(item.chain_count)}</div>
         </div>
       `).join("");
     }
 
     async function loadRanking() {
+      const mode = getRankMode();
       rankingStatus.textContent = "読み込み中";
       try {
         let { data, error } = await supabaseClient
           .from("ranking")
-          .select("nickname, score, chain_count")
-          .order("score", { ascending: false })
+          .select("nickname, score, chain_count, spins")
+          .order(mode.order, { ascending: false })
           .limit(rankingLimit);
 
-        if (error && String(error.message || "").includes("chain_count")) {
+        if (error && (String(error.message || "").includes("chain_count") || String(error.message || "").includes("spins"))) {
           const fallback = await supabaseClient
             .from("ranking")
             .select("nickname, score")
@@ -677,6 +762,14 @@
       });
     });
 
+    rankModeTabs.forEach(button => {
+      button.addEventListener("click", () => {
+        rankingMode = button.dataset.mode || "score";
+        rankModeTabs.forEach(tab => tab.classList.toggle("active", tab === button));
+        loadRanking();
+      });
+    });
+
     challengeStartBtn.addEventListener("click", () => {
       window.location.href = "challenge.html?start=1";
     });
@@ -685,6 +778,8 @@
     loadPlayerRank(playerRecord);
     loadRanking();
   </script>
+  <script src="ads-config.js"></script>
+  <script src="ads.js"></script>
 
 </body>
 </html>

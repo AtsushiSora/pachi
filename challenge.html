@@ -456,6 +456,12 @@
       margin-bottom: 14px;
     }
 
+    .ad-slot.ad-live {
+      background: transparent;
+      border-style: solid;
+      padding: 0;
+    }
+
     .ad-next {
       width: 100%;
       height: 48px;
@@ -571,7 +577,7 @@
   <div id="adOverlay" class="ad-overlay">
     <div class="ad-panel">
       <div class="ad-label">ADVERTISEMENT</div>
-      <div id="adSlot" class="ad-slot">
+      <div id="adSlot" class="ad-slot" data-ad-placement="register">
         広告枠<br>
         ランキング登録ありがとうございます
       </div>
@@ -579,7 +585,7 @@
     </div>
   </div>
 
-  <footer class="footer-ad-band"><span>AD</span>広告枠</footer>
+  <footer class="footer-ad-band" data-ad-placement="footer"><span>AD</span>広告枠</footer>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1014,6 +1020,8 @@
       hideModal();
     });
   </script>
+  <script src="ads-config.js"></script>
+  <script src="ads.js"></script>
 
 </body>
 </html>

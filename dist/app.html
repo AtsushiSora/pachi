@@ -255,6 +255,16 @@
       font-size: 9px;
       color: var(--gold);
     }
+    .footer-ad-band.ad-live {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+    }
+    .footer-ad-band .adsbygoogle {
+      width: 100%;
+      min-height: 44px;
+    }
 
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -455,7 +465,7 @@
 </div>
 
 <p class="foot-note">※エンターテインメント目的のシミュレーターです。実際のパチンコ機の挙動とは異なる場合があります。</p>
-<footer class="footer-ad-band"><span>AD</span>広告枠</footer>
+<footer class="footer-ad-band" data-ad-placement="footer"><span>AD</span>広告枠</footer>
 
 <!-- FX -->
 <div class="payout-fx" id="payoutFx"></div>
@@ -482,6 +492,7 @@ let rounds = [
 // 状態
 // ========================
 let running   = false;
+let starting  = false;
 let fastMode  = true;
 let spins = 0, totalPayout = 0, currentBalls = 0, investedBalls = 0, chainCount = 0;
 let hp = 5;
@@ -751,28 +762,38 @@ function toggleSim() {
     document.getElementById('startLabel').textContent = 'START';
     document.getElementById('startSub').textContent   = 'スタート';
     document.getElementById('startBtn').classList.remove('stop');
+    updateHp();
   } else {
-    if (hp <= 0 && !isLocalPreview) {
-      document.getElementById('hpEmptyMsg').style.display = 'block';
-      return;
-    }
-    if (hp > 0) useHp();
+    if (starting) return;
     startSim();
   }
 }
 
 async function startSim() {
+  if (running || starting) return;
+  if (hp <= 0) {
+    document.getElementById('hpEmptyMsg').style.display = 'block';
+    updateHp();
+    return;
+  }
+  starting = true;
   running = true;
+  const startBtn = document.getElementById('startBtn');
   document.getElementById('startLabel').textContent = 'STOP';
   document.getElementById('startSub').textContent   = 'ストップ';
-  document.getElementById('startBtn').classList.add('stop');
+  startBtn.disabled = false;
+  startBtn.classList.add('stop');
+  useHp();
+  starting = false;
 
   await runOnce();
 
   running = false;
+  starting = false;
   document.getElementById('startLabel').textContent = 'START';
   document.getElementById('startSub').textContent   = 'スタート';
   document.getElementById('startBtn').classList.remove('stop');
+  updateHp();
 }
 
 async function runOnce() {
@@ -884,7 +905,7 @@ function updateHp() {
   for (let i=1;i<=5;i++) document.getElementById('hp'+i).classList.toggle('off', i>hp);
   const msg = document.getElementById('hpEmptyMsg');
   const btn = document.getElementById('startBtn');
-  if (!isLocalPreview && hp <= 0) {
+  if (hp <= 0 && !running) {
     msg.style.display = 'block';
     btn.disabled = true;
   } else {
@@ -908,8 +929,8 @@ function updateHpTimer() {
 
 function watchAd() {
   // TODO: AdMob リワード広告をここに実装
-  recoverHp(1);
-  alert('広告視聴完了！体力が1回復しました。');
+  recoverHp(HP_MAX);
+  alert('広告視聴完了！体力が全回復しました。');
 }
 
 setInterval(() => {
@@ -928,6 +949,8 @@ hp = loadHp();
 applyTheme('standard319', document.querySelector('.theme-tab.active'));
 updateHp();
 </script>
+<script src="ads-config.js"></script>
+<script src="ads.js"></script>
 
 </body>
 </html>
