@@ -22,7 +22,8 @@
                   https://pagead2.googlesyndication.com
                   https://googleads.g.doubleclick.net
                   https://www.googletagservices.com
-                  https://adservice.google.com;
+                  https://adservice.google.com
+                  https://cdn.jsdelivr.net;
       style-src   'self'
                   'unsafe-inline'
                   https://fonts.googleapis.com;
