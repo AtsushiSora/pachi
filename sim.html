@@ -20,21 +20,6 @@
 
   <div class="setting-content">
 
-    <!-- クイック設定 -->
-    <section class="card">
-      <h2 class="card-title">クイック設定</h2>
-      <div class="preset-grid">
-        <button class="preset-btn" onclick="setPreset('eva')">エヴァ風</button>
-        <button class="preset-btn" onclick="setPreset('rezero')">リゼロ風</button>
-        <button class="preset-btn" onclick="setPreset('arami')">荒波LT風</button>
-        <button class="preset-btn" onclick="setPreset('ama')">甘デジ風</button>
-        <button class="preset-btn" onclick="setPreset('umi')">海風</button>
-        <button class="preset-btn" onclick="setPreset('karakuri')">からくり風</button>
-        <button class="preset-btn" onclick="setPreset('boukyou')">暴凶星風</button>
-        <button class="preset-btn" onclick="setPreset('madoka')">まどマギ風</button>
-      </div>
-    </section>
-
     <!-- 基本設定 -->
     <section class="card">
       <h2 class="card-title">基本設定</h2>
@@ -46,6 +31,7 @@
           <div class="step-val"><span class="val-prefix">1/</span><input type="number" id="hitRate" value="319"></div>
           <button class="step-btn plus"  data-target="hitRate" data-change="1">＋</button>
         </div>
+        <input type="range" class="setting-slider" data-target="hitRate" min="1" max="999" step="1" value="319">
       </div>
 
       <div class="row">
@@ -55,6 +41,27 @@
           <div class="step-val"><input type="number" id="breakRate" value="60"><span class="val-suffix">%</span></div>
           <button class="step-btn plus"  data-target="breakRate" data-change="1">＋</button>
         </div>
+        <input type="range" class="setting-slider" data-target="breakRate" min="0" max="100" step="1" value="60">
+      </div>
+
+      <div class="row">
+        <span class="row-label">突破時の出玉</span>
+        <div class="stepper">
+          <button class="step-btn minus" data-target="breakPayout" data-change="-100">−</button>
+          <div class="step-val"><input type="number" id="breakPayout" value="1500" step="100"><span class="val-suffix">玉</span></div>
+          <button class="step-btn plus"  data-target="breakPayout" data-change="100">＋</button>
+        </div>
+        <input type="range" class="setting-slider payout-slider" data-target="breakPayout" min="0" max="10000" step="100" value="1500">
+      </div>
+
+      <div class="row">
+        <span class="row-label">失敗時の出玉</span>
+        <div class="stepper">
+          <button class="step-btn minus" data-target="failPayout" data-change="-100">−</button>
+          <div class="step-val"><input type="number" id="failPayout" value="300" step="100"><span class="val-suffix">玉</span></div>
+          <button class="step-btn plus"  data-target="failPayout" data-change="100">＋</button>
+        </div>
+        <input type="range" class="setting-slider payout-slider" data-target="failPayout" min="0" max="10000" step="100" value="300">
       </div>
 
       <div class="row">
@@ -64,6 +71,7 @@
           <div class="step-val"><input type="number" id="continueRate" value="81"><span class="val-suffix">%</span></div>
           <button class="step-btn plus"  data-target="continueRate" data-change="1">＋</button>
         </div>
+        <input type="range" class="setting-slider" data-target="continueRate" min="0" max="100" step="1" value="81">
       </div>
 
       <div class="row">
@@ -73,6 +81,7 @@
           <div class="step-val"><input type="number" id="spinPer250" value="17"><span class="val-suffix">回</span></div>
           <button class="step-btn plus"  data-target="spinPer250" data-change="1">＋</button>
         </div>
+        <input type="range" class="setting-slider" data-target="spinPer250" min="1" max="40" step="1" value="17">
       </div>
     </section>
 
@@ -90,15 +99,17 @@
         </div>
         <div class="payout-controls">
           <div class="stepper">
-            <button class="step-btn minus" data-target="payout1" data-change="-500">−</button>
-            <div class="step-val"><input type="number" id="payout1" value="1500"><span class="val-suffix">玉</span></div>
-            <button class="step-btn plus"  data-target="payout1" data-change="500">＋</button>
+            <button class="step-btn minus" data-target="payout1" data-change="-100">−</button>
+            <div class="step-val"><input type="number" id="payout1" value="1500" step="100"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="payout1" data-change="100">＋</button>
           </div>
+          <input type="range" class="setting-slider payout-slider" data-target="payout1" min="0" max="10000" step="100" value="1500">
           <div class="stepper">
             <button class="step-btn minus" data-target="ratio1" data-change="-1">−</button>
             <div class="step-val"><input type="number" id="ratio1" value="100"><span class="val-suffix">%</span></div>
             <button class="step-btn plus"  data-target="ratio1" data-change="1">＋</button>
           </div>
+          <input type="range" class="setting-slider" data-target="ratio1" min="0" max="100" step="1" value="100">
         </div>
       </div>
 
@@ -109,15 +120,17 @@
         </div>
         <div class="payout-controls">
           <div class="stepper">
-            <button class="step-btn minus" data-target="payout2" data-change="-500">−</button>
-            <div class="step-val"><input type="number" id="payout2" value="3000"><span class="val-suffix">玉</span></div>
-            <button class="step-btn plus"  data-target="payout2" data-change="500">＋</button>
+            <button class="step-btn minus" data-target="payout2" data-change="-100">−</button>
+            <div class="step-val"><input type="number" id="payout2" value="3000" step="100"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="payout2" data-change="100">＋</button>
           </div>
+          <input type="range" class="setting-slider payout-slider" data-target="payout2" min="0" max="10000" step="100" value="3000">
           <div class="stepper">
             <button class="step-btn minus" data-target="ratio2" data-change="-1">−</button>
             <div class="step-val"><input type="number" id="ratio2" value="0"><span class="val-suffix">%</span></div>
             <button class="step-btn plus"  data-target="ratio2" data-change="1">＋</button>
           </div>
+          <input type="range" class="setting-slider" data-target="ratio2" min="0" max="100" step="1" value="0">
         </div>
       </div>
 
@@ -128,15 +141,17 @@
         </div>
         <div class="payout-controls">
           <div class="stepper">
-            <button class="step-btn minus" data-target="payout3" data-change="-500">−</button>
-            <div class="step-val"><input type="number" id="payout3" value="4500"><span class="val-suffix">玉</span></div>
-            <button class="step-btn plus"  data-target="payout3" data-change="500">＋</button>
+            <button class="step-btn minus" data-target="payout3" data-change="-100">−</button>
+            <div class="step-val"><input type="number" id="payout3" value="4500" step="100"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="payout3" data-change="100">＋</button>
           </div>
+          <input type="range" class="setting-slider payout-slider" data-target="payout3" min="0" max="10000" step="100" value="4500">
           <div class="stepper">
             <button class="step-btn minus" data-target="ratio3" data-change="-1">−</button>
             <div class="step-val"><input type="number" id="ratio3" value="0"><span class="val-suffix">%</span></div>
             <button class="step-btn plus"  data-target="ratio3" data-change="1">＋</button>
           </div>
+          <input type="range" class="setting-slider" data-target="ratio3" min="0" max="100" step="1" value="0">
         </div>
       </div>
 
@@ -147,15 +162,17 @@
         </div>
         <div class="payout-controls">
           <div class="stepper">
-            <button class="step-btn minus" data-target="payout4" data-change="-500">−</button>
-            <div class="step-val"><input type="number" id="payout4" value="6000"><span class="val-suffix">玉</span></div>
-            <button class="step-btn plus"  data-target="payout4" data-change="500">＋</button>
+            <button class="step-btn minus" data-target="payout4" data-change="-100">−</button>
+            <div class="step-val"><input type="number" id="payout4" value="6000" step="100"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="payout4" data-change="100">＋</button>
           </div>
+          <input type="range" class="setting-slider payout-slider" data-target="payout4" min="0" max="10000" step="100" value="6000">
           <div class="stepper">
             <button class="step-btn minus" data-target="ratio4" data-change="-1">−</button>
             <div class="step-val"><input type="number" id="ratio4" value="0"><span class="val-suffix">%</span></div>
             <button class="step-btn plus"  data-target="ratio4" data-change="1">＋</button>
           </div>
+          <input type="range" class="setting-slider" data-target="ratio4" min="0" max="100" step="1" value="0">
         </div>
       </div>
     </section>
@@ -174,6 +191,7 @@
           <div class="step-val"><input type="number" id="ltRate" value="20"><span class="val-suffix">%</span></div>
           <button class="step-btn plus"  data-target="ltRate" data-change="1">＋</button>
         </div>
+        <input type="range" class="setting-slider" data-target="ltRate" min="0" max="100" step="1" value="20">
       </div>
 
       <div class="row">
@@ -183,6 +201,7 @@
           <div class="step-val"><input type="number" id="ltContinueRate" value="95"><span class="val-suffix">%</span></div>
           <button class="step-btn plus"  data-target="ltContinueRate" data-change="1">＋</button>
         </div>
+        <input type="range" class="setting-slider" data-target="ltContinueRate" min="0" max="100" step="1" value="95">
       </div>
     </section>
 
@@ -201,15 +220,17 @@
         </div>
         <div class="payout-controls">
           <div class="stepper">
-            <button class="step-btn minus" data-target="ltPayout1" data-change="-500">−</button>
-            <div class="step-val"><input type="number" id="ltPayout1" value="3000"><span class="val-suffix">玉</span></div>
-            <button class="step-btn plus"  data-target="ltPayout1" data-change="500">＋</button>
+            <button class="step-btn minus" data-target="ltPayout1" data-change="-100">−</button>
+            <div class="step-val"><input type="number" id="ltPayout1" value="3000" step="100"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="ltPayout1" data-change="100">＋</button>
           </div>
+          <input type="range" class="setting-slider payout-slider" data-target="ltPayout1" min="0" max="10000" step="100" value="3000">
           <div class="stepper">
             <button class="step-btn minus" data-target="ltRatio1" data-change="-1">−</button>
             <div class="step-val"><input type="number" id="ltRatio1" value="80"><span class="val-suffix">%</span></div>
             <button class="step-btn plus"  data-target="ltRatio1" data-change="1">＋</button>
           </div>
+          <input type="range" class="setting-slider" data-target="ltRatio1" min="0" max="100" step="1" value="80">
         </div>
       </div>
 
@@ -220,15 +241,17 @@
         </div>
         <div class="payout-controls">
           <div class="stepper">
-            <button class="step-btn minus" data-target="ltPayout2" data-change="-500">−</button>
-            <div class="step-val"><input type="number" id="ltPayout2" value="4500"><span class="val-suffix">玉</span></div>
-            <button class="step-btn plus"  data-target="ltPayout2" data-change="500">＋</button>
+            <button class="step-btn minus" data-target="ltPayout2" data-change="-100">−</button>
+            <div class="step-val"><input type="number" id="ltPayout2" value="4500" step="100"><span class="val-suffix">玉</span></div>
+            <button class="step-btn plus"  data-target="ltPayout2" data-change="100">＋</button>
           </div>
+          <input type="range" class="setting-slider payout-slider" data-target="ltPayout2" min="0" max="10000" step="100" value="4500">
           <div class="stepper">
             <button class="step-btn minus" data-target="ltRatio2" data-change="-1">−</button>
             <div class="step-val"><input type="number" id="ltRatio2" value="20"><span class="val-suffix">%</span></div>
             <button class="step-btn plus"  data-target="ltRatio2" data-change="1">＋</button>
           </div>
+          <input type="range" class="setting-slider" data-target="ltRatio2" min="0" max="100" step="1" value="20">
         </div>
       </div>
     </section>
@@ -286,6 +309,6 @@
 <audio id="rushSound" preload="auto"><source src="rush.mp3" type="audio/mpeg"></audio>
 
 <script src="presets.js"></script>
-<script type="module" src="main.js"></script>
+<script src="main.js"></script>
 </body>
 </html>

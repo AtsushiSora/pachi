@@ -32,6 +32,30 @@ document.querySelectorAll(".step-btn").forEach(btn => {
   btn.addEventListener("click", () => changeValue(btn));
 });
 
+document.querySelectorAll(".setting-slider").forEach(slider => {
+  slider.addEventListener("input", () => {
+    const target = document.getElementById(slider.dataset.target);
+    target.value = clampRatioValue(target.id, Number(slider.value));
+    if (isPayoutInput(target.id)) snapPayoutInput(target);
+    syncSettingSlider(target.id);
+    updateRatioTotal();
+    saveSettings();
+  });
+});
+
+document.querySelectorAll("input[type='number']").forEach(input => {
+  input.addEventListener("input", () => {
+    syncSettingSlider(input.id);
+    updateRatioTotal();
+    saveSettings();
+  });
+  input.addEventListener("change", () => {
+    snapPayoutInput(input);
+    syncSettingSlider(input.id);
+    saveSettings();
+  });
+});
+
 // ========================
 // 数値変更
 // ========================
@@ -41,27 +65,56 @@ function changeValue(button) {
   value += Number(button.dataset.change);
   if (value < 0) value = 0;
 
+  value = clampRatioValue(target.id, value);
+
+  target.value = value;
+  syncSettingSlider(target.id);
+  updateRatioTotal();
+  saveSettings();
+}
+
+function clampRatioValue(targetId, value) {
   // 通常割合上限
-  if (["ratio1","ratio2","ratio3","ratio4"].includes(target.id)) {
+  if (["ratio1","ratio2","ratio3","ratio4"].includes(targetId)) {
     const others =
-      (target.id !== "ratio1" ? Number(ratio1.value) : 0) +
-      (enablePayout2.checked && target.id !== "ratio2" ? Number(ratio2.value) : 0) +
-      (enablePayout3.checked && target.id !== "ratio3" ? Number(ratio3.value) : 0) +
-      (enablePayout4.checked && target.id !== "ratio4" ? Number(ratio4.value) : 0);
-    if (value + others > 100) value = 100 - others;
+      (targetId !== "ratio1" ? Number(ratio1.value) : 0) +
+      (enablePayout2.checked && targetId !== "ratio2" ? Number(ratio2.value) : 0) +
+      (enablePayout3.checked && targetId !== "ratio3" ? Number(ratio3.value) : 0) +
+      (enablePayout4.checked && targetId !== "ratio4" ? Number(ratio4.value) : 0);
+    if (value + others > 100) return 100 - others;
   }
 
   // LT割合上限
-  if (["ltRatio1","ltRatio2"].includes(target.id)) {
+  if (["ltRatio1","ltRatio2"].includes(targetId)) {
     const others =
-      (enableLtPayout1.checked && target.id !== "ltRatio1" ? Number(ltRatio1.value) : 0) +
-      (enableLtPayout2.checked && target.id !== "ltRatio2" ? Number(ltRatio2.value) : 0);
-    if (value + others > 100) value = 100 - others;
+      (enableLtPayout1.checked && targetId !== "ltRatio1" ? Number(ltRatio1.value) : 0) +
+      (enableLtPayout2.checked && targetId !== "ltRatio2" ? Number(ltRatio2.value) : 0);
+    if (value + others > 100) return 100 - others;
   }
 
-  target.value = value;
-  updateRatioTotal();
-  saveSettings();
+  return value;
+}
+
+function syncSettingSlider(targetId) {
+  const slider = document.querySelector(`.setting-slider[data-target="${targetId}"]`);
+  if (!slider) return;
+  slider.value = document.getElementById(targetId).value;
+}
+
+function syncSettingSliders() {
+  document.querySelectorAll(".setting-slider").forEach(slider => {
+    const target = document.getElementById(slider.dataset.target);
+    if (target) slider.value = target.value;
+  });
+}
+
+function isPayoutInput(id) {
+  return ["breakPayout","failPayout","payout1","payout2","payout3","payout4","ltPayout1","ltPayout2"].includes(id);
+}
+
+function snapPayoutInput(input) {
+  if (!isPayoutInput(input.id)) return;
+  input.value = Math.max(0, Math.round(Number(input.value || 0) / 100) * 100);
 }
 
 // ========================
@@ -88,31 +141,13 @@ function updateRatioTotal() {
 }
 
 // ========================
-// 暗号化ユーティリティ
-// ========================
-import CryptoJS from "crypto-js";
-const ENCRYPT_KEY = import.meta.env.VITE_ENCRYPT_KEY || "fallback-key";
-
-function encrypt(value) {
-  return CryptoJS.AES.encrypt(String(value), ENCRYPT_KEY).toString();
-}
-
-function decrypt(cipher) {
-  try {
-    const bytes = CryptoJS.AES.decrypt(cipher, ENCRYPT_KEY);
-    return bytes.toString(CryptoJS.enc.Utf8);
-  } catch {
-    return null;
-  }
-}
-
-// ========================
 // 設定保存
 // ========================
 function saveSettings() {
   document.querySelectorAll("input").forEach(input => {
+    if (!input.id) return;
     const value = input.type === "checkbox" ? input.checked : input.value;
-    localStorage.setItem(input.id, encrypt(value));
+    localStorage.setItem(input.id, String(value));
   });
 }
 
@@ -121,13 +156,13 @@ function saveSettings() {
 // ========================
 function loadSettings() {
   document.querySelectorAll("input").forEach(input => {
-    const cipher = localStorage.getItem(input.id);
-    if (cipher === null) return;
-    const saved = decrypt(cipher);
-    if (saved === null) return;
+    if (!input.id) return;
+    const saved = localStorage.getItem(input.id);
+    if (saved === null || saved.startsWith("U2FsdGVk")) return;
     if (input.type === "checkbox") input.checked = saved === "true";
     else input.value = saved;
   });
+  syncSettingSliders();
 }
 
 // ========================
@@ -180,6 +215,22 @@ function showPayoutEffect(amount) {
   setTimeout(() => document.body.classList.remove("body-flash"), 350);
 }
 
+function applyPayout(amount, label, state) {
+  if (amount <= 0) return;
+  state.chainCount++;
+  state.totalPayout += amount;
+  const usedNow = Math.floor(state.spins * state.costPerSpin);
+  const diff    = state.totalPayout - usedNow;
+
+  setVal(chain,   state.chainCount,  "回",  "val-hi");
+  setVal(total,   state.totalPayout, "玉",  "val-up");
+  setVal(used,    usedNow,           "玉",  "val-dim");
+  setVal(balance, Math.abs(diff),    "玉",  diff >= 0 ? "val-up" : "val-dn");
+
+  showPayoutEffect(amount);
+  addLog(`${label} +${amount.toLocaleString()}玉`, "log-payout");
+}
+
 // ========================
 // sleep
 // ========================
@@ -193,6 +244,8 @@ function setPreset(type) {
   if (!s) return;
   hitRate.value = s.hitRate;  breakRate.value = s.breakRate;
   continueRate.value = s.continueRate; spinPer250.value = s.spinPer250;
+  breakPayout.value = s.breakPayout ?? breakPayout.value;
+  failPayout.value = s.failPayout ?? failPayout.value;
   payout1.value = s.p1; ratio1.value = s.r1;
   payout2.value = s.p2; ratio2.value = s.r2;
   payout3.value = s.p3; ratio3.value = s.r3;
@@ -202,6 +255,7 @@ function setPreset(type) {
   ltPayout1.value = s.lp1; ltRatio1.value = s.lr1;
   ltPayout2.value = s.lp2; ltRatio2.value = s.lr2;
   enableLtPayout1.checked = s.le1; enableLtPayout2.checked = s.le2;
+  syncSettingSliders();
   updateRatioTotal();
   saveSettings();
 }
@@ -247,6 +301,7 @@ async function simulate() {
   let totalPayout = 0;
   let chainCount  = 0;
   const costPerSpin = 250 / Number(spinPer250.value);
+  const payoutState = { spins, totalPayout, chainCount, costPerSpin };
 
   // ========================
   // 通常ループ
@@ -267,6 +322,15 @@ async function simulate() {
       addLog(`${spins.toLocaleString()}回転で当たり！`, "log-hit");
 
       const breakthrough = Math.random() < (Number(breakRate.value) / 100);
+      payoutState.spins = spins;
+      applyPayout(
+        breakthrough ? Number(breakPayout.value) : Number(failPayout.value),
+        breakthrough ? "突破当たり" : "通常当たり",
+        payoutState
+      );
+      totalPayout = payoutState.totalPayout;
+      chainCount = payoutState.chainCount;
+
       if (!breakthrough) {
         addLog("突破失敗…", "log-fail");
         break;
@@ -315,18 +379,10 @@ async function simulate() {
           }
         }
 
-        chainCount++;
-        totalPayout += payout;
-        const usedNow = Math.floor(spins * costPerSpin);
-        const diff    = totalPayout - usedNow;
-
-        setVal(chain,   chainCount,         "回",  "val-hi");
-        setVal(total,   totalPayout,        "玉",  "val-up");
-        setVal(used,    usedNow,            "玉",  "val-dim");
-        setVal(balance, Math.abs(diff),     "玉",  diff >= 0 ? "val-up" : "val-dn");
-
-        showPayoutEffect(payout);
-        addLog(`+${payout.toLocaleString()}玉`, "log-payout");
+        payoutState.spins = spins;
+        applyPayout(payout, "RUSH", payoutState);
+        totalPayout = payoutState.totalPayout;
+        chainCount = payoutState.chainCount;
 
         await sleep(700);
 
