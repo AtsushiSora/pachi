@@ -71,6 +71,67 @@
       line-height: 1.8;
     }
 
+    .top-install {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+
+    .top-install[hidden] {
+      display: none;
+    }
+
+    .top-install-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e8e8e8;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .top-install-text {
+      font-size: 11px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .top-install-btn {
+      flex-shrink: 0;
+      min-width: 88px;
+      border: 0;
+      border-radius: 999px;
+      background: #e8e8e8;
+      color: #080808;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 11px 16px;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+    }
+
+    .top-install-btn:active {
+      transform: scale(0.97);
+    }
+
+    @media (max-width: 380px) {
+      .top-install {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .top-install-btn {
+        width: 100%;
+      }
+    }
+
     .top-menu {
       width: 100%;
       display: flex;
@@ -193,6 +254,14 @@
       </p>
     </section>
 
+    <section class="top-install" id="installCard">
+      <div>
+        <div class="top-install-title">スマホに追加</div>
+        <div class="top-install-text">ホーム画面からアプリ風に起動できます。</div>
+      </div>
+      <button class="top-install-btn" id="installBtn" type="button">追加</button>
+    </section>
+
     <nav class="top-menu">
       <a href="sim.html" class="menu-btn">
         <div class="menu-btn-left">
@@ -256,6 +325,34 @@
   <script src="ads-config.js"></script>
   <script src="ads.js"></script>
   <script src="pwa.js"></script>
+  <script>
+    (() => {
+      const card = document.getElementById("installCard");
+      const button = document.getElementById("installBtn");
+      let deferredInstallPrompt = null;
+      const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+
+      if (isStandalone && card) {
+        card.hidden = true;
+      }
+
+      window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        deferredInstallPrompt = event;
+      });
+
+      button?.addEventListener("click", async () => {
+        if (deferredInstallPrompt) {
+          deferredInstallPrompt.prompt();
+          await deferredInstallPrompt.userChoice.catch(() => null);
+          deferredInstallPrompt = null;
+          return;
+        }
+
+        window.location.href = "howto.html#install";
+      });
+    })();
+  </script>
 
 </body>
 </html>
