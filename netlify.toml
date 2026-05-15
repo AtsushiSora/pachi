@@ -61,3 +61,15 @@
     # ── 権限ポリシー ─────────────────────────────────
     # 不要なブラウザ機能へのアクセスを制限
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/sw.js"
+
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/manifest.json"
+
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
