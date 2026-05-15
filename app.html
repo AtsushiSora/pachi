@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ICHIGEKI〜スロパチ〜</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="presets.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -132,7 +131,7 @@
 
     /* ログ */
     .log-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; flex-shrink: 0; }
-    .log-body { padding: 5px 8px; font-size: 11px; line-height: 1.8; height: 72px; overflow-y: auto; }
+    .log-body { padding: 5px 8px; font-size: 10px; line-height: 1.55; height: 54px; overflow-y: auto; }
     .log-body::-webkit-scrollbar { width: 2px; }
     .log-body::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
     .log-hit    { color: var(--gold); font-weight: 700; }
@@ -141,10 +140,6 @@
     .log-fail   { color: var(--red); }
     .log-end    { color: var(--muted); }
     .log-hama   { color: var(--muted); opacity: .5; }
-
-    /* もう一回ボタン */
-    .btn-retry { width: 100%; padding: 8px; background: linear-gradient(135deg,#1a3a00,#0f2800); border: 1px solid var(--green); border-radius: 6px; color: var(--green); font-family: 'Noto Sans JP', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; display: none; transition: all .15s; flex-shrink: 0; }
-    .btn-retry:hover { background: linear-gradient(135deg,#2a5000,#1a3a00); }
 
     /* ── RIGHT ── */
     .right {
@@ -172,7 +167,6 @@
     .cu { font-size: 9px; color: var(--muted); flex-shrink: 0; }
     .sg-slider { width: 100%; height: 3px; border-radius: 2px; background: var(--border); appearance: none; outline: none; cursor: pointer; }
     .sg-slider::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); cursor: pointer; border: 2px solid #fff; }
-
     /* ラウンド振り分け */
     .round-rows { display: flex; flex-direction: column; gap: 4px; }
     .round-row  { display: grid; grid-template-columns: 28px 1fr 1fr 28px; gap: 3px; align-items: center; }
@@ -185,16 +179,13 @@
     .ratio-ok   { color: var(--green); }
     .ratio-over { color: var(--red); }
 
-    /* ランキング */
-    .rank-list  { display: flex; flex-direction: column; gap: 3px; }
-    .rank-item  { display: flex; align-items: center; gap: 5px; padding: 4px 6px; background: #080c20; border: 1px solid var(--border); border-radius: 5px; }
-    .rank-num   { font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--muted); width: 14px; text-align: center; flex-shrink: 0; }
-    .rank-num.r1 { color: #ffd700; }
-    .rank-num.r2 { color: #c0c0c0; }
-    .rank-num.r3 { color: #cd7f32; }
-    .rank-name  { flex: 1; font-size: 10px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .rank-score { font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--green); flex-shrink: 0; }
-    .rank-empty { font-size: 10px; color: var(--muted); text-align: center; padding: 6px 0; }
+    /* 初当たり振り分け */
+    .first-hit-grid { display: grid; grid-template-columns: 46px 1fr 1fr; gap: 3px; align-items: center; }
+    .first-hit-head { font-size: 8px; color: var(--muted); text-align: center; }
+    .first-hit-label { font-size: 9px; color: var(--text); text-align: center; font-weight: 700; white-space: nowrap; }
+    .first-hit-label.win { color: var(--green); }
+    .first-hit-label.lose { color: var(--red); }
+    .first-hit-input { background: #080c20; border: 1px solid var(--border-hi); border-radius: 3px; font-family: 'Orbitron', sans-serif; font-size: 11px; color: #fff; text-align: center; padding: 2px 3px; width: 100%; min-width: 0; }
 
     /* toggle */
     .tog { position: relative; display: inline-flex; cursor: pointer; flex-shrink: 0; }
@@ -225,8 +216,6 @@
     .btn-start small  { font-size: 8px; font-family: 'Noto Sans JP', sans-serif; letter-spacing: 1px; }
     .btn-start.stop   { background: radial-gradient(ellipse at 50% 30%,#888,#444,#222); border-color: #aaa; }
     .btn-start:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-    .auto-group { display: flex; flex-direction: column; gap: 4px; }
-    .btn-auto  { background: linear-gradient(135deg,#1a2040,#0f1530); border: 1px solid var(--border-hi); color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 10px; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
     .btn-speed { background: linear-gradient(135deg,#1a3000,#0f2000); border: 1px solid #44aa00; color: #88ff44; font-family: 'Noto Sans JP', sans-serif; font-size: 9px; padding: 4px 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 3px; }
     .speed-on  { background: #44aa00; color: #001800; border-radius: 3px; padding: 1px 4px; font-weight: 900; font-size: 9px; }
 
@@ -259,13 +248,12 @@
     <p>〜スロパチ〜</p>
   </div>
   <div class="theme-tabs">
-    <button class="theme-tab active" onclick="applyTheme('eva',this)">エヴァ</button>
-    <button class="theme-tab" onclick="applyTheme('rezero',this)">リゼロ</button>
-    <button class="theme-tab" onclick="applyTheme('arami',this)">荒波</button>
-    <button class="theme-tab" onclick="applyTheme('ama',this)">甘デジ</button>
-    <button class="theme-tab" onclick="applyTheme('karakuri',this)">からくり</button>
-    <button class="theme-tab" onclick="applyTheme('boukyou',this)">暴凶星</button>
-    <button class="theme-tab" onclick="applyTheme('madoka',this)">まどマギ</button>
+    <button class="theme-tab active" onclick="applyTheme('standard319',this)">王道319</button>
+    <button class="theme-tab" onclick="applyTheme('highContinue',this)">高継続</button>
+    <button class="theme-tab" onclick="applyTheme('ltBurst',this)">荒波LT</button>
+    <button class="theme-tab" onclick="applyTheme('light',this)">甘デジ</button>
+    <button class="theme-tab" onclick="applyTheme('stableMiddle',this)">安定ミドル</button>
+    <button class="theme-tab" onclick="applyTheme('oneShot',this)">一撃特化</button>
   </div>
 </header>
 
@@ -332,13 +320,23 @@
       <div class="log-body" id="logBody"></div>
     </div>
 
-    <!-- もう一回ボタン -->
-    <button class="btn-retry" id="retryBtn" onclick="retrySim()">🔁 もう一回</button>
-
   </div>
 
   <!-- RIGHT -->
   <div class="right">
+
+    <!-- 250玉あたり回転数 -->
+    <div class="sg">
+      <div class="sg-name">250玉あたり回転数</div>
+      <div class="sg-ctrl">
+        <div class="sg-ctrl-row">
+          <button class="cb" data-key="spinPer250" data-delta="-1">−</button>
+          <input type="number" class="cv" id="cv-spinPer250" value="17" min="1" max="100" oninput="onDirectInput('spinPer250',this.value)">
+          <span class="cu">回転</span>
+          <button class="cb" data-key="spinPer250" data-delta="1">+</button>
+        </div>
+      </div>
+    </div>
 
     <!-- 大当たり確率 -->
     <div class="sg">
@@ -364,6 +362,22 @@
           <button class="cb" data-key="breakRate" data-delta="1">+</button>
         </div>
         <input type="range" class="sg-slider" id="sl-breakRate" min="0" max="100" value="60" oninput="onSlider('breakRate',this.value)">
+      </div>
+    </div>
+
+    <!-- 初当たり振り分け -->
+    <div class="sg">
+      <div class="sg-name">初当たり振り分け</div>
+      <div class="first-hit-grid">
+        <div></div>
+        <div class="first-hit-head">出玉</div>
+        <div class="first-hit-head">割合%</div>
+        <div class="first-hit-label win">突破</div>
+        <input type="number" class="first-hit-input" id="cv-breakPayout" value="500" min="0" step="100" oninput="onDirectInput('breakPayout',this.value)" onchange="snapPayoutInput('breakPayout',this)">
+        <input type="number" class="first-hit-input" id="cv-breakShare" value="60" min="0" max="100" oninput="onFirstHitShareInput('break',this.value)">
+        <div class="first-hit-label lose">失敗</div>
+        <input type="number" class="first-hit-input" id="cv-failPayout" value="500" min="0" step="100" oninput="onDirectInput('failPayout',this.value)" onchange="snapPayoutInput('failPayout',this)">
+        <input type="number" class="first-hit-input" id="cv-failShare" value="40" min="0" max="100" oninput="onFirstHitShareInput('fail',this.value)">
       </div>
     </div>
 
@@ -394,12 +408,6 @@
       <button class="round-add" onclick="addRound()">＋ ラウンドを追加</button>
     </div>
 
-    <!-- ランキング -->
-    <div class="sg">
-      <div class="sg-name">🏆 出玉ランキング</div>
-      <div class="rank-list" id="rankList"><div class="rank-empty">読み込み中...</div></div>
-    </div>
-
   </div>
 </div>
 
@@ -417,10 +425,7 @@
     <span id="startLabel">START</span>
     <small id="startSub">スタート</small>
   </button>
-  <div class="auto-group">
-    <button class="btn-auto" id="autoBtn" onclick="toggleAuto(this)">オート</button>
-    <button class="btn-speed" onclick="toggleSpeed(this)">高速 <span class="speed-on" id="speedLabel">ON</span></button>
-  </div>
+  <button class="btn-speed" onclick="toggleSpeed(this)">高速 <span class="speed-on" id="speedLabel">ON</span></button>
 </div>
 
 <p class="foot-note">※エンターテインメント目的のシミュレーターです。実際のパチンコ機の挙動とは異なる場合があります。</p>
@@ -430,13 +435,6 @@
 
 <script>
 // ========================
-// Supabase
-// ========================
-const SB_URL = "https://cyvfbeppvumyqexrnqcr.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5dmZiZXBwdnVteXFleHJucWNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NTE3MDUsImV4cCI6MjA5NDEyNzcwNX0.GBmnaN_EkpzWY27GmdJOMO-5y5uybidwf9zwEXvz1Wc";
-const sbClient = window.supabase.createClient(SB_URL, SB_KEY);
-
-// ========================
 // 設定
 // ========================
 const cfg = {
@@ -444,22 +442,21 @@ const cfg = {
   breakRate:    60,
   continueRate: 81,
   spinPer250:   17,
+  breakPayout:  1500,
+  failPayout:   300,
 };
 
 // ラウンドデータ
 let rounds = [
-  { label:'15R', payout:1500, ratio:50 },
-  { label:'10R', payout:1000, ratio:30 },
-  { label:'7R',  payout: 700, ratio:20 },
+  { label:'10R', payout:1500, ratio:100 },
 ];
 
 // ========================
 // 状態
 // ========================
 let running   = false;
-let autoMode  = false;
 let fastMode  = true;
-let spins = 0, totalPayout = 0, chainCount = 0;
+let spins = 0, totalPayout = 0, currentBalls = 0, investedBalls = 0, chainCount = 0;
 let hp = 5;
 
 // ========================
@@ -467,6 +464,8 @@ let hp = 5;
 // ========================
 const sleep    = ms => new Promise(r => setTimeout(r, ms));
 const randRange = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+const isLocalPreview = ['file:', 'http:'].includes(location.protocol) &&
+  (location.protocol === 'file:' || ['localhost', '127.0.0.1'].includes(location.hostname));
 
 function addLog(text, cls='') {
   const el  = document.getElementById('logBody');
@@ -479,11 +478,13 @@ function addLog(text, cls='') {
 }
 
 function updateStats() {
-  const invest = Math.floor(spins * (250 / cfg.spinPer250));
-  const diff   = totalPayout - invest;
+  const invest = Math.floor(investedBalls);
+  const investYen = Math.floor(invest * 4);
+  const balls  = Math.floor(currentBalls);
+  const diff   = balls - invest;
   document.getElementById('statKaiten').textContent = spins.toLocaleString();
-  document.getElementById('statToshi').textContent  = invest.toLocaleString()+'円';
-  document.getElementById('statMoto').textContent   = totalPayout.toLocaleString()+'玉';
+  document.getElementById('statToshi').textContent  = investYen.toLocaleString()+'円';
+  document.getElementById('statMoto').textContent   = balls.toLocaleString()+'玉';
   document.getElementById('statProb').textContent   = `1/${cfg.hitRate}`;
   document.getElementById('statChain').textContent  = chainCount;
   const saEl = document.getElementById('statSa');
@@ -520,6 +521,24 @@ function showFx(amount) {
   fx.classList.add('show');
 }
 
+function addPayout(amount, label) {
+  if (amount <= 0) return;
+  chainCount++;
+  totalPayout += amount;
+  currentBalls += amount;
+  showBigWin();
+  showFx(amount);
+  addLog(`${label} +${amount.toLocaleString()}玉`, 'log-payout');
+  updateStats();
+}
+
+function spendSpinCost() {
+  const cost = 250 / cfg.spinPer250;
+  const fromBalls = Math.min(currentBalls, cost);
+  currentBalls -= fromBalls;
+  investedBalls += cost - fromBalls;
+}
+
 // ========================
 // ラウンド振り分け
 // ========================
@@ -527,13 +546,23 @@ function renderRounds() {
   const container = document.getElementById('roundRows');
   container.innerHTML = rounds.map((r,i) => `
     <div class="round-row">
-      <input class="round-input" value="${r.label}" oninput="rounds[${i}].label=this.value">
-      <input class="round-input" type="number" value="${r.payout}" min="0" oninput="rounds[${i}].payout=parseInt(this.value)||0">
+      <input class="round-input" type="number" value="${getRoundNumber(r.label)}" min="1" step="1" oninput="setRoundLabel(${i},this.value)">
+      <input class="round-input" type="number" value="${r.payout}" min="0" step="100" oninput="rounds[${i}].payout=parseInt(this.value)||0" onchange="snapRoundPayout(${i},this)">
       <input class="round-input" type="number" value="${r.ratio}" min="0" max="100" oninput="rounds[${i}].ratio=parseInt(this.value)||0;updateRatioTotal()">
       <button class="round-del" onclick="removeRound(${i})">×</button>
     </div>
   `).join('');
   updateRatioTotal();
+}
+
+function getRoundNumber(label) {
+  const num = parseInt(String(label).replace(/[^\d]/g, ''), 10);
+  return Number.isFinite(num) && num > 0 ? num : 1;
+}
+
+function setRoundLabel(index, value) {
+  const round = Math.max(1, parseInt(value, 10) || 1);
+  rounds[index].label = `${round}R`;
 }
 
 function addRound() {
@@ -565,6 +594,22 @@ function getRandomPayout() {
   return rounds[0].payout;
 }
 
+function snapToPayoutStep(value) {
+  return Math.max(0, Math.round((parseInt(value) || 0) / 100) * 100);
+}
+
+function snapPayoutInput(key, input) {
+  const value = snapToPayoutStep(input.value);
+  cfg[key] = value;
+  input.value = value;
+}
+
+function snapRoundPayout(index, input) {
+  const value = snapToPayoutStep(input.value);
+  rounds[index].payout = value;
+  input.value = value;
+}
+
 // ========================
 // 設定コントロール
 // ========================
@@ -572,9 +617,12 @@ const LONG_PRESS_DELAY = 400;
 let pressTimer = null, pressInterval = null, pressSpeed = 150;
 
 function adjCfg(key, delta) {
-  const maxMap = { hitRate:999, breakRate:100, continueRate:100 };
-  cfg[key] = Math.max(1, Math.min(maxMap[key]||999, (cfg[key]||0)+delta));
+  const maxMap = { spinPer250:100, hitRate:999, breakRate:100, continueRate:100, breakPayout:99999, failPayout:99999 };
+  const minMap = { spinPer250:1, hitRate:1, breakRate:0, continueRate:0, breakPayout:0, failPayout:0 };
+  cfg[key] = Math.max(minMap[key] ?? 1, Math.min(maxMap[key]||999, (cfg[key]||0)+delta));
   syncUI(key);
+  if (key === 'breakRate') syncFirstHitShares();
+  if (key === 'spinPer250') updateStats();
 }
 
 function syncUI(key) {
@@ -584,19 +632,38 @@ function syncUI(key) {
   if (sl)  sl.value  = cfg[key];
 }
 
+function syncFirstHitShares() {
+  const breakShare = document.getElementById('cv-breakShare');
+  const failShare  = document.getElementById('cv-failShare');
+  if (breakShare) breakShare.value = cfg.breakRate;
+  if (failShare)  failShare.value  = 100 - cfg.breakRate;
+}
+
 function onDirectInput(key, val) {
   const v = parseInt(val);
   if (isNaN(v)) return;
-  const maxMap = { hitRate:999, breakRate:100, continueRate:100 };
-  cfg[key] = Math.max(1, Math.min(maxMap[key]||999, v));
+  const maxMap = { spinPer250:100, hitRate:999, breakRate:100, continueRate:100, breakPayout:99999, failPayout:99999 };
+  const minMap = { spinPer250:1, hitRate:1, breakRate:0, continueRate:0, breakPayout:0, failPayout:0 };
+  cfg[key] = Math.max(minMap[key] ?? 1, Math.min(maxMap[key]||999, v));
   const sl = document.getElementById('sl-'+key);
   if (sl) sl.value = cfg[key];
+  if (key === 'breakRate') syncFirstHitShares();
+  if (key === 'spinPer250') updateStats();
 }
 
 function onSlider(key, val) {
   cfg[key] = parseInt(val);
   const inp = document.getElementById('cv-'+key);
   if (inp) inp.value = cfg[key];
+  if (key === 'breakRate') syncFirstHitShares();
+  if (key === 'spinPer250') updateStats();
+}
+
+function onFirstHitShareInput(type, val) {
+  const v = Math.max(0, Math.min(100, parseInt(val) || 0));
+  cfg.breakRate = type === 'break' ? v : 100 - v;
+  syncUI('breakRate');
+  syncFirstHitShares();
 }
 
 function startPress(key, delta) {
@@ -635,7 +702,15 @@ function applyTheme(type, btn) {
   cfg.breakRate    = s.breakRate;
   cfg.continueRate = s.continueRate;
   cfg.spinPer250   = s.spinPer250;
-  ['hitRate','breakRate','continueRate'].forEach(k => syncUI(k));
+  cfg.breakPayout  = s.breakPayout ?? cfg.breakPayout;
+  cfg.failPayout   = s.failPayout ?? cfg.failPayout;
+  if (Array.isArray(s.rounds)) {
+    rounds = s.rounds.map(r => ({ ...r }));
+    renderRounds();
+  }
+  ['spinPer250','hitRate','breakRate','continueRate','breakPayout','failPayout'].forEach(k => syncUI(k));
+  updateStats();
+  syncFirstHitShares();
   document.querySelectorAll('.theme-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 }
@@ -650,11 +725,11 @@ function toggleSim() {
     document.getElementById('startSub').textContent   = 'スタート';
     document.getElementById('startBtn').classList.remove('stop');
   } else {
-    if (hp <= 0) {
+    if (hp <= 0 && !isLocalPreview) {
       document.getElementById('hpEmptyMsg').style.display = 'block';
       return;
     }
-    useHp();
+    if (hp > 0) useHp();
     startSim();
   }
 }
@@ -664,7 +739,6 @@ async function startSim() {
   document.getElementById('startLabel').textContent = 'STOP';
   document.getElementById('startSub').textContent   = 'ストップ';
   document.getElementById('startBtn').classList.add('stop');
-  document.getElementById('retryBtn').style.display = 'none';
 
   await runOnce();
 
@@ -672,13 +746,13 @@ async function startSim() {
   document.getElementById('startLabel').textContent = 'START';
   document.getElementById('startSub').textContent   = 'スタート';
   document.getElementById('startBtn').classList.remove('stop');
-  document.getElementById('retryBtn').style.display = 'block';
 }
 
 async function runOnce() {
   const speed = fastMode ? 1 : 700;
 
   while (running) {
+    spendSpinCost();
     spins++;
     updateStats();
 
@@ -692,6 +766,8 @@ async function runOnce() {
     addLog(`${spins.toLocaleString()}回転で当たり！`, 'log-hit');
 
     const breakthrough = Math.random() < (cfg.breakRate / 100);
+    addPayout(breakthrough ? cfg.breakPayout : cfg.failPayout, breakthrough ? '突破当たり' : '通常当たり');
+
     if (!breakthrough) {
       addLog('突破失敗…', 'log-fail');
       setMode('normal');
@@ -704,13 +780,7 @@ async function runOnce() {
     let rush = true;
     while (rush && running) {
       const payout = getRandomPayout();
-      chainCount++;
-      totalPayout += payout;
-
-      showBigWin();
-      showFx(payout);
-      addLog(`+${payout.toLocaleString()}玉 獲得！`, 'log-payout');
-      updateStats();
+      addPayout(payout, 'RUSH');
 
       await sleep(speed);
 
@@ -724,35 +794,17 @@ async function runOnce() {
   }
 }
 
-function retrySim() {
-  if (hp <= 0) {
-    document.getElementById('hpEmptyMsg').style.display = 'block';
-    return;
-  }
-  // スピンと投資はリセットせず継続
-  useHp();
-  document.getElementById('retryBtn').style.display = 'none';
-  startSim();
-}
-
 function resetSim() {
   running = false;
-  spins = 0; totalPayout = 0; chainCount = 0;
+  spins = 0; totalPayout = 0; currentBalls = 0; investedBalls = 0; chainCount = 0;
   document.getElementById('logBody').innerHTML = '';
   document.getElementById('startLabel').textContent = 'START';
   document.getElementById('startSub').textContent   = 'スタート';
   document.getElementById('startBtn').classList.remove('stop');
-  document.getElementById('retryBtn').style.display = 'none';
   document.getElementById('hpEmptyMsg').style.display = 'none';
   setMode('normal');
   resetBigWin();
   updateStats();
-}
-
-function toggleAuto(btn) {
-  autoMode = !autoMode;
-  btn.style.borderColor = autoMode ? 'var(--gold)' : 'var(--border-hi)';
-  btn.style.color       = autoMode ? 'var(--gold)' : 'var(--text)';
 }
 
 function toggleSpeed(btn) {
@@ -805,7 +857,7 @@ function updateHp() {
   for (let i=1;i<=5;i++) document.getElementById('hp'+i).classList.toggle('off', i>hp);
   const msg = document.getElementById('hpEmptyMsg');
   const btn = document.getElementById('startBtn');
-  if (hp <= 0) {
+  if (!isLocalPreview && hp <= 0) {
     msg.style.display = 'block';
     btn.disabled = true;
   } else {
@@ -843,33 +895,11 @@ setInterval(() => {
 }, 1000);
 
 // ========================
-// ランキング
-// ========================
-async function loadRanking() {
-  try {
-    const { data } = await sbClient.from('ranking').select('nickname,score').order('score',{ascending:false}).limit(5);
-    const list = document.getElementById('rankList');
-    if (!data || data.length===0) { list.innerHTML='<div class="rank-empty">まだデータがありません</div>'; return; }
-    list.innerHTML = data.map((item,i) => `
-      <div class="rank-item">
-        <div class="rank-num ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
-        <div class="rank-name">${item.nickname}</div>
-        <div class="rank-score">${item.score.toLocaleString()}</div>
-      </div>
-    `).join('');
-  } catch(e) {
-    document.getElementById('rankList').innerHTML='<div class="rank-empty">取得失敗</div>';
-  }
-}
-
-// ========================
 // 初期化
 // ========================
 hp = loadHp();
-renderRounds();
-updateStats();
+applyTheme('standard319', document.querySelector('.theme-tab.active'));
 updateHp();
-loadRanking();
 </script>
 
 </body>

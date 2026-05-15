@@ -26,5 +26,8 @@
   },
   "dependencies": {
     "crypto-js": "^4.2.0"
+  },
+  "optionalDependencies": {
+    "@rolldown/binding-darwin-arm64": "^1.0.0"
   }
 }

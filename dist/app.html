@@ -5,238 +5,237 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ICHIGEKI〜スロパチ〜</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="presets.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     :root {
-      --bg:       #07091a;
-      --bg-panel: #0c1030;
-      --bg-card:  #10163a;
-      --border:   rgba(60,100,220,0.25);
-      --border-hi:rgba(80,140,255,0.5);
-      --gold:     #f0c040;
-      --gold2:    #ffe060;
-      --cyan:     #00e5ff;
-      --green:    #00e676;
-      --red:      #ff3d3d;
-      --orange:   #ff9100;
-      --muted:    #4a5880;
-      --text:     #d0d8f8;
+      --bg:        #07091a;
+      --bg-panel:  #0c1030;
+      --bg-card:   #10163a;
+      --border:    rgba(60,100,220,0.25);
+      --border-hi: rgba(80,140,255,0.5);
+      --gold:      #f0c040;
+      --gold2:     #ffe060;
+      --green:     #00e676;
+      --red:       #ff3d3d;
+      --orange:    #ff9100;
+      --cyan:      #00e5ff;
+      --muted:     #4a5880;
+      --text:      #d0d8f8;
     }
 
-    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; overflow-x: hidden; }
+    html { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* 全体スクロールなし */
+    }
 
     /* ── HEADER ── */
     .hdr {
       background: linear-gradient(180deg,#0d1540,#080e28);
       border-bottom: 1px solid var(--border-hi);
-      padding: 8px 12px;
+      padding: 6px 10px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      gap: 8px;
+      flex-shrink: 0;
     }
-    .hdr-logo { flex: 1; }
-    .hdr-logo h1 { font-family: 'Orbitron', sans-serif; font-size: 16px; color: #fff; letter-spacing: 2px; text-shadow: 0 0 12px rgba(100,160,255,.6); }
-    .hdr-logo p  { font-size: 9px; color: var(--muted); letter-spacing: 3px; }
-    .theme-tabs  { display: flex; gap: 4px; flex-wrap: wrap; }
-    .theme-tab {
-      background: #0a0e25;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--muted);
-      font-family: 'Noto Sans JP', sans-serif;
-      font-size: 10px;
-      padding: 4px 8px;
-      cursor: pointer;
-      transition: all .15s;
-      white-space: nowrap;
-    }
+    .hdr-logo h1 { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #fff; letter-spacing: 2px; }
+    .hdr-logo p  { font-size: 8px; color: var(--muted); letter-spacing: 3px; }
+    .theme-tabs  { display: flex; gap: 3px; flex-wrap: wrap; flex: 1; justify-content: flex-end; }
+    .theme-tab   { background: #0a0e25; border: 1px solid var(--border); border-radius: 5px; color: var(--muted); font-family: 'Noto Sans JP', sans-serif; font-size: 9px; padding: 3px 6px; cursor: pointer; transition: all .15s; white-space: nowrap; }
     .theme-tab.active { background: linear-gradient(135deg,#1a3a7a,#2a4a9a); color: #fff; border-color: var(--border-hi); }
 
-    /* ── MAIN GRID ── */
-    .main { display: grid; grid-template-columns: 1fr 220px; gap: 0; min-height: calc(100vh - 100px); }
+    /* ── MAIN AREA（上部コンテンツ） ── */
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
 
     /* ── LEFT ── */
-    .left { padding: 8px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+    .left {
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      overflow-y: auto;
+      min-height: 0;
+    }
 
-    /* section label */
-    .sec-lbl { background: linear-gradient(90deg,#0d1a40,#1a2560,#0d1a40); border: 1px solid var(--border); border-radius: 4px; text-align: center; font-size: 10px; color: #4488ff; padding: 3px 0; letter-spacing: 2px; }
+    /* ステータス */
+    .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; flex-shrink: 0; }
+    .stat-box  { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 4px 6px; text-align: center; }
+    .stat-box .lbl { font-size: 8px; color: var(--muted); }
+    .stat-box .val { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; color: var(--gold); line-height: 1.3; }
+    .stat-box .val.g  { color: var(--green); }
+    .stat-box .val.r  { color: var(--red); }
+    .stat-box .val.b  { color: #4488ff; }
+    .stat-box .val.sm { font-size: 10px; }
 
-    /* ── STATS ROW ── */
-    .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; }
-    .stat-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; text-align: center; }
-    .stat-box .lbl { font-size: 9px; color: var(--muted); }
-    .stat-box .val { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: var(--gold); line-height: 1.3; }
-    .stat-box .val.g { color: var(--green); }
-    .stat-box .val.r { color: var(--red); }
-    .stat-box .val.b { color: #4488ff; }
-    .stat-box .val.sm { font-size: 11px; }
-
-    /* ── BIG WIN ── */
+    /* 大当たり演出 */
     .big-win {
       background: radial-gradient(ellipse at 50% 30%,#2a1000,#0a0500);
       border: 2px solid #8b4400;
-      border-radius: 10px;
-      min-height: 140px;
+      border-radius: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 12px 8px;
+      padding: 8px;
       position: relative;
       overflow: hidden;
+      flex-shrink: 0;
+      min-height: 110px;
     }
     .big-win::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%,rgba(255,160,0,.15),transparent 70%); pointer-events:none; }
-    .win-title { font-size: 24px; font-weight: 900; color: var(--gold2); text-shadow: 0 0 20px #ff8800,2px 2px 0 #000; animation: pulseGlow 1.5s ease-in-out infinite; }
-    .win-row   { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
-    .win-total { background: #1a0a00; border: 1px solid #8b4400; border-radius: 4px; padding: 1px 6px; font-size: 9px; color: var(--gold); }
-    .win-num   { font-family: 'Orbitron', sans-serif; font-size: 40px; font-weight: 900; background: linear-gradient(180deg,#fff 0%,#ffd700 40%,#ff8800 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 8px rgba(255,140,0,.8)); line-height: 1; }
-    .win-unit  { font-size: 16px; font-weight: 900; color: #ffcc44; }
-    .win-balls { background: linear-gradient(90deg,#1a0800,#2a1200,#1a0800); border: 2px solid var(--gold); border-radius: 6px; padding: 3px 12px; margin-top: 6px; }
-    .win-balls-num { font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900; color: var(--gold2); text-shadow: 0 0 12px #ff8800; }
-    .win-balls-u   { font-size: 12px; color: var(--gold); margin-left: 3px; }
-    .win-idle { font-size: 13px; color: var(--muted); }
-    @keyframes pulseGlow { 0%,100%{text-shadow:0 0 20px #ff8800,2px 2px 0 #000}50%{text-shadow:0 0 35px #ff8800,0 0 55px #ff4400,2px 2px 0 #000} }
+    .win-idle  { font-size: 12px; color: var(--muted); }
+    .win-title { font-size: 20px; font-weight: 900; color: var(--gold2); text-shadow: 0 0 16px #ff8800,2px 2px 0 #000; animation: pulseGlow 1.5s ease-in-out infinite; }
+    .win-row   { display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+    .win-total { background: #1a0a00; border: 1px solid #8b4400; border-radius: 3px; padding: 1px 5px; font-size: 8px; color: var(--gold); }
+    .win-num   { font-family: 'Orbitron', sans-serif; font-size: 34px; font-weight: 900; background: linear-gradient(180deg,#fff 0%,#ffd700 40%,#ff8800 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(255,140,0,.8)); line-height: 1; }
+    .win-unit  { font-size: 14px; font-weight: 900; color: #ffcc44; }
+    .win-balls { background: linear-gradient(90deg,#1a0800,#2a1200,#1a0800); border: 1px solid var(--gold); border-radius: 5px; padding: 2px 10px; margin-top: 4px; }
+    .win-balls-num { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: var(--gold2); text-shadow: 0 0 10px #ff8800; }
+    .win-balls-u   { font-size: 11px; color: var(--gold); margin-left: 2px; }
+    @keyframes pulseGlow { 0%,100%{text-shadow:0 0 16px #ff8800,2px 2px 0 #000}50%{text-shadow:0 0 28px #ff8800,0 0 44px #ff4400,2px 2px 0 #000} }
 
     /* 体力 */
-    .hp-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
-    .hp-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .hp-lbl { font-size: 11px; color: var(--muted); font-weight: 700; flex-shrink: 0; }
+    .hp-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; flex-shrink: 0; }
+    .hp-top { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .hp-lbl { font-size: 10px; color: var(--muted); font-weight: 700; flex-shrink: 0; }
     .hp-hearts { display: flex; gap: 2px; flex: 1; }
-    .hp-heart { font-size: 18px; transition: opacity .3s; }
+    .hp-heart { font-size: 16px; transition: opacity .3s; }
     .hp-heart.off { opacity: .15; filter: grayscale(1); }
-    .hp-timer { font-size: 10px; color: var(--muted); flex-shrink: 0; font-family: 'Orbitron', sans-serif; }
-    .hp-ad-btn { width: 100%; padding: 7px; background: linear-gradient(135deg,#1a2040,#0f1530); border: 1px solid var(--border-hi); border-radius: 6px; color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 11px; cursor: pointer; transition: all .15s; }
-    .hp-ad-btn:hover { background: linear-gradient(135deg,#2a3060,#1a2050); color: var(--gold); }
+    .hp-timer { font-size: 9px; color: var(--muted); font-family: 'Orbitron', sans-serif; flex-shrink: 0; }
+    .hp-ad-btn { width: 100%; padding: 5px; background: linear-gradient(135deg,#1a2040,#0f1530); border: 1px solid var(--border-hi); border-radius: 5px; color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 10px; cursor: pointer; transition: all .15s; }
+    .hp-ad-btn:hover { color: var(--gold); }
     .hp-ad-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-    /* 体力0メッセージ */
-    .hp-empty-msg { background: rgba(255,61,61,.1); border: 1px solid var(--red); border-radius: 8px; padding: 10px; text-align: center; font-size: 12px; color: var(--red); display: none; }
-
-    /* ── MODE ── */
-    .mode-box { border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid; transition: all .4s; }
+    /* モード */
+    .mode-box { border-radius: 6px; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; border: 1px solid; transition: all .4s; flex-shrink: 0; }
     .mode-normal { background: linear-gradient(135deg,#0d1535,#111a40); border-color: var(--border); }
     .mode-rush   { background: radial-gradient(ellipse,#1a0808,#0d0000); border-color: #660000; animation: rushGlow 1s ease-in-out infinite; }
-    .mode-lt     { background: radial-gradient(ellipse,#000d2a,#001040); border-color: var(--cyan); animation: ltGlow .8s ease-in-out infinite; }
-    .mode-name { font-size: 16px; font-weight: 900; }
+    .mode-name   { font-size: 14px; font-weight: 900; }
     .mode-normal .mode-name { color: var(--muted); }
-    .mode-rush   .mode-name { color: var(--orange); text-shadow: 0 0 12px rgba(255,145,0,.7); }
-    .mode-lt     .mode-name { color: var(--cyan);   text-shadow: 0 0 12px rgba(0,229,255,.8); }
-    .mode-remain { text-align: right; font-size: 10px; color: var(--muted); }
-    .mode-remain-num { font-family: 'Orbitron', sans-serif; font-size: 18px; color: var(--text); }
-    @keyframes rushGlow { 0%,100%{box-shadow:0 0 10px rgba(255,100,0,.3)}50%{box-shadow:0 0 22px rgba(255,100,0,.6)} }
-    @keyframes ltGlow   { 0%,100%{box-shadow:0 0 10px rgba(0,229,255,.3)}50%{box-shadow:0 0 22px rgba(0,229,255,.6)} }
+    .mode-rush   .mode-name { color: var(--orange); text-shadow: 0 0 10px rgba(255,145,0,.7); }
+    @keyframes rushGlow { 0%,100%{box-shadow:0 0 8px rgba(255,100,0,.3)}50%{box-shadow:0 0 18px rgba(255,100,0,.6)} }
 
-    /* ── HISTORY ── */
-    .hist-row { display: flex; gap: 4px; flex-wrap: wrap; }
-    .hist-badge { background: linear-gradient(135deg,#1a2040,#0f1530); border: 1px solid #4488ff; border-radius: 4px; padding: 2px 4px; text-align: center; min-width: 30px; }
-    .hist-r  { font-size: 12px; font-weight: 900; color: var(--gold2); }
-    .hist-lt { font-size: 8px; color: var(--cyan); }
-    .hist-badge.gold { border-color: var(--gold); background: linear-gradient(135deg,#2a1800,#1a1000); }
-
-    /* ── LOG ── */
-    .log-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; flex: 1; min-height: 100px; }
-    .log-head { background: #0d1230; padding: 5px 10px; font-size: 10px; color: var(--muted); letter-spacing: 2px; border-bottom: 1px solid var(--border); }
-    .log-body { padding: 8px 10px; font-size: 12px; line-height: 1.9; max-height: 160px; overflow-y: auto; }
-    .log-body::-webkit-scrollbar { width: 3px; }
+    /* ログ */
+    .log-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+    .log-body { padding: 5px 8px; font-size: 10px; line-height: 1.55; height: 54px; overflow-y: auto; }
+    .log-body::-webkit-scrollbar { width: 2px; }
     .log-body::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
     .log-hit    { color: var(--gold); font-weight: 700; }
     .log-rush   { color: var(--orange); font-weight: 700; }
-    .log-lt     { color: var(--cyan); font-weight: 900; font-size: 13px; }
     .log-payout { color: var(--green); font-weight: 700; }
     .log-fail   { color: var(--red); }
     .log-end    { color: var(--muted); }
     .log-hama   { color: var(--muted); opacity: .5; }
 
     /* ── RIGHT ── */
-    .right { background: var(--bg-panel); border-left: 1px solid var(--border); padding: 8px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-    .panel-title { text-align: center; font-size: 13px; font-weight: 700; padding: 4px 0 6px; border-bottom: 1px solid var(--border); }
+    .right {
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border);
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      overflow-y: auto;
+      min-height: 0;
+    }
 
-    /* setting group */
-    .sg { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
-    .sg-row { display: flex; align-items: center; gap: 4px; margin-bottom: 6px; }
-    .sg-name { font-size: 11px; color: var(--text); flex: 1; }
-    .sg-note { font-size: 9px; color: var(--muted); }
-    .ctrl { display: flex; align-items: center; gap: 4px; }
-    .cb { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border-hi); background: linear-gradient(135deg,#1a2550,#0f1835); color: var(--gold); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; flex-shrink: 0; }
-    .cb:hover { background: linear-gradient(135deg,#2a3570,#1a2550); transform: scale(1.1); }
-    .cv { background: #080c20; border: 1px solid var(--border-hi); border-radius: 4px; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; color: #fff; text-align: center; min-width: 52px; padding: 3px 4px; }
-    .cu { font-size: 10px; color: var(--muted); }
+    /* 設定グループ */
+    .sg { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; flex-shrink: 0; }
+    .sg-name { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
 
-    /* donut */
-    .donut-row { display: flex; align-items: center; gap: 8px; }
-    .donut-wrap { width: 52px; height: 52px; flex-shrink: 0; }
-    .donut-wrap svg { width: 52px; height: 52px; }
-    .legend { flex: 1; }
-    .legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; margin-bottom: 2px; }
-    .legend-dot  { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-    .legend-name { color: var(--muted); flex: 1; }
-    .legend-pct  { color: var(--text); font-weight: 700; }
+    /* コントロール */
+    .sg-ctrl { display: flex; flex-direction: column; gap: 4px; }
+    .sg-ctrl-row { display: flex; align-items: center; gap: 4px; }
+    .cb { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border-hi); background: linear-gradient(135deg,#1a2550,#0f1835); color: var(--gold); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; flex-shrink: 0; user-select: none; }
+    .cb:active { transform: scale(.92); }
+    .cv { background: #080c20; border: 1px solid var(--border-hi); border-radius: 4px; font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: #fff; text-align: center; flex: 1; padding: 3px 4px; min-width: 0; }
+    .cv:focus { outline: 1px solid var(--gold); }
+    .cu { font-size: 9px; color: var(--muted); flex-shrink: 0; }
+    .sg-slider { width: 100%; height: 3px; border-radius: 2px; background: var(--border); appearance: none; outline: none; cursor: pointer; }
+    .sg-slider::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); cursor: pointer; border: 2px solid #fff; }
+    /* ラウンド振り分け */
+    .round-rows { display: flex; flex-direction: column; gap: 4px; }
+    .round-row  { display: grid; grid-template-columns: 28px 1fr 1fr 28px; gap: 3px; align-items: center; }
+    .round-lbl  { font-size: 9px; color: var(--muted); text-align: center; }
+    .round-input { background: #080c20; border: 1px solid var(--border-hi); border-radius: 3px; font-family: 'Orbitron', sans-serif; font-size: 11px; color: #fff; text-align: center; padding: 2px 3px; width: 100%; min-width: 0; }
+    .round-del  { width: 20px; height: 20px; background: rgba(255,61,61,.15); border: 1px solid var(--red); border-radius: 50%; color: var(--red); font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .round-add  { width: 100%; padding: 4px; background: linear-gradient(135deg,#1a2040,#0f1530); border: 1px solid var(--border-hi); border-radius: 4px; color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 10px; cursor: pointer; margin-top: 4px; transition: all .15s; }
+    .round-add:hover { color: var(--gold); }
+    .ratio-total { font-family: 'Orbitron', sans-serif; font-size: 10px; text-align: right; margin-top: 3px; }
+    .ratio-ok   { color: var(--green); }
+    .ratio-over { color: var(--red); }
+
+    /* 初当たり振り分け */
+    .first-hit-grid { display: grid; grid-template-columns: 46px 1fr 1fr; gap: 3px; align-items: center; }
+    .first-hit-head { font-size: 8px; color: var(--muted); text-align: center; }
+    .first-hit-label { font-size: 9px; color: var(--text); text-align: center; font-weight: 700; white-space: nowrap; }
+    .first-hit-label.win { color: var(--green); }
+    .first-hit-label.lose { color: var(--red); }
+    .first-hit-input { background: #080c20; border: 1px solid var(--border-hi); border-radius: 3px; font-family: 'Orbitron', sans-serif; font-size: 11px; color: #fff; text-align: center; padding: 2px 3px; width: 100%; min-width: 0; }
 
     /* toggle */
     .tog { position: relative; display: inline-flex; cursor: pointer; flex-shrink: 0; }
     .tog input { position: absolute; opacity: 0; width: 0; height: 0; }
-    .tog-track { width: 34px; height: 20px; background: #1a1a2e; border: 1px solid var(--border); border-radius: 10px; position: relative; transition: all .2s; display: block; }
-    .tog-track::after { content:''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--muted); transition: all .2s; }
+    .tog-track { width: 30px; height: 17px; background: #1a1a2e; border: 1px solid var(--border); border-radius: 9px; position: relative; transition: all .2s; display: block; }
+    .tog-track::after { content:''; position: absolute; top: 2px; left: 2px; width: 11px; height: 11px; border-radius: 50%; background: var(--muted); transition: all .2s; }
     .tog input:checked + .tog-track { background: linear-gradient(135deg,#008844,#00cc66); border-color: var(--green); }
-    .tog input:checked + .tog-track::after { left: 16px; background: #fff; }
+    .tog input:checked + .tog-track::after { left: 15px; background: #fff; }
 
-    /* ── RANKING ── */
-    .rank-list { display: flex; flex-direction: column; gap: 4px; }
-    .rank-item { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: #080c20; border: 1px solid var(--border); border-radius: 6px; }
-    .rank-num  { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--muted); width: 16px; text-align: center; flex-shrink: 0; }
-    .rank-num.r1 { color: #ffd700; }
-    .rank-num.r2 { color: #c0c0c0; }
-    .rank-num.r3 { color: #cd7f32; }
-    .rank-name  { flex: 1; font-size: 11px; color: var(--text); }
-    .rank-score { font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--green); flex-shrink: 0; }
-    .rank-empty { font-size: 11px; color: var(--muted); text-align: center; padding: 10px 0; }
-
-    /* share */
-    .share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 7px; border-radius: 6px; border: none; font-family: 'Noto Sans JP', sans-serif; font-size: 11px; font-weight: 700; cursor: pointer; width: 100%; margin-bottom: 4px; transition: opacity .15s; }
-    .share-btn:hover { opacity: .85; }
-    .share-x    { background: #000; color: #fff; }
-    .share-line { background: #06c755; color: #fff; }
-    .share-save { background: linear-gradient(135deg,#6644cc,#4422aa); color: #fff; }
-
-    /* ── CONTROLS ── */
-    .ctrl-bar { background: var(--bg-panel); border-top: 1px solid var(--border-hi); padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .btn-reset { background: linear-gradient(135deg,#1a2040,#0f1530); border: 1px solid var(--border-hi); color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 11px; padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 1px; transition: all .15s; }
-    .btn-reset:hover { background: linear-gradient(135deg,#2a3060,#1f2540); }
-    .btn-start { background: radial-gradient(ellipse at 50% 30%,#ff4444,#cc2222,#880000); border: 3px solid #ff6666; border-radius: 50%; width: 80px; height: 80px; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(255,0,0,.5),inset 0 2px 4px rgba(255,255,255,.3); transition: all .1s; flex-shrink: 0; }
-    .btn-start:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,0,0,.7); }
+    /* ── BOTTOM BAR ── */
+    .bottom-bar {
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border-hi);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .btn-back  { background: linear-gradient(135deg,#1a2040,#0f1530); border: 1px solid var(--border-hi); color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 10px; padding: 6px 10px; border-radius: 7px; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 1px; transition: all .15s; }
+    .btn-back:hover { color: var(--gold); }
+    .btn-reset { background: linear-gradient(135deg,#1a2040,#0f1530); border: 1px solid var(--border-hi); color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 10px; padding: 6px 10px; border-radius: 7px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 1px; transition: all .15s; }
+    .btn-reset:hover { color: var(--gold); }
+    .btn-start { background: radial-gradient(ellipse at 50% 30%,#ff4444,#cc2222,#880000); border: 3px solid #ff6666; border-radius: 50%; width: 72px; height: 72px; font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 900; color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 18px rgba(255,0,0,.5),inset 0 2px 4px rgba(255,255,255,.3); transition: all .1s; flex-shrink: 0; }
+    .btn-start:hover  { transform: scale(1.05); box-shadow: 0 0 28px rgba(255,0,0,.7); }
     .btn-start:active { transform: scale(.95); }
-    .btn-start small { font-size: 8px; font-family: 'Noto Sans JP', sans-serif; letter-spacing: 1px; }
-    .btn-start.stop { background: radial-gradient(ellipse at 50% 30%,#888,#444,#222); border-color: #aaa; }
-    .auto-group { display: flex; flex-direction: column; gap: 4px; }
-    .btn-auto  { background: linear-gradient(135deg,#1a2040,#0f1530); border: 1px solid var(--border-hi); color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 11px; padding: 6px 12px; border-radius: 6px; cursor: pointer; text-align: center; }
-    .btn-speed { background: linear-gradient(135deg,#1a3000,#0f2000); border: 1px solid #44aa00; color: #88ff44; font-family: 'Noto Sans JP', sans-serif; font-size: 10px; padding: 4px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
-    .speed-on  { background: #44aa00; color: #001800; border-radius: 3px; padding: 1px 5px; font-weight: 900; font-size: 10px; }
+    .btn-start small  { font-size: 8px; font-family: 'Noto Sans JP', sans-serif; letter-spacing: 1px; }
+    .btn-start.stop   { background: radial-gradient(ellipse at 50% 30%,#888,#444,#222); border-color: #aaa; }
+    .btn-start:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .btn-speed { background: linear-gradient(135deg,#1a3000,#0f2000); border: 1px solid #44aa00; color: #88ff44; font-family: 'Noto Sans JP', sans-serif; font-size: 9px; padding: 4px 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+    .speed-on  { background: #44aa00; color: #001800; border-radius: 3px; padding: 1px 4px; font-weight: 900; font-size: 9px; }
 
-    /* ── FX ── */
-    .payout-fx { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900; color: var(--gold2); text-shadow: 0 0 25px var(--gold); pointer-events: none; z-index: 999; white-space: nowrap; }
+    /* 体力0メッセージ */
+    .hp-empty-msg { background: rgba(255,61,61,.1); border: 1px solid var(--red); border-radius: 6px; padding: 6px; text-align: center; font-size: 11px; color: var(--red); display: none; flex-shrink: 0; }
+
+    /* FX */
+    .payout-fx { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); font-family: 'Orbitron', sans-serif; font-size: 44px; font-weight: 900; color: var(--gold2); text-shadow: 0 0 22px var(--gold); pointer-events: none; z-index: 999; white-space: nowrap; }
     .payout-fx.show { animation: fxPop .7s cubic-bezier(.175,.885,.32,1.275); }
     @keyframes fxPop { 0%{transform:translate(-50%,-50%) scale(0);opacity:0}50%{transform:translate(-50%,-50%) scale(1.1);opacity:1}100%{transform:translate(-50%,-50%) scale(.95);opacity:0} }
 
-    /* ── FOOTER NOTE ── */
-    .foot-note { text-align: center; font-size: 9px; color: var(--muted); padding: 4px; background: #040610; border-top: 1px solid var(--border); }
+    /* フッター */
+    .foot-note { text-align: center; font-size: 8px; color: var(--muted); padding: 3px; background: #040610; flex-shrink: 0; }
 
-    /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: #080c1e; }
+    ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 480px) {
-      .main { grid-template-columns: 1fr; }
-      .right { border-left: none; border-top: 1px solid var(--border); }
-      .hdr-logo h1 { font-size: 13px; }
-      .theme-tab { font-size: 9px; padding: 3px 6px; }
+      .main { grid-template-columns: 1fr 180px; }
     }
   </style>
 </head>
@@ -248,54 +247,34 @@
     <h1>ICHIGEKI</h1>
     <p>〜スロパチ〜</p>
   </div>
-  <div class="theme-tabs" id="themeTabs">
-    <button class="theme-tab active" onclick="applyTheme('eva',this)">エヴァ風</button>
-    <button class="theme-tab" onclick="applyTheme('rezero',this)">リゼロ風</button>
-    <button class="theme-tab" onclick="applyTheme('arami',this)">荒波LT</button>
-    <button class="theme-tab" onclick="applyTheme('ama',this)">甘デジ</button>
-    <button class="theme-tab" onclick="applyTheme('karakuri',this)">からくり</button>
-    <button class="theme-tab" onclick="applyTheme('boukyou',this)">暴凶星</button>
-    <button class="theme-tab" onclick="applyTheme('madoka',this)">まどマギ</button>
+  <div class="theme-tabs">
+    <button class="theme-tab active" onclick="applyTheme('standard319',this)">王道319</button>
+    <button class="theme-tab" onclick="applyTheme('highContinue',this)">高継続</button>
+    <button class="theme-tab" onclick="applyTheme('ltBurst',this)">荒波LT</button>
+    <button class="theme-tab" onclick="applyTheme('light',this)">甘デジ</button>
+    <button class="theme-tab" onclick="applyTheme('stableMiddle',this)">安定ミドル</button>
+    <button class="theme-tab" onclick="applyTheme('oneShot',this)">一撃特化</button>
   </div>
 </header>
 
+<!-- MAIN -->
 <div class="main">
 
-  <!-- ── LEFT ── -->
+  <!-- LEFT -->
   <div class="left">
-    <div class="sec-lbl">現在の状態</div>
 
     <!-- ステータス -->
     <div class="stats-row">
-      <div class="stat-box">
-        <div class="lbl">回転数</div>
-        <div class="val" id="statKaiten">0</div>
-        <div class="lbl">回転</div>
-      </div>
-      <div class="stat-box">
-        <div class="lbl">投資</div>
-        <div class="val sm" id="statToshi">0円</div>
-      </div>
-      <div class="stat-box">
-        <div class="lbl">持ち玉</div>
-        <div class="val g sm" id="statMoto">0玉</div>
-      </div>
-      <div class="stat-box">
-        <div class="lbl">差玉</div>
-        <div class="val g sm" id="statSa">0玉</div>
-      </div>
-      <div class="stat-box">
-        <div class="lbl">大当確率</div>
-        <div class="val b sm" id="statOdakari">-</div>
-      </div>
-      <div class="stat-box">
-        <div class="lbl">連チャン</div>
-        <div class="val" id="statChain">0</div>
-      </div>
+      <div class="stat-box"><div class="lbl">回転数</div><div class="val" id="statKaiten">0</div><div class="lbl">回転</div></div>
+      <div class="stat-box"><div class="lbl">投資</div><div class="val sm" id="statToshi">0円</div></div>
+      <div class="stat-box"><div class="lbl">持ち玉</div><div class="val g sm" id="statMoto">0玉</div></div>
+      <div class="stat-box"><div class="lbl">差玉</div><div class="val g sm" id="statSa">0玉</div></div>
+      <div class="stat-box"><div class="lbl">確率</div><div class="val b sm" id="statProb">1/319</div></div>
+      <div class="stat-box"><div class="lbl">連チャン</div><div class="val" id="statChain">0</div></div>
     </div>
 
     <!-- 大当たり演出 -->
-    <div class="big-win" id="bigWin">
+    <div class="big-win">
       <div class="win-idle" id="winIdle">待機中...</div>
       <div id="winResult" style="display:none;flex-direction:column;align-items:center;">
         <div class="win-title">大当たり!!</div>
@@ -305,7 +284,7 @@
           <span class="win-unit">連チャン</span>
         </div>
         <div class="win-balls">
-          <span>獲得出玉</span>
+          <span style="font-size:10px;color:var(--gold);">獲得出玉</span>
           <span class="win-balls-num" id="winBalls">0</span>
           <span class="win-balls-u">玉</span>
         </div>
@@ -313,7 +292,7 @@
     </div>
 
     <!-- 体力 -->
-    <div class="hp-box" id="hpBox">
+    <div class="hp-box">
       <div class="hp-top">
         <span class="hp-lbl">体力</span>
         <div class="hp-hearts">
@@ -329,184 +308,155 @@
     </div>
 
     <!-- モード -->
-    <div class="sec-lbl">現在のモード</div>
     <div class="mode-box mode-normal" id="modeBox">
       <div class="mode-name" id="modeName">通常モード</div>
-      <div class="mode-remain" id="modeRemain" style="display:none;">
-        <div>残り回転数</div>
-        <div><span class="mode-remain-num" id="modeRemainNum">0</span>回転</div>
-      </div>
     </div>
 
-    <!-- 大当たり履歴 -->
-    <div class="sec-lbl">大当たり履歴（直近10回）</div>
-    <div class="hist-row" id="histRow">
-      <span style="font-size:11px;color:var(--muted);">まだ履歴がありません</span>
-    </div>
+    <!-- 体力0メッセージ -->
+    <div class="hp-empty-msg" id="hpEmptyMsg">❤️ 体力がありません。回復をお待ちください。</div>
 
     <!-- ログ -->
     <div class="log-wrap">
-      <div class="log-head">ゲームログ</div>
       <div class="log-body" id="logBody"></div>
     </div>
+
   </div>
 
-  <!-- ── RIGHT ── -->
+  <!-- RIGHT -->
   <div class="right">
-    <div class="panel-title">設定</div>
+
+    <!-- 250玉あたり回転数 -->
+    <div class="sg">
+      <div class="sg-name">250玉あたり回転数</div>
+      <div class="sg-ctrl">
+        <div class="sg-ctrl-row">
+          <button class="cb" data-key="spinPer250" data-delta="-1">−</button>
+          <input type="number" class="cv" id="cv-spinPer250" value="17" min="1" max="100" oninput="onDirectInput('spinPer250',this.value)">
+          <span class="cu">回転</span>
+          <button class="cb" data-key="spinPer250" data-delta="1">+</button>
+        </div>
+      </div>
+    </div>
 
     <!-- 大当たり確率 -->
     <div class="sg">
-      <div class="sg-row">
-        <span class="sg-name">大当たり確率</span>
-        <span class="sg-note" id="noteHit">(1/319)</span>
-      </div>
-      <div class="ctrl">
-        <button class="cb" onclick="adj('hitRate',-1)">−</button>
-        <div class="cv" id="cv-hitRate">319</div>
-        <button class="cb" onclick="adj('hitRate',1)">+</button>
-      </div>
-    </div>
-
-    <!-- LT突入率 -->
-    <div class="sg">
-      <div class="sg-row">
-        <span class="sg-name">LT突入率</span>
-        <span class="sg-note">(初当たり時)</span>
-        <label class="tog"><input type="checkbox" id="ltEnabled" checked><span class="tog-track"></span></label>
-      </div>
-      <div class="ctrl">
-        <button class="cb" onclick="adj('ltRate',-1)">−</button>
-        <div class="cv" id="cv-ltRate">20</div>
-        <button class="cb" onclick="adj('ltRate',1)">+</button>
-        <span class="cu">%</span>
+      <div class="sg-name">大当たり確率</div>
+      <div class="sg-ctrl">
+        <div class="sg-ctrl-row">
+          <button class="cb" data-key="hitRate" data-delta="-1">−</button>
+          <input type="number" class="cv" id="cv-hitRate" value="319" min="1" max="999" oninput="onDirectInput('hitRate',this.value)">
+          <button class="cb" data-key="hitRate" data-delta="1">+</button>
+        </div>
+        <input type="range" class="sg-slider" id="sl-hitRate" min="1" max="999" value="319" oninput="onSlider('hitRate',this.value)">
       </div>
     </div>
 
-    <!-- LT継続率 -->
+    <!-- 突破率 -->
     <div class="sg">
-      <div class="sg-row">
-        <span class="sg-name">LT継続率</span>
-      </div>
-      <div class="ctrl">
-        <button class="cb" onclick="adj('ltContinueRate',-1)">−</button>
-        <div class="cv" id="cv-ltContinueRate">95</div>
-        <button class="cb" onclick="adj('ltContinueRate',1)">+</button>
-        <span class="cu">%</span>
+      <div class="sg-name">突破率</div>
+      <div class="sg-ctrl">
+        <div class="sg-ctrl-row">
+          <button class="cb" data-key="breakRate" data-delta="-1">−</button>
+          <input type="number" class="cv" id="cv-breakRate" value="60" min="0" max="100" oninput="onDirectInput('breakRate',this.value)">
+          <span class="cu">%</span>
+          <button class="cb" data-key="breakRate" data-delta="1">+</button>
+        </div>
+        <input type="range" class="sg-slider" id="sl-breakRate" min="0" max="100" value="60" oninput="onSlider('breakRate',this.value)">
       </div>
     </div>
 
-    <!-- RUSH突入率 -->
+    <!-- 初当たり振り分け -->
     <div class="sg">
-      <div class="sg-row">
-        <span class="sg-name">RUSH突入率</span>
-        <span class="sg-note">(通常時)</span>
+      <div class="sg-name">初当たり振り分け</div>
+      <div class="first-hit-grid">
+        <div></div>
+        <div class="first-hit-head">出玉</div>
+        <div class="first-hit-head">割合%</div>
+        <div class="first-hit-label win">突破</div>
+        <input type="number" class="first-hit-input" id="cv-breakPayout" value="500" min="0" step="100" oninput="onDirectInput('breakPayout',this.value)" onchange="snapPayoutInput('breakPayout',this)">
+        <input type="number" class="first-hit-input" id="cv-breakShare" value="60" min="0" max="100" oninput="onFirstHitShareInput('break',this.value)">
+        <div class="first-hit-label lose">失敗</div>
+        <input type="number" class="first-hit-input" id="cv-failPayout" value="500" min="0" step="100" oninput="onDirectInput('failPayout',this.value)" onchange="snapPayoutInput('failPayout',this)">
+        <input type="number" class="first-hit-input" id="cv-failShare" value="40" min="0" max="100" oninput="onFirstHitShareInput('fail',this.value)">
       </div>
-      <div class="ctrl">
-        <button class="cb" onclick="adj('breakRate',-1)">−</button>
-        <div class="cv" id="cv-breakRate">60</div>
-        <button class="cb" onclick="adj('breakRate',1)">+</button>
-        <span class="cu">%</span>
+    </div>
+
+    <!-- 継続率 -->
+    <div class="sg">
+      <div class="sg-name">継続率</div>
+      <div class="sg-ctrl">
+        <div class="sg-ctrl-row">
+          <button class="cb" data-key="continueRate" data-delta="-1">−</button>
+          <input type="number" class="cv" id="cv-continueRate" value="81" min="0" max="100" oninput="onDirectInput('continueRate',this.value)">
+          <span class="cu">%</span>
+          <button class="cb" data-key="continueRate" data-delta="1">+</button>
+        </div>
+        <input type="range" class="sg-slider" id="sl-continueRate" min="0" max="100" value="81" oninput="onSlider('continueRate',this.value)">
       </div>
     </div>
 
     <!-- ラウンド振り分け -->
     <div class="sg">
-      <div class="sg-row"><span class="sg-name">ラウンド振り分け</span></div>
-      <div class="donut-row">
-        <div class="donut-wrap">
-          <svg viewBox="0 0 52 52">
-            <circle cx="26" cy="26" r="19" fill="none" stroke="#222" stroke-width="8"/>
-            <circle cx="26" cy="26" r="19" fill="none" stroke="#ff4444" stroke-width="8" stroke-dasharray="12 107" stroke-dashoffset="0" transform="rotate(-90 26 26)"/>
-            <circle cx="26" cy="26" r="19" fill="none" stroke="#ff8800" stroke-width="8" stroke-dasharray="48 71" stroke-dashoffset="-12" transform="rotate(-90 26 26)"/>
-            <circle cx="26" cy="26" r="19" fill="none" stroke="#ffcc00" stroke-width="8" stroke-dasharray="60 60" stroke-dashoffset="-60" transform="rotate(-90 26 26)"/>
-          </svg>
-        </div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#ff4444;"></div><span class="legend-name">15R直連</span><span class="legend-pct">10%</span></div>
-          <div class="legend-item"><div class="legend-dot" style="background:#ff8800;"></div><span class="legend-name">10R LT</span><span class="legend-pct">40%</span></div>
-          <div class="legend-item"><div class="legend-dot" style="background:#ffcc00;"></div><span class="legend-name">10R通常</span><span class="legend-pct">50%</span></div>
-        </div>
+      <div class="sg-name">ラウンド振り分け</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:3px;">
+        <div style="font-size:8px;color:var(--muted);text-align:center;">ラウンド</div>
+        <div style="font-size:8px;color:var(--muted);text-align:center;">出玉</div>
+        <div style="font-size:8px;color:var(--muted);text-align:center;">割合%</div>
       </div>
+      <div class="round-rows" id="roundRows"></div>
+      <div class="ratio-total" id="ratioTotal">合計 100%</div>
+      <button class="round-add" onclick="addRound()">＋ ラウンドを追加</button>
     </div>
 
-    <!-- ランキング -->
-    <div class="sg">
-      <div class="sg-row"><span class="sg-name">🏆 出玉ランキング</span></div>
-      <div class="rank-list" id="rankList">
-        <div class="rank-empty">読み込み中...</div>
-      </div>
-    </div>
-
-    <!-- シェア -->
-    <div class="sg">
-      <div class="sg-row"><span class="sg-name">結果をシェア</span></div>
-      <button class="share-btn share-x" onclick="shareX()">𝕏 Xでシェア</button>
-      <button class="share-btn share-line" onclick="shareLine()">LINE でシェア</button>
-      <button class="share-btn share-save" onclick="saveResult()">↓ 結果を保存</button>
-    </div>
   </div>
 </div>
 
-<!-- 体力0メッセージ -->
-<div class="hp-empty-msg" id="hpEmptyMsg">❤️ 体力がありません。回復をお待ちください。</div>
-
-<!-- CONTROLS -->
-<div class="ctrl-bar">
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <a href="index.html" class="btn-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    もどる
+  </a>
   <button class="btn-reset" onclick="resetSim()">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
     リセット
   </button>
   <button class="btn-start" id="startBtn" onclick="toggleSim()">
     <span id="startLabel">START</span>
     <small id="startSub">スタート</small>
   </button>
-  <div class="auto-group">
-    <button class="btn-auto" id="autoBtn" onclick="toggleAuto(this)">オートプレイ</button>
-    <button class="btn-speed" onclick="toggleSpeed(this)">高速 <span class="speed-on" id="speedLabel">ON</span></button>
-  </div>
+  <button class="btn-speed" onclick="toggleSpeed(this)">高速 <span class="speed-on" id="speedLabel">ON</span></button>
 </div>
 
-<p class="foot-note">※このシミュレーターはエンターテインメント目的で作成されたものであり、実際のパチンコ機の挙動とは異なる場合があります。</p>
+<p class="foot-note">※エンターテインメント目的のシミュレーターです。実際のパチンコ機の挙動とは異なる場合があります。</p>
 
 <!-- FX -->
 <div class="payout-fx" id="payoutFx"></div>
 
 <script>
 // ========================
-// Supabase
-// ========================
-const SB_URL = "https://cyvfbeppvumyqexrnqcr.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5dmZiZXBwdnVteXFleHJucWNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NTE3MDUsImV4cCI6MjA5NDEyNzcwNX0.GBmnaN_EkpzWY27GmdJOMO-5y5uybidwf9zwEXvz1Wc";
-const sbClient = window.supabase.createClient(SB_URL, SB_KEY);
-
-// ========================
-// 設定値
+// 設定
 // ========================
 const cfg = {
   hitRate:      319,
   breakRate:    60,
   continueRate: 81,
   spinPer250:   17,
-  ltRate:       20,
-  ltContinueRate: 95,
-  payout1: 1500, ratio1: 100,
-  payout2: 3000, ratio2: 0,
-  payout3: 4500, ratio3: 0,
-  payout4: 6000, ratio4: 0,
-  ltPayout1: 3000, ltRatio1: 80,
-  ltPayout2: 4500, ltRatio2: 20,
+  breakPayout:  1500,
+  failPayout:   300,
 };
+
+// ラウンドデータ
+let rounds = [
+  { label:'10R', payout:1500, ratio:100 },
+];
 
 // ========================
 // 状態
 // ========================
-let running     = false;
-let autoMode    = false;
-let fastMode    = true;
-let simInterval = null;
-let spins = 0, totalPayout = 0, chainCount = 0;
-let history = [];
+let running   = false;
+let fastMode  = true;
+let spins = 0, totalPayout = 0, currentBalls = 0, investedBalls = 0, chainCount = 0;
 let hp = 5;
 
 // ========================
@@ -514,43 +464,44 @@ let hp = 5;
 // ========================
 const sleep    = ms => new Promise(r => setTimeout(r, ms));
 const randRange = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+const isLocalPreview = ['file:', 'http:'].includes(location.protocol) &&
+  (location.protocol === 'file:' || ['localhost', '127.0.0.1'].includes(location.hostname));
 
 function addLog(text, cls='') {
-  const el = document.getElementById('logBody');
+  const el  = document.getElementById('logBody');
   const div = document.createElement('div');
   if (cls) div.className = cls;
   div.textContent = text;
   el.appendChild(div);
   if (el.children.length > 80) el.removeChild(el.firstChild);
-  el.parentElement.scrollTop = el.parentElement.scrollHeight;
+  el.scrollTop = el.scrollHeight;
 }
 
 function updateStats() {
-  const cost  = Math.floor(spins * (250 / cfg.spinPer250));
-  const diff  = totalPayout - cost;
-  document.getElementById('statKaiten').textContent  = spins.toLocaleString();
-  document.getElementById('statToshi').textContent   = cost.toLocaleString()+'円';
-  document.getElementById('statMoto').textContent    = totalPayout.toLocaleString()+'玉';
-  document.getElementById('statSa').textContent      = (diff>=0?'+':'')+diff.toLocaleString()+'玉';
-  document.getElementById('statOdakari').textContent = `1/${cfg.hitRate}`;
-  document.getElementById('statChain').textContent   = chainCount;
-  const sa = document.getElementById('statSa');
-  sa.className = 'val sm ' + (diff>=0?'g':'r');
+  const invest = Math.floor(investedBalls);
+  const investYen = Math.floor(invest * 4);
+  const balls  = Math.floor(currentBalls);
+  const diff   = balls - invest;
+  document.getElementById('statKaiten').textContent = spins.toLocaleString();
+  document.getElementById('statToshi').textContent  = investYen.toLocaleString()+'円';
+  document.getElementById('statMoto').textContent   = balls.toLocaleString()+'玉';
+  document.getElementById('statProb').textContent   = `1/${cfg.hitRate}`;
+  document.getElementById('statChain').textContent  = chainCount;
+  const saEl = document.getElementById('statSa');
+  saEl.textContent = (diff>=0?'+':'')+diff.toLocaleString()+'玉';
+  saEl.className   = 'val sm '+(diff>=0?'g':'r');
 }
 
-function setMode(mode, remain=0) {
+function setMode(mode) {
   const box  = document.getElementById('modeBox');
   const name = document.getElementById('modeName');
-  const rem  = document.getElementById('modeRemain');
-  const remN = document.getElementById('modeRemainNum');
   box.className = 'mode-box mode-'+mode;
-  if (mode==='normal') { name.textContent='通常モード'; rem.style.display='none'; }
-  if (mode==='rush')   { name.textContent='🔥 RUSH中'; rem.style.display='block'; remN.textContent=remain; }
-  if (mode==='lt')     { name.textContent='⚡ LT RUSH中！'; rem.style.display='block'; remN.textContent=remain; }
+  if (mode==='normal') name.textContent = '通常モード';
+  if (mode==='rush')   name.textContent = '🔥 RUSH中！';
 }
 
 function showBigWin() {
-  document.getElementById('winIdle').style.display   = 'none';
+  document.getElementById('winIdle').style.display  = 'none';
   const res = document.getElementById('winResult');
   res.style.display = 'flex';
   document.getElementById('winChain').textContent = chainCount;
@@ -558,7 +509,7 @@ function showBigWin() {
 }
 
 function resetBigWin() {
-  document.getElementById('winIdle').style.display = 'block';
+  document.getElementById('winIdle').style.display   = 'block';
   document.getElementById('winResult').style.display = 'none';
 }
 
@@ -570,159 +521,197 @@ function showFx(amount) {
   fx.classList.add('show');
 }
 
-function addHistory(rounds, isLT) {
-  history.unshift({ r:rounds, lt:isLT });
-  if (history.length > 10) history.pop();
-  const row = document.getElementById('histRow');
-  row.innerHTML = history.map(h=>`
-    <div class="hist-badge ${h.lt?'gold':''}">
-      <div class="hist-r">${h.r}R</div>
-      <div class="hist-lt">${h.lt?'LT':'通常'}</div>
+function addPayout(amount, label) {
+  if (amount <= 0) return;
+  chainCount++;
+  totalPayout += amount;
+  currentBalls += amount;
+  showBigWin();
+  showFx(amount);
+  addLog(`${label} +${amount.toLocaleString()}玉`, 'log-payout');
+  updateStats();
+}
+
+function spendSpinCost() {
+  const cost = 250 / cfg.spinPer250;
+  const fromBalls = Math.min(currentBalls, cost);
+  currentBalls -= fromBalls;
+  investedBalls += cost - fromBalls;
+}
+
+// ========================
+// ラウンド振り分け
+// ========================
+function renderRounds() {
+  const container = document.getElementById('roundRows');
+  container.innerHTML = rounds.map((r,i) => `
+    <div class="round-row">
+      <input class="round-input" type="number" value="${getRoundNumber(r.label)}" min="1" step="1" oninput="setRoundLabel(${i},this.value)">
+      <input class="round-input" type="number" value="${r.payout}" min="0" step="100" oninput="rounds[${i}].payout=parseInt(this.value)||0" onchange="snapRoundPayout(${i},this)">
+      <input class="round-input" type="number" value="${r.ratio}" min="0" max="100" oninput="rounds[${i}].ratio=parseInt(this.value)||0;updateRatioTotal()">
+      <button class="round-del" onclick="removeRound(${i})">×</button>
     </div>
   `).join('');
+  updateRatioTotal();
+}
+
+function getRoundNumber(label) {
+  const num = parseInt(String(label).replace(/[^\d]/g, ''), 10);
+  return Number.isFinite(num) && num > 0 ? num : 1;
+}
+
+function setRoundLabel(index, value) {
+  const round = Math.max(1, parseInt(value, 10) || 1);
+  rounds[index].label = `${round}R`;
+}
+
+function addRound() {
+  if (rounds.length >= 5) return;
+  rounds.push({ label:`${rounds.length+1}R`, payout:500, ratio:0 });
+  renderRounds();
+}
+
+function removeRound(i) {
+  if (rounds.length <= 1) return;
+  rounds.splice(i,1);
+  renderRounds();
+}
+
+function updateRatioTotal() {
+  const total = rounds.reduce((s,r) => s+r.ratio, 0);
+  const el    = document.getElementById('ratioTotal');
+  el.textContent = `合計 ${total}%`;
+  el.className   = 'ratio-total '+(total===100?'ratio-ok':'ratio-over');
+}
+
+function getRandomPayout() {
+  const rand = Math.random() * 100;
+  let cum = 0;
+  for (const r of rounds) {
+    cum += r.ratio;
+    if (rand < cum) return randRange(r.payout - 50, r.payout + 50);
+  }
+  return rounds[0].payout;
+}
+
+function snapToPayoutStep(value) {
+  return Math.max(0, Math.round((parseInt(value) || 0) / 100) * 100);
+}
+
+function snapPayoutInput(key, input) {
+  const value = snapToPayoutStep(input.value);
+  cfg[key] = value;
+  input.value = value;
+}
+
+function snapRoundPayout(index, input) {
+  const value = snapToPayoutStep(input.value);
+  rounds[index].payout = value;
+  input.value = value;
 }
 
 // ========================
-// 体力システム
+// 設定コントロール
 // ========================
-const HP_MAX       = 5;
-const HP_RECOVER_MS = 30 * 60 * 1000; // 30分
+const LONG_PRESS_DELAY = 400;
+let pressTimer = null, pressInterval = null, pressSpeed = 150;
 
-function loadHp() {
-  const saved = localStorage.getItem('hp_count');
-  const lastUsed = parseInt(localStorage.getItem('hp_last_used') || '0');
-  let current = saved !== null ? parseInt(saved) : HP_MAX;
-
-  // 経過時間から回復計算
-  if (current < HP_MAX && lastUsed > 0) {
-    const elapsed  = Date.now() - lastUsed;
-    const recovered = Math.floor(elapsed / HP_RECOVER_MS);
-    if (recovered > 0) {
-      current = Math.min(HP_MAX, current + recovered);
-      // 回復した分だけlastUsedを進める
-      const newLastUsed = lastUsed + (recovered * HP_RECOVER_MS);
-      localStorage.setItem('hp_last_used', current >= HP_MAX ? '0' : String(newLastUsed));
-      localStorage.setItem('hp_count', String(current));
-    }
-  }
-  return current;
+function adjCfg(key, delta) {
+  const maxMap = { spinPer250:100, hitRate:999, breakRate:100, continueRate:100, breakPayout:99999, failPayout:99999 };
+  const minMap = { spinPer250:1, hitRate:1, breakRate:0, continueRate:0, breakPayout:0, failPayout:0 };
+  cfg[key] = Math.max(minMap[key] ?? 1, Math.min(maxMap[key]||999, (cfg[key]||0)+delta));
+  syncUI(key);
+  if (key === 'breakRate') syncFirstHitShares();
+  if (key === 'spinPer250') updateStats();
 }
 
-function saveHp(count) {
-  localStorage.setItem('hp_count', String(count));
-  if (count < HP_MAX && !localStorage.getItem('hp_last_used_set')) {
-    localStorage.setItem('hp_last_used', String(Date.now()));
-  }
+function syncUI(key) {
+  const inp = document.getElementById('cv-'+key);
+  const sl  = document.getElementById('sl-'+key);
+  if (inp) inp.value = cfg[key];
+  if (sl)  sl.value  = cfg[key];
 }
 
-function useHp() {
-  if (hp <= 0) return false;
-  hp--;
-  localStorage.setItem('hp_count', String(hp));
-  if (hp < HP_MAX) {
-    localStorage.setItem('hp_last_used', String(Date.now()));
-  }
-  updateHp();
-  return true;
+function syncFirstHitShares() {
+  const breakShare = document.getElementById('cv-breakShare');
+  const failShare  = document.getElementById('cv-failShare');
+  if (breakShare) breakShare.value = cfg.breakRate;
+  if (failShare)  failShare.value  = 100 - cfg.breakRate;
 }
 
-function recoverHp(amount = 1) {
-  hp = Math.min(HP_MAX, hp + amount);
-  localStorage.setItem('hp_count', String(hp));
-  if (hp >= HP_MAX) localStorage.removeItem('hp_last_used');
-  updateHp();
+function onDirectInput(key, val) {
+  const v = parseInt(val);
+  if (isNaN(v)) return;
+  const maxMap = { spinPer250:100, hitRate:999, breakRate:100, continueRate:100, breakPayout:99999, failPayout:99999 };
+  const minMap = { spinPer250:1, hitRate:1, breakRate:0, continueRate:0, breakPayout:0, failPayout:0 };
+  cfg[key] = Math.max(minMap[key] ?? 1, Math.min(maxMap[key]||999, v));
+  const sl = document.getElementById('sl-'+key);
+  if (sl) sl.value = cfg[key];
+  if (key === 'breakRate') syncFirstHitShares();
+  if (key === 'spinPer250') updateStats();
 }
 
-function updateHp() {
-  for (let i = 1; i <= 5; i++) {
-    document.getElementById('hp'+i).classList.toggle('off', i > hp);
-  }
-  // 体力0メッセージ
-  const msg = document.getElementById('hpEmptyMsg');
-  const btn = document.getElementById('startBtn');
-  if (hp <= 0) {
-    msg.style.display = 'block';
-    btn.disabled = true;
-    btn.style.opacity = '.4';
-  } else {
-    msg.style.display = 'none';
-    btn.disabled = false;
-    btn.style.opacity = '1';
-  }
-  // 広告ボタン
-  document.getElementById('hpAdBtn').disabled = hp >= HP_MAX;
-  updateHpTimer();
+function onSlider(key, val) {
+  cfg[key] = parseInt(val);
+  const inp = document.getElementById('cv-'+key);
+  if (inp) inp.value = cfg[key];
+  if (key === 'breakRate') syncFirstHitShares();
+  if (key === 'spinPer250') updateStats();
 }
 
-function updateHpTimer() {
-  const timer = document.getElementById('hpTimer');
-  if (hp >= HP_MAX) { timer.textContent = ''; return; }
-  const lastUsed = parseInt(localStorage.getItem('hp_last_used') || '0');
-  if (!lastUsed) { timer.textContent = ''; return; }
-  const elapsed   = Date.now() - lastUsed;
-  const remaining = HP_RECOVER_MS - (elapsed % HP_RECOVER_MS);
-  const m = Math.floor(remaining / 60000);
-  const s = Math.floor((remaining % 60000) / 1000);
-  timer.textContent = `${m}:${String(s).padStart(2,'0')}`;
+function onFirstHitShareInput(type, val) {
+  const v = Math.max(0, Math.min(100, parseInt(val) || 0));
+  cfg.breakRate = type === 'break' ? v : 100 - v;
+  syncUI('breakRate');
+  syncFirstHitShares();
 }
 
-// 広告を見て回復（仮実装 → 後でAdMob差し替え）
-function watchAd() {
-  // TODO: AdMob リワード広告をここに実装
-  // 現在は仮ボタンとして即時回復
-  recoverHp(1);
-  alert('広告視聴完了！体力が1回復しました。');
+function startPress(key, delta) {
+  adjCfg(key, delta);
+  pressSpeed = 150;
+  pressTimer = setTimeout(() => {
+    pressInterval = setInterval(() => {
+      adjCfg(key, delta);
+      pressSpeed = Math.max(40, pressSpeed - 10);
+    }, pressSpeed);
+  }, LONG_PRESS_DELAY);
 }
 
-// タイマー更新（1秒ごと）
-setInterval(() => {
-  // 自動回復チェック
-  const lastUsed = parseInt(localStorage.getItem('hp_last_used') || '0');
-  if (hp < HP_MAX && lastUsed > 0) {
-    const elapsed   = Date.now() - lastUsed;
-    const recovered = Math.floor(elapsed / HP_RECOVER_MS);
-    if (recovered > 0) recoverHp(recovered);
-  }
-  updateHpTimer();
-}, 1000);
+function stopPress() {
+  clearTimeout(pressTimer);
+  clearInterval(pressInterval);
+}
+
+document.querySelectorAll('.cb[data-key]').forEach(btn => {
+  const key   = btn.dataset.key;
+  const delta = parseInt(btn.dataset.delta);
+  btn.addEventListener('mousedown',  () => startPress(key, delta));
+  btn.addEventListener('touchstart', e => { e.preventDefault(); startPress(key, delta); }, { passive:false });
+  btn.addEventListener('mouseup',    stopPress);
+  btn.addEventListener('mouseleave', stopPress);
+  btn.addEventListener('touchend',   stopPress);
+});
 
 // ========================
-// 設定調整
-// ========================
-function adj(key, delta) {
-  cfg[key] = Math.max(1, (cfg[key] || 0) + delta);
-  const el = document.getElementById('cv-'+key);
-  if (el) el.textContent = cfg[key];
-  document.getElementById('noteHit').textContent = `(1/${cfg.hitRate})`;
-}
-
-// ========================
-// テーマ（プリセット連動）
+// テーマ
 // ========================
 function applyTheme(type, btn) {
   const s = PRESETS[type];
   if (!s) return;
-  cfg.hitRate       = s.hitRate;
-  cfg.breakRate     = s.breakRate;
-  cfg.continueRate  = s.continueRate;
-  cfg.spinPer250    = s.spinPer250;
-  cfg.ltRate        = s.ltRate;
-  cfg.ltContinueRate= s.ltCont;
-  cfg.payout1 = s.p1; cfg.ratio1 = s.r1;
-  cfg.payout2 = s.p2; cfg.ratio2 = s.r2;
-  cfg.payout3 = s.p3; cfg.ratio3 = s.r3;
-  cfg.payout4 = s.p4; cfg.ratio4 = s.r4;
-  cfg.ltPayout1 = s.lp1; cfg.ltRatio1 = s.lr1;
-  cfg.ltPayout2 = s.lp2; cfg.ltRatio2 = s.lr2;
-  document.getElementById('ltEnabled').checked = s.lt;
-  // UI更新
-  ['hitRate','breakRate','ltRate','ltContinueRate'].forEach(k => {
-    const el = document.getElementById('cv-'+k);
-    if (el) el.textContent = cfg[k];
-  });
-  document.getElementById('noteHit').textContent = `(1/${cfg.hitRate})`;
-  // タブ切替
-  document.querySelectorAll('.theme-tab').forEach(b=>b.classList.remove('active'));
+  cfg.hitRate      = s.hitRate;
+  cfg.breakRate    = s.breakRate;
+  cfg.continueRate = s.continueRate;
+  cfg.spinPer250   = s.spinPer250;
+  cfg.breakPayout  = s.breakPayout ?? cfg.breakPayout;
+  cfg.failPayout   = s.failPayout ?? cfg.failPayout;
+  if (Array.isArray(s.rounds)) {
+    rounds = s.rounds.map(r => ({ ...r }));
+    renderRounds();
+  }
+  ['spinPer250','hitRate','breakRate','continueRate','breakPayout','failPayout'].forEach(k => syncUI(k));
+  updateStats();
+  syncFirstHitShares();
+  document.querySelectorAll('.theme-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 }
 
@@ -732,33 +721,26 @@ function applyTheme(type, btn) {
 function toggleSim() {
   if (running) {
     running = false;
-    clearInterval(simInterval);
     document.getElementById('startLabel').textContent = 'START';
     document.getElementById('startSub').textContent   = 'スタート';
     document.getElementById('startBtn').classList.remove('stop');
   } else {
+    if (hp <= 0 && !isLocalPreview) {
+      document.getElementById('hpEmptyMsg').style.display = 'block';
+      return;
+    }
+    if (hp > 0) useHp();
     startSim();
   }
 }
 
 async function startSim() {
-  // 体力チェック
-  if (hp <= 0) {
-    document.getElementById('hpEmptyMsg').style.display = 'block';
-    return;
-  }
-  useHp();
-
   running = true;
   document.getElementById('startLabel').textContent = 'STOP';
   document.getElementById('startSub').textContent   = 'ストップ';
   document.getElementById('startBtn').classList.add('stop');
 
-  while (running) {
-    await runOnce();
-    if (!autoMode) break;
-    await sleep(300);
-  }
+  await runOnce();
 
   running = false;
   document.getElementById('startLabel').textContent = 'START';
@@ -770,6 +752,7 @@ async function runOnce() {
   const speed = fastMode ? 1 : 700;
 
   while (running) {
+    spendSpinCost();
     spins++;
     updateStats();
 
@@ -783,53 +766,28 @@ async function runOnce() {
     addLog(`${spins.toLocaleString()}回転で当たり！`, 'log-hit');
 
     const breakthrough = Math.random() < (cfg.breakRate / 100);
+    addPayout(breakthrough ? cfg.breakPayout : cfg.failPayout, breakthrough ? '突破当たり' : '通常当たり');
+
     if (!breakthrough) {
       addLog('突破失敗…', 'log-fail');
-      hp = Math.max(0, hp-1);
-      updateHp();
+      setMode('normal');
       break;
     }
 
     addLog('RUSH突入！', 'log-rush');
-
-    const isLT = document.getElementById('ltEnabled').checked &&
-                 Math.random() < (cfg.ltRate / 100);
-    if (isLT) addLog('⚡ LT突入！！', 'log-lt');
-
-    setMode(isLT ? 'lt' : 'rush');
-    hp = 5; updateHp();
+    setMode('rush');
 
     let rush = true;
-    let rushRemain = 50;
     while (rush && running) {
-      rushRemain--;
-      const rand   = Math.random() * 100;
-      const pool   = isLT
-        ? [ { v: cfg.ltPayout1, r: cfg.ltRatio1 }, { v: cfg.ltPayout2, r: cfg.ltRatio2 } ]
-        : [ { v: cfg.payout1, r: cfg.ratio1 }, { v: cfg.payout2, r: cfg.ratio2 },
-            { v: cfg.payout3, r: cfg.ratio3 }, { v: cfg.payout4, r: cfg.ratio4 } ];
-      let cum = 0, payout = pool[0].v;
-      for (const item of pool) {
-        cum += item.r;
-        if (rand < cum) { payout = randRange(item.v-100, item.v+100); break; }
-      }
-
-      chainCount++;
-      totalPayout += payout;
-      showBigWin();
-      showFx(payout);
-      addLog(`+${payout.toLocaleString()}玉 獲得！`, 'log-payout');
-      updateStats();
-      setMode(isLT?'lt':'rush', rushRemain);
+      const payout = getRandomPayout();
+      addPayout(payout, 'RUSH');
 
       await sleep(speed);
 
-      const contRate = isLT ? cfg.ltContinueRate : cfg.continueRate;
-      if (Math.random() >= contRate/100) {
+      if (Math.random() >= cfg.continueRate / 100) {
         rush = false;
-        addLog('RUSH終了', 'log-end');
         setMode('normal');
-        addHistory(isLT?15:10, isLT);
+        addLog('RUSH終了', 'log-end');
       }
     }
     break;
@@ -838,83 +796,110 @@ async function runOnce() {
 
 function resetSim() {
   running = false;
-  spins = 0; totalPayout = 0; chainCount = 0; hp = 5;
-  history = [];
-  document.getElementById('histRow').innerHTML = '<span style="font-size:11px;color:var(--muted);">まだ履歴がありません</span>';
+  spins = 0; totalPayout = 0; currentBalls = 0; investedBalls = 0; chainCount = 0;
   document.getElementById('logBody').innerHTML = '';
   document.getElementById('startLabel').textContent = 'START';
   document.getElementById('startSub').textContent   = 'スタート';
   document.getElementById('startBtn').classList.remove('stop');
+  document.getElementById('hpEmptyMsg').style.display = 'none';
   setMode('normal');
   resetBigWin();
   updateStats();
-  updateHp();
-}
-
-function toggleAuto(btn) {
-  autoMode = !autoMode;
-  btn.style.borderColor = autoMode ? 'var(--gold)' : 'var(--border-hi)';
-  btn.style.color       = autoMode ? 'var(--gold)' : 'var(--text)';
 }
 
 function toggleSpeed(btn) {
   fastMode = !fastMode;
   const lbl = document.getElementById('speedLabel');
-  lbl.textContent = fastMode ? 'ON' : 'OFF';
-  lbl.style.background = fastMode ? '#44aa00' : '#555';
-  lbl.style.color      = fastMode ? '#001800' : '#fff';
+  lbl.textContent       = fastMode ? 'ON' : 'OFF';
+  lbl.style.background  = fastMode ? '#44aa00' : '#555';
+  lbl.style.color       = fastMode ? '#001800' : '#fff';
 }
 
 // ========================
-// シェア
+// 体力システム
 // ========================
-function shareX() {
-  const cost = Math.floor(spins * (250/cfg.spinPer250));
-  const diff = totalPayout - cost;
-  const text = encodeURIComponent(`【ICHIGEKI〜スロパチ〜】\n${spins}回転 / ${chainCount}連チャン\n出玉：${totalPayout.toLocaleString()}玉\n差玉：${diff>=0?'+':''}${diff.toLocaleString()}玉\n#ICHIGEKI #スロパチ`);
-  window.open(`https://twitter.com/intent/tweet?text=${text}`);
-}
-function shareLine() {
-  const cost = Math.floor(spins * (250/cfg.spinPer250));
-  const diff = totalPayout - cost;
-  const text = encodeURIComponent(`【ICHIGEKI〜スロパチ〜】${spins}回転/${chainCount}連チャン 出玉${totalPayout.toLocaleString()}玉 差玉${diff>=0?'+':''}${diff.toLocaleString()}玉`);
-  window.open(`https://line.me/R/msg/text/?${text}`);
-}
-function saveResult() {
-  const text = `ICHIGEKI〜スロパチ〜\n${spins}回転 / ${chainCount}連チャン\n出玉：${totalPayout.toLocaleString()}玉`;
-  const blob = new Blob([text], {type:'text/plain'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'ichigeki_result.txt';
-  a.click();
-}
+const HP_MAX        = 5;
+const HP_RECOVER_MS = 30 * 60 * 1000;
 
-// ========================
-// ランキング取得
-// ========================
-async function loadRanking() {
-  try {
-    const { data } = await sbClient.from('ranking').select('nickname,score').order('score',{ascending:false}).limit(5);
-    const list = document.getElementById('rankList');
-    if (!data || data.length===0) { list.innerHTML='<div class="rank-empty">まだデータがありません</div>'; return; }
-    list.innerHTML = data.map((item,i)=>`
-      <div class="rank-item">
-        <div class="rank-num ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
-        <div class="rank-name">${item.nickname}</div>
-        <div class="rank-score">${item.score.toLocaleString()}</div>
-      </div>
-    `).join('');
-  } catch(e) {
-    document.getElementById('rankList').innerHTML='<div class="rank-empty">取得失敗</div>';
+function loadHp() {
+  const saved    = localStorage.getItem('hp_count');
+  const lastUsed = parseInt(localStorage.getItem('hp_last_used') || '0');
+  let current    = saved !== null ? parseInt(saved) : HP_MAX;
+  if (current < HP_MAX && lastUsed > 0) {
+    const recovered = Math.floor((Date.now() - lastUsed) / HP_RECOVER_MS);
+    if (recovered > 0) {
+      current = Math.min(HP_MAX, current + recovered);
+      const newLast = lastUsed + recovered * HP_RECOVER_MS;
+      localStorage.setItem('hp_last_used', current >= HP_MAX ? '0' : String(newLast));
+      localStorage.setItem('hp_count', String(current));
+    }
   }
+  return current;
 }
+
+function useHp() {
+  if (hp <= 0) return false;
+  hp--;
+  localStorage.setItem('hp_count', String(hp));
+  if (hp < HP_MAX) localStorage.setItem('hp_last_used', String(Date.now()));
+  updateHp();
+  return true;
+}
+
+function recoverHp(amount=1) {
+  hp = Math.min(HP_MAX, hp + amount);
+  localStorage.setItem('hp_count', String(hp));
+  if (hp >= HP_MAX) localStorage.removeItem('hp_last_used');
+  updateHp();
+}
+
+function updateHp() {
+  for (let i=1;i<=5;i++) document.getElementById('hp'+i).classList.toggle('off', i>hp);
+  const msg = document.getElementById('hpEmptyMsg');
+  const btn = document.getElementById('startBtn');
+  if (!isLocalPreview && hp <= 0) {
+    msg.style.display = 'block';
+    btn.disabled = true;
+  } else {
+    msg.style.display = 'none';
+    btn.disabled = false;
+  }
+  document.getElementById('hpAdBtn').disabled = hp >= HP_MAX;
+  updateHpTimer();
+}
+
+function updateHpTimer() {
+  const timer    = document.getElementById('hpTimer');
+  if (hp >= HP_MAX) { timer.textContent = ''; return; }
+  const lastUsed = parseInt(localStorage.getItem('hp_last_used') || '0');
+  if (!lastUsed)  { timer.textContent = ''; return; }
+  const remaining = HP_RECOVER_MS - ((Date.now() - lastUsed) % HP_RECOVER_MS);
+  const m = Math.floor(remaining / 60000);
+  const s = Math.floor((remaining % 60000) / 1000);
+  timer.textContent = `${m}:${String(s).padStart(2,'0')}`;
+}
+
+function watchAd() {
+  // TODO: AdMob リワード広告をここに実装
+  recoverHp(1);
+  alert('広告視聴完了！体力が1回復しました。');
+}
+
+setInterval(() => {
+  const lastUsed = parseInt(localStorage.getItem('hp_last_used') || '0');
+  if (hp < HP_MAX && lastUsed > 0) {
+    const recovered = Math.floor((Date.now() - lastUsed) / HP_RECOVER_MS);
+    if (recovered > 0) recoverHp(recovered);
+  }
+  updateHpTimer();
+}, 1000);
 
 // ========================
 // 初期化
 // ========================
 hp = loadHp();
-resetSim();
-loadRanking();
+applyTheme('standard319', document.querySelector('.theme-tab.active'));
+updateHp();
 </script>
 
 </body>
