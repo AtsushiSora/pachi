@@ -230,9 +230,16 @@
     /* フッター */
     .foot-note { text-align: center; font-size: 8px; color: var(--muted); padding: 3px; background: #040610; flex-shrink: 0; }
     .footer-ad-band {
+      position: fixed;
+      left: 50%;
+      bottom: calc(8px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 90;
+      width: min(calc(100% - 20px), 680px);
       min-height: 44px;
       background: #080c20;
-      border-top: 1px dashed var(--border-hi);
+      border: 1px dashed var(--border-hi);
+      border-radius: 8px;
       color: var(--muted);
       font-family: 'Noto Sans JP', sans-serif;
       font-size: 10px;
@@ -241,7 +248,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      flex-shrink: 0;
+      box-shadow: 0 12px 30px rgba(0,0,0,.5);
     }
     .footer-ad-band span {
       font-family: 'Orbitron', sans-serif;

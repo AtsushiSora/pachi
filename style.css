@@ -45,18 +45,25 @@ body {
   min-height: 100%;
   overflow-x: hidden;
   line-height: 1.5;
+  padding-bottom: 86px;
 }
 
 /* ======================== */
 /* フッター広告             */
 /* ======================== */
 .footer-ad-band {
-  width: min(100% - 28px, 680px);
+  position: fixed;
+  left: 50%;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 90;
+  width: min(calc(100% - 20px), 680px);
   min-height: 58px;
-  margin: 16px auto 20px;
+  margin: 0;
   background: #151515;
   border: 1px dashed var(--border-hi);
   border-radius: var(--radius-md);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
