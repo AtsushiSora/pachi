@@ -48,6 +48,34 @@ body {
 }
 
 /* ======================== */
+/* フッター広告             */
+/* ======================== */
+.footer-ad-band {
+  width: min(100% - 28px, 680px);
+  min-height: 58px;
+  margin: 16px auto 20px;
+  background: #151515;
+  border: 1px dashed var(--border-hi);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-dim);
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.footer-ad-band span {
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  color: #444;
+  letter-spacing: 2px;
+  margin-right: 8px;
+}
+
+/* ======================== */
 /* ヘッダー                 */
 /* ======================== */
 .page-header {

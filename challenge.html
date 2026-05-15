@@ -345,6 +345,26 @@
     .modal-submit:hover { background: #ccc; }
     .modal-submit:disabled { background: #333; color: #555; cursor: not-allowed; }
 
+    .modal-share {
+      width: 100%;
+      height: 46px;
+      background: #111;
+      color: #e8e8e8;
+      border: 1px solid #333;
+      border-radius: 10px;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 10px;
+    }
+
+    .modal-share:hover {
+      border-color: #555;
+      background: #161616;
+    }
+
     .modal-skip {
       width: 100%;
       height: 42px;
@@ -365,6 +385,94 @@
       color: #f44336;
       margin-bottom: 10px;
       display: none;
+    }
+
+    .modal-share-text {
+      width: 100%;
+      min-height: 118px;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #e8e8e8;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 12px;
+      line-height: 1.7;
+      padding: 12px;
+      resize: none;
+      outline: none;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    .ad-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 120;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .ad-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .ad-panel {
+      width: 100%;
+      max-width: 380px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .ad-label {
+      font-family: "DM Mono", monospace;
+      font-size: 10px;
+      color: #555;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .ad-slot {
+      min-height: 220px;
+      background: #111;
+      border: 1px dashed #333;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #555;
+      font-size: 13px;
+      line-height: 1.8;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .ad-next {
+      width: 100%;
+      height: 48px;
+      background: #e8e8e8;
+      color: #0e0e0e;
+      border: none;
+      border-radius: 10px;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .ad-next:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
     }
   </style>
 </head>
@@ -453,9 +561,25 @@
       >
       <div id="modalError" class="modal-error">ニックネームを入力してください</div>
       <button id="modalSubmit" class="modal-submit">ランキングに登録</button>
+      <button id="modalShare" class="modal-share">結果をシェア</button>
+      <textarea id="modalShareText" class="modal-share-text" readonly></textarea>
       <button id="modalSkip" class="modal-skip">登録せずに終わる</button>
     </div>
   </div>
+
+  <!-- 広告表示 -->
+  <div id="adOverlay" class="ad-overlay">
+    <div class="ad-panel">
+      <div class="ad-label">ADVERTISEMENT</div>
+      <div id="adSlot" class="ad-slot">
+        広告枠<br>
+        ランキング登録ありがとうございます
+      </div>
+      <button id="adNextBtn" class="ad-next" type="button" disabled>ランキングへ進む（3）</button>
+    </div>
+  </div>
+
+  <footer class="footer-ad-band"><span>AD</span>広告枠</footer>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -508,9 +632,13 @@
     const modalScore    = document.getElementById("modalScore");
     const modalChain    = document.getElementById("modalChain");
     const modalSubmit   = document.getElementById("modalSubmit");
+    const modalShare    = document.getElementById("modalShare");
+    const modalShareText = document.getElementById("modalShareText");
     const modalSkip     = document.getElementById("modalSkip");
     const nicknameInput = document.getElementById("nicknameInput");
     const modalError    = document.getElementById("modalError");
+    const adOverlay     = document.getElementById("adOverlay");
+    const adNextBtn     = document.getElementById("adNextBtn");
 
     // ========================
     // ヘルパー
@@ -575,6 +703,79 @@
       } catch {
         // ローカル保存できない場合も画面操作は止めない
       }
+    }
+
+    function getShareUrl() {
+      if (location.protocol === "file:") return "";
+      return `${location.origin}${location.pathname.replace("challenge.html", "ranking.html")}`;
+    }
+
+    function buildShareText() {
+      const score = finalScore.toLocaleString();
+      const diffText = finalDiff >= 0
+        ? `+${finalDiff.toLocaleString()}玉`
+        : `-${Math.abs(finalDiff).toLocaleString()}玉`;
+      return [
+        "ICHIGEKIチャレンジ結果",
+        `総出玉: ${score}玉`,
+        `連チャン: ${finalChain.toLocaleString()}連`,
+        `初当たり: ${finalSpins.toLocaleString()}回転`,
+        `差玉: ${diffText}`,
+        getShareUrl(),
+      ].filter(Boolean).join("\n");
+    }
+
+    async function copyShareText(text) {
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      const copied = document.execCommand("copy");
+      textarea.remove();
+      if (!copied) throw new Error("copy failed");
+    }
+
+    function showManualShareText(text) {
+      modalShareText.value = text;
+      modalShareText.style.display = "block";
+      modalShareText.focus();
+      modalShareText.select();
+    }
+
+    function goRanking(local = false) {
+      window.location.href = local ? "ranking.html?local=1" : "ranking.html";
+    }
+
+    function showAdBeforeRanking(local = false) {
+      hideModal();
+      let seconds = 3;
+      adNextBtn.disabled = true;
+      adNextBtn.textContent = `ランキングへ進む（${seconds}）`;
+      adOverlay.classList.add("show");
+
+      const timer = setInterval(() => {
+        seconds--;
+        if (seconds > 0) {
+          adNextBtn.textContent = `ランキングへ進む（${seconds}）`;
+          return;
+        }
+        clearInterval(timer);
+        adNextBtn.disabled = false;
+        adNextBtn.textContent = "ランキングへ進む";
+      }, 1000);
+
+      adNextBtn.onclick = () => {
+        clearInterval(timer);
+        goRanking(local);
+      };
     }
 
     // ========================
@@ -716,6 +917,8 @@
       if (modalChain) {
         modalChain.innerHTML = `${finalChain.toLocaleString()}<span>連チャン</span>`;
       }
+      modalShareText.value = "";
+      modalShareText.style.display = "none";
       nicknameInput.value  = "";
       modalError.style.display = "none";
       modalOverlay.classList.add("show");
@@ -768,13 +971,42 @@
 
         if (error) throw error;
 
-        hideModal();
-        window.location.href = "ranking.html";
+        showAdBeforeRanking(false);
       } catch (e) {
         console.error(e);
         saveLocalRanking(rankingEntry);
-        hideModal();
-        window.location.href = "ranking.html?local=1";
+        showAdBeforeRanking(true);
+      }
+    });
+
+    modalShare.addEventListener("click", async () => {
+      const originalText = modalShare.textContent;
+      const shareText = buildShareText();
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: "ICHIGEKIチャレンジ結果",
+            text: shareText,
+            url: getShareUrl() || undefined,
+          });
+          modalShare.textContent = "シェアしました";
+        } else {
+          await copyShareText(shareText);
+          modalShare.textContent = "結果をコピーしました";
+        }
+      } catch (error) {
+        if (error && error.name === "AbortError") return;
+        try {
+          await copyShareText(shareText);
+          modalShare.textContent = "結果をコピーしました";
+        } catch {
+          showManualShareText(shareText);
+          modalShare.textContent = "下の結果をコピーしてください";
+        }
+      } finally {
+        setTimeout(() => {
+          modalShare.textContent = originalText;
+        }, 2200);
       }
     });
 

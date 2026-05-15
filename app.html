@@ -229,6 +229,25 @@
 
     /* フッター */
     .foot-note { text-align: center; font-size: 8px; color: var(--muted); padding: 3px; background: #040610; flex-shrink: 0; }
+    .footer-ad-band {
+      min-height: 44px;
+      background: #080c20;
+      border-top: 1px dashed var(--border-hi);
+      color: var(--muted);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .footer-ad-band span {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 9px;
+      color: var(--gold);
+    }
 
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -429,6 +448,7 @@
 </div>
 
 <p class="foot-note">※エンターテインメント目的のシミュレーターです。実際のパチンコ機の挙動とは異なる場合があります。</p>
+<footer class="footer-ad-band"><span>AD</span>広告枠</footer>
 
 <!-- FX -->
 <div class="payout-fx" id="payoutFx"></div>
