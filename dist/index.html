@@ -13,16 +13,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       min-height: 100vh;
-      padding: 40px 24px 60px;
+      padding: 36px 24px 150px;
       max-width: 480px;
       margin: 0 auto;
     }
 
     .top-logo {
       text-align: center;
-      margin-bottom: 56px;
+      margin-bottom: 24px;
     }
 
     .top-logo-main {
@@ -39,6 +39,29 @@
       color: #444;
       letter-spacing: 6px;
       margin-top: 10px;
+    }
+
+    .top-intro {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .top-intro-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e8e8e8;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .top-intro-text {
+      font-size: 12px;
+      color: #777;
+      line-height: 1.8;
     }
 
     .top-menu {
@@ -106,6 +129,7 @@
       display: flex;
       gap: 20px;
       justify-content: center;
+      flex-wrap: wrap;
     }
 
     .top-footer a {
@@ -118,6 +142,25 @@
 
     .top-footer a:hover { color: #555; }
 
+    .top-contact {
+      margin-top: 18px;
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      color: #555;
+      text-decoration: none;
+      border: 1px solid #242424;
+      border-radius: 999px;
+      padding: 10px 14px;
+      transition: all 0.15s;
+    }
+
+    .top-contact:hover,
+    .top-contact:active {
+      color: #e8e8e8;
+      border-color: #333;
+      background: #151515;
+    }
+
     .top-version {
       margin-top: 16px;
       font-family: "DM Mono", monospace;
@@ -126,7 +169,7 @@
       letter-spacing: 2px;
     }
   </style>
-  <link rel="stylesheet" crossorigin href="/assets/style-DnNuvw65.css">
+  <link rel="stylesheet" crossorigin href="/assets/style-Du790hz3.css">
 </head>
 <body>
 
@@ -136,6 +179,13 @@
       <div class="top-logo-main">ICHIGEKI</div>
       <div class="top-logo-sub">〜スロパチ〜</div>
     </div>
+
+    <section class="top-intro">
+      <div class="top-intro-title">パチンコの一撃を、気軽に試す。</div>
+      <p class="top-intro-text">
+        スペック試算、実戦風シミュレーター、全国ランキングをまとめたエンタメ用シミュレーションアプリです。
+      </p>
+    </section>
 
     <nav class="top-menu">
       <a href="sim.html" class="menu-btn">
@@ -186,7 +236,10 @@
     <footer class="top-footer">
       <a href="privacy.html">プライバシーポリシー</a>
       <a href="disclaimer.html">免責事項</a>
+      <a href="howto.html#contact">お問い合わせ</a>
     </footer>
+
+    <a class="top-contact" href="mailto:ichigekipachi@proton.me">ichigekipachi@proton.me</a>
 
     <div class="top-version">v2.0</div>
 
