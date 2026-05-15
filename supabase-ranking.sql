@@ -43,7 +43,22 @@ with check (
   and chain_count >= 0
   and spins >= 0
   and used_balls >= 0
+  and diff = score - used_balls
 );
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'ranking_diff_matches_score'
+      and conrelid = 'public.ranking'::regclass
+  ) then
+    alter table public.ranking
+      add constraint ranking_diff_matches_score
+      check (diff = score - used_balls) not valid;
+  end if;
+end $$;
 
 create index if not exists ranking_score_idx
 on public.ranking (score desc, created_at asc);

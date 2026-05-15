@@ -830,6 +830,16 @@
       return { ok: true, nickname };
     }
 
+    function isResultConsistent() {
+      const score = Number(finalScore);
+      const usedBalls = Number(finalUsedBalls);
+      const diff = Number(finalDiff);
+      return Number.isInteger(score) &&
+        Number.isInteger(usedBalls) &&
+        Number.isInteger(diff) &&
+        diff === score - usedBalls;
+    }
+
     function goRanking(local = false) {
       window.location.href = local ? "ranking.html?local=1" : "ranking.html";
     }
@@ -1020,6 +1030,11 @@
       const validation = validateNickname(nicknameInput.value);
       if (!validation.ok) {
         modalError.textContent = validation.message;
+        modalError.style.display = "block";
+        return;
+      }
+      if (!isResultConsistent()) {
+        modalError.textContent = "差玉と使用玉の計算が一致しないため登録できません";
         modalError.style.display = "block";
         return;
       }
