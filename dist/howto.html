@@ -10,34 +10,198 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     .howto-content {
-      max-width: 480px;
+      max-width: 680px;
       margin: 0 auto;
-      padding: 16px 14px 80px;
+      padding: 18px 14px 112px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
-    .howto-empty {
-      text-align: center;
-      padding: 80px 0;
-      font-size: 13px;
-      color: #333;
+    .howto-hero,
+    .howto-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .howto-hero {
+      background:
+        linear-gradient(135deg, rgba(76, 175, 80, 0.14), transparent 40%),
+        #1a1a1a;
+    }
+
+    .howto-kicker {
+      font-family: "DM Mono", monospace;
+      font-size: 10px;
+      color: #4caf50;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .howto-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #e8e8e8;
       letter-spacing: 1px;
-      line-height: 2;
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+
+    .howto-lead {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.9;
+    }
+
+    .howto-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #777;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .mode-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .mode-item {
+      min-width: 0;
+      background: #111;
+      border: 1px solid #262626;
+      border-radius: 12px;
+      padding: 13px 12px;
+    }
+
+    .mode-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e8e8e8;
+      margin-bottom: 6px;
+    }
+
+    .mode-desc {
+      font-size: 11px;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      counter-reset: step;
+    }
+
+    .step-item {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 10px;
+      align-items: start;
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .step-item::before {
+      content: counter(step);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #1d1d1d;
+      border: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "DM Mono", monospace;
+      font-size: 12px;
+      color: #4caf50;
+    }
+
+    .step-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #d8d8d8;
+      margin-bottom: 3px;
+    }
+
+    .step-text {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .tip-item {
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .tip-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #d8d8d8;
+      margin-bottom: 5px;
+    }
+
+    .tip-text {
+      font-size: 11px;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    .legal-note {
+      color: #555;
+      font-size: 11px;
+      line-height: 1.8;
+      text-align: center;
+      letter-spacing: 1px;
     }
 
     .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
       font-size: 13px;
-      color: #333;
+      color: #555;
       text-decoration: none;
-      padding: 14px;
-      border: 1px solid #222;
-      border-radius: 10px;
-      transition: color 0.15s;
+      padding: 12px;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
     }
 
-    .back-link:hover { color: #555; }
+    .back-link:hover,
+    .back-link:active {
+      color: #888;
+      border-color: #333;
+      background: #151515;
+    }
+
+    @media (max-width: 560px) {
+      .mode-list,
+      .tips-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .howto-title {
+        font-size: 20px;
+      }
+    }
   </style>
   <link rel="stylesheet" crossorigin href="/assets/style-DnNuvw65.css">
 </head>
@@ -50,9 +214,130 @@
 
   <div class="howto-content">
 
-    <div class="howto-empty">
-      コンテンツ準備中
-    </div>
+    <section class="howto-hero">
+      <div class="howto-kicker">GUIDE</div>
+      <h1 class="howto-title">ICHIGEKIの遊び方</h1>
+      <p class="howto-lead">
+        ICHIGEKIは、パチンコのスペック試算、実戦風シミュレーション、全国ランキングチャレンジを楽しむためのシミュレーターです。
+        目的に合わせて3つのモードを使い分けてください。
+      </p>
+    </section>
+
+    <section class="howto-card">
+      <div class="howto-section-title">モード選択</div>
+      <div class="mode-list">
+        <div class="mode-item">
+          <div class="mode-name">スペックシミュレーター</div>
+          <div class="mode-desc">大当たり確率、突破率、継続率、出玉振り分けを自由に設定して、出玉の流れを試算できます。</div>
+        </div>
+        <div class="mode-item">
+          <div class="mode-name">実戦シミュレーター</div>
+          <div class="mode-desc">体力を使ってスタートし、投資・持ち玉・差玉を見ながら実戦風に遊べます。</div>
+        </div>
+        <div class="mode-item">
+          <div class="mode-name">全国チャレンジ</div>
+          <div class="mode-desc">固定スペックで一発勝負を行い、結果をオンラインランキングに登録できます。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="howto-card">
+      <div class="howto-section-title">スペックシミュレーター</div>
+      <div class="step-list">
+        <div class="step-item">
+          <div>
+            <div class="step-title">基本スペックを決める</div>
+            <div class="step-text">当たり確率、突破率、継続率、250玉あたり回転数を設定します。数値入力、プラス・マイナス、スライダーで調整できます。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div>
+            <div class="step-title">出玉振り分けを設定する</div>
+            <div class="step-text">通常RUSH出玉とLT出玉の割合を設定します。合計が100%になるように調整してください。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div>
+            <div class="step-title">試算を開始する</div>
+            <div class="step-text">結果画面では回転数、総出玉、使用玉、差玉、連チャン数を確認できます。「もう一回」で続けて試算できます。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="howto-card">
+      <div class="howto-section-title">実戦シミュレーター</div>
+      <div class="step-list">
+        <div class="step-item">
+          <div>
+            <div class="step-title">体力を使ってスタート</div>
+            <div class="step-text">スタートすると体力を1消費します。体力は時間で回復し、広告を見ると全回復します。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div>
+            <div class="step-title">投資と持ち玉を確認</div>
+            <div class="step-text">初当たり後は追加投資ではなく持ち玉を使います。持ち玉がなくなると投資が増えます。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div>
+            <div class="step-title">プリセットを選ぶ</div>
+            <div class="step-text">王道319、高継続、荒波LT、甘デジなど、方向性の違うスペックをすぐ試せます。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="howto-card">
+      <div class="howto-section-title">全国チャレンジ</div>
+      <div class="step-list">
+        <div class="step-item">
+          <div>
+            <div class="step-title">チャレンジする</div>
+            <div class="step-text">ランキングページの「チャレンジする」から固定スペックの一発勝負を開始します。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div>
+            <div class="step-title">結果を登録する</div>
+            <div class="step-text">終了後にニックネームを入力すると、総出玉、連チャン数、初当たり回転数がランキングに反映されます。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div>
+            <div class="step-title">結果をシェアする</div>
+            <div class="step-text">登録画面の「結果をシェア」から、総出玉や差玉をコピーまたは共有できます。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="howto-card">
+      <div class="howto-section-title">ランキングの見方</div>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <div class="tip-title">一撃</div>
+          <div class="tip-text">総出玉の大きさで競います。アプリのメインランキングです。</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">連チャン</div>
+          <div class="tip-text">何連チャンできたかで競います。出玉より継続力を見たい時に使います。</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">ハマり</div>
+          <div class="tip-text">初当たりまでの回転数で競います。深いハマり記録を確認できます。</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">TOP10 / TOP30</div>
+          <div class="tip-text">表示件数を切り替えられます。上位3件はランキング内で大きく表示されます。</div>
+        </div>
+      </div>
+    </section>
+
+    <p class="legal-note">
+      このアプリはエンターテインメント目的のシミュレーターです。実際の遊技結果や機種性能を保証するものではありません。
+    </p>
 
     <a href="index.html" class="back-link">← トップに戻る</a>
 
