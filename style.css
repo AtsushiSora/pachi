@@ -62,6 +62,25 @@ body {
   z-index: 10;
 }
 
+.header-back {
+  min-width: 64px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.header-back:hover,
+.header-back:active {
+  color: var(--text-sub);
+  border-color: var(--border-hi);
+  background: var(--bg-btn);
+}
+
 .app-name {
   font-family: "DM Mono", monospace;
   font-size: 14px;

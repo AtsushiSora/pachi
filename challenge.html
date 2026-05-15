@@ -278,12 +278,26 @@
       font-size: 32px;
       font-weight: 500;
       color: #4caf50;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
     }
 
     .modal-score span {
       font-size: 14px;
       color: #444;
+      margin-left: 4px;
+    }
+
+    .modal-chain {
+      font-family: "DM Mono", monospace;
+      font-size: 18px;
+      color: #ff9100;
+      margin-bottom: 20px;
+    }
+
+    .modal-chain span {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 12px;
+      color: #555;
       margin-left: 4px;
     }
 
@@ -428,6 +442,7 @@
     <div class="modal">
       <div class="modal-title">結果を登録する</div>
       <div class="modal-score" id="modalScore">0<span>玉</span></div>
+      <div class="modal-chain" id="modalChain">0<span>連チャン</span></div>
       <div class="modal-label">ニックネーム</div>
       <input
         type="text"
@@ -449,8 +464,8 @@
     // ========================
     // Supabase初期化
     // ========================
-    const SUPABASE_URL = "https://cyvfbeppvumyqexrnqcr.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5dmZiZXBwdnVteXFleHJucWNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NTE3MDUsImV4cCI6MjA5NDEyNzcwNX0.GBmnaN_EkpzWY27GmdJOMO-5y5uybidwf9zwEXvz1Wc";
+    const SUPABASE_URL = "https://qkacufmyiljfojlqrmke.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_wEsGe95_6bgyp7uEvjRCiw_dYDXkgXj";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // ========================
@@ -469,6 +484,10 @@
     // ========================
     let spinning   = false;
     let finalScore = 0;
+    let finalChain = 0;
+    let finalSpins = 0;
+    let finalDiff = 0;
+    let finalUsedBalls = 0;
 
     // ========================
     // 要素
@@ -487,6 +506,7 @@
     // モーダル
     const modalOverlay  = document.getElementById("modalOverlay");
     const modalScore    = document.getElementById("modalScore");
+    const modalChain    = document.getElementById("modalChain");
     const modalSubmit   = document.getElementById("modalSubmit");
     const modalSkip     = document.getElementById("modalSkip");
     const nicknameInput = document.getElementById("nicknameInput");
@@ -529,15 +549,53 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    function savePlayerRecord(result) {
+      try {
+        let currentBest = null;
+        try {
+          currentBest = JSON.parse(localStorage.getItem("ichigekiBest") || "null");
+        } catch {
+          currentBest = null;
+        }
+        localStorage.setItem("ichigekiLastResult", JSON.stringify(result));
+        if (!currentBest || result.score > Number(currentBest.score || 0)) {
+          localStorage.setItem("ichigekiBest", JSON.stringify(result));
+        }
+      } catch {
+        // 保存に失敗してもチャレンジ終了処理は止めない
+      }
+    }
+
+    function saveLocalRanking(entry) {
+      try {
+        const localRanking = JSON.parse(localStorage.getItem("ichigekiLocalRanking") || "[]");
+        localRanking.push(entry);
+        localRanking.sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
+        localStorage.setItem("ichigekiLocalRanking", JSON.stringify(localRanking.slice(0, 50)));
+      } catch {
+        // ローカル保存できない場合も画面操作は止めない
+      }
+    }
+
     // ========================
     // シミュレーション
     // ========================
     startBtn.addEventListener("click", simulate);
 
+    if (new URLSearchParams(window.location.search).get("start") === "1") {
+      requestAnimationFrame(() => {
+        simulate();
+      });
+    }
+
     async function simulate() {
       if (spinning) return;
       spinning = true;
       finalScore = 0;
+      finalChain = 0;
+      finalSpins = 0;
+      finalDiff = 0;
+      finalUsedBalls = 0;
 
       // リセット
       log.innerHTML = "";
@@ -620,6 +678,18 @@
       const usedBalls = Math.floor(spins * costPerSpin);
       const diff      = totalPayout - usedBalls;
       finalScore      = totalPayout;
+      finalChain      = chainCount;
+      finalSpins      = spins;
+      finalDiff       = diff;
+      finalUsedBalls  = usedBalls;
+      const result = {
+        score: finalScore,
+        diff,
+        spins,
+        usedBalls,
+        chainCount,
+        at: new Date().toISOString(),
+      };
 
       setVal(used,    usedBalls,       "玉", "val-dim");
       setVal(balance, Math.abs(diff),  "玉", diff >= 0 ? "val-up" : "val-dn");
@@ -632,6 +702,8 @@
       startBtn.textContent   = "もう一回";
       startBtn.disabled      = false;
 
+      savePlayerRecord(result);
+
       // モーダル表示
       showModal(finalScore);
     }
@@ -641,6 +713,9 @@
     // ========================
     function showModal(score) {
       modalScore.innerHTML = `${score.toLocaleString()}<span>玉</span>`;
+      if (modalChain) {
+        modalChain.innerHTML = `${finalChain.toLocaleString()}<span>連チャン</span>`;
+      }
       nicknameInput.value  = "";
       modalError.style.display = "none";
       modalOverlay.classList.add("show");
@@ -660,20 +735,46 @@
       modalSubmit.disabled      = true;
       modalSubmit.textContent   = "登録中...";
 
+      const rankingEntry = {
+        nickname,
+        score: finalScore,
+        chain_count: finalChain,
+        spins: finalSpins,
+        diff: finalDiff,
+        used_balls: finalUsedBalls,
+        created_at: new Date().toISOString(),
+        local_only: true,
+      };
+
       try {
-        const { error } = await supabaseClient
+        const onlineEntry = {
+          nickname,
+          score: finalScore,
+          chain_count: finalChain,
+          spins: finalSpins,
+          diff: finalDiff,
+          used_balls: finalUsedBalls,
+        };
+        let { error } = await supabaseClient
           .from("ranking")
-          .insert([{ nickname, score: finalScore }]);
+          .insert([onlineEntry]);
+
+        if (error) {
+          const fallback = await supabaseClient
+            .from("ranking")
+            .insert([{ nickname, score: finalScore, chain_count: finalChain }]);
+          error = fallback.error;
+        }
 
         if (error) throw error;
 
         hideModal();
         window.location.href = "ranking.html";
       } catch (e) {
-        modalSubmit.disabled    = false;
-        modalSubmit.textContent = "ランキングに登録";
-        modalError.textContent  = "登録に失敗しました。もう一度お試しください。";
-        modalError.style.display = "block";
+        console.error(e);
+        saveLocalRanking(rankingEntry);
+        hideModal();
+        window.location.href = "ranking.html?local=1";
       }
     });
 

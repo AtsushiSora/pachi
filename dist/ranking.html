@@ -5,166 +5,411 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ランキング | ICHIGEKI〜スロパチ〜</title>
   <link rel="manifest" href="manifest.json">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
     .ranking-content {
-      max-width: 480px;
+      width: min(100%, 680px);
       margin: 0 auto;
-      padding: 16px 14px 100px;
+      padding: 18px 14px 112px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
-    /* スペック表示 */
-    .spec-card {
+    .rank-hero {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(76, 175, 80, 0.16), transparent 34%),
+        linear-gradient(160deg, #1b1b1b, #121212 72%);
+      border: 1px solid #303030;
+      border-radius: 18px;
+      padding: 22px 18px 18px;
+    }
+
+    .rank-hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -20% -42% 18%;
+      height: 130px;
+      background: radial-gradient(ellipse at center, rgba(255, 145, 0, 0.22), transparent 68%);
+      pointer-events: none;
+    }
+
+    .rank-kicker {
+      font-family: "DM Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #4caf50;
+      margin-bottom: 7px;
+    }
+
+    .rank-title {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      line-height: 1.25;
+      color: #f2f2f2;
+      margin-bottom: 8px;
+    }
+
+    .rank-copy {
+      max-width: 420px;
+      font-size: 12px;
+      line-height: 1.8;
+      color: #888;
+      margin-bottom: 18px;
+    }
+
+    .challenge-btn {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 58px;
+      background: #e8e8e8;
+      border: none;
+      border-radius: 14px;
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 16px;
+      font-weight: 900;
+      color: #0e0e0e;
+      letter-spacing: 1px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.15s, background 0.15s;
+      pointer-events: auto;
+    }
+
+    .challenge-btn:hover,
+    .challenge-btn:active {
+      background: #d6d6d6;
+      transform: translateY(-1px);
+    }
+
+    .spec-card,
+    .player-card,
+    .ranking-panel {
       background: #1a1a1a;
       border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
-    .spec-label {
-      font-size: 11px;
-      color: #555;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
+    .section-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: #777;
+      letter-spacing: 2px;
     }
 
-    .spec-values {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
+    .section-note {
+      font-size: 10px;
+      color: #444;
+      white-space: nowrap;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
     }
 
     .spec-item {
+      background: #111;
+      border: 1px solid #262626;
+      border-radius: 12px;
+      padding: 12px 8px;
       text-align: center;
     }
 
     .spec-item-label {
       font-size: 9px;
-      color: #444;
+      color: #555;
       letter-spacing: 1px;
-      margin-bottom: 2px;
+      margin-bottom: 5px;
     }
 
     .spec-item-val {
       font-family: "DM Mono", monospace;
-      font-size: 13px;
-      color: #aaa;
-      font-weight: 500;
-    }
-
-    /* チャレンジボタン */
-    .challenge-btn {
-      display: block;
-      width: 100%;
-      padding: 18px;
-      background: #e8e8e8;
-      border: none;
-      border-radius: 12px;
-      font-family: "Noto Sans JP", sans-serif;
       font-size: 15px;
-      font-weight: 700;
-      color: #0e0e0e;
-      letter-spacing: 1px;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      transition: all 0.15s;
-      margin-bottom: 24px;
+      color: #d8d8d8;
+      font-weight: 500;
+      white-space: nowrap;
     }
 
-    .challenge-btn:hover,
-    .challenge-btn:active {
-      background: #ccc;
+    .player-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
     }
 
-    /* ランキングリスト */
-    .ranking-header {
-      font-size: 11px;
+    .player-stat {
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      padding: 13px 12px;
+      min-width: 0;
+    }
+
+    .player-label {
+      font-size: 10px;
       color: #555;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .player-value {
+      font-family: "DM Mono", monospace;
+      font-size: 20px;
+      color: #f0f0f0;
+      overflow-wrap: anywhere;
+    }
+
+    .player-value.good { color: #4caf50; }
+    .player-value.dim { color: #555; }
+
+    .score-unit {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 10px;
+      color: #555;
+      margin-left: 2px;
+    }
+
+    .ranking-status {
+      font-size: 10px;
+      color: #555;
+    }
+
+    .rank-tabs {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .rank-tab {
+      min-width: 52px;
+      height: 30px;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 999px;
+      color: #666;
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .rank-tab.active {
+      background: #e8e8e8;
+      border-color: #e8e8e8;
+      color: #0e0e0e;
+    }
+
+    .podium {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
       margin-bottom: 10px;
-      padding: 0 4px;
+    }
+
+    .podium-card {
+      min-height: 116px;
+      background: #111;
+      border: 1px solid #262626;
+      border-radius: 14px;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+    }
+
+    .podium-card.rank-1 {
+      background: linear-gradient(180deg, rgba(255, 145, 0, 0.14), #111 72%);
+      border-color: #5a3510;
+    }
+
+    .podium-rank {
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      color: #666;
+      letter-spacing: 1px;
+    }
+
+    .rank-1 .podium-rank { color: #ffb347; }
+
+    .podium-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #cfcfcf;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .podium-score {
+      font-family: "DM Mono", monospace;
+      font-size: 17px;
+      color: #f0f0f0;
+      overflow-wrap: anywhere;
+    }
+
+    .podium-chain {
+      font-family: "DM Mono", monospace;
+      font-size: 12px;
+      color: #ff9100;
     }
 
     .ranking-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 7px;
     }
 
     .ranking-item {
-      display: flex;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto auto;
       align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 10px;
+      gap: 10px;
+      padding: 12px 12px;
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 12px;
     }
 
     .ranking-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #1d1d1d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: "DM Mono", monospace;
-      font-size: 13px;
-      color: #555;
-      width: 20px;
-      text-align: center;
+      font-size: 12px;
+      color: #777;
       flex-shrink: 0;
     }
 
-    .ranking-num.top1 { color: #e8e8e8; }
-    .ranking-num.top2 { color: #888; }
-    .ranking-num.top3 { color: #666; }
+    .ranking-num.top1 { color: #ffb347; border: 1px solid #5a3510; }
+    .ranking-num.top2 { color: #c8c8c8; border: 1px solid #555; }
+    .ranking-num.top3 { color: #d8955c; border: 1px solid #5a3522; }
 
     .ranking-name {
-      flex: 1;
-      font-size: 14px;
-      color: #aaa;
-      font-weight: 500;
+      min-width: 0;
+      font-size: 13px;
+      color: #c8c8c8;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .ranking-score {
       font-family: "DM Mono", monospace;
-      font-size: 15px;
-      color: #e8e8e8;
+      font-size: 16px;
+      color: #f0f0f0;
       font-weight: 500;
-      flex-shrink: 0;
+      text-align: right;
+      white-space: nowrap;
     }
 
-    .ranking-score span {
-      font-size: 10px;
-      color: #444;
-      margin-left: 2px;
-    }
-
-    .ranking-empty {
+    .ranking-chain {
+      min-width: 44px;
+      border: 1px solid #3a260f;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-family: "DM Mono", monospace;
+      font-size: 12px;
+      color: #ff9100;
       text-align: center;
-      padding: 40px 0;
+      white-space: nowrap;
+    }
+
+    .ranking-empty,
+    .ranking-error {
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 14px;
+      padding: 28px 18px;
+      text-align: center;
+      color: #555;
       font-size: 13px;
-      color: #333;
-      letter-spacing: 1px;
+      line-height: 1.8;
+    }
+
+    .ranking-error {
+      color: #8f5f5f;
+      border-color: #3a2222;
     }
 
     .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
       font-size: 13px;
-      color: #333;
+      color: #555;
       text-decoration: none;
-      padding: 14px;
-      border: 1px solid #222;
-      border-radius: 10px;
-      transition: color 0.15s;
+      padding: 12px;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
     }
 
-    .back-link:hover { color: #555; }
+    .back-link:hover,
+    .back-link:active {
+      color: #888;
+      border-color: #333;
+      background: #151515;
+    }
+
+    @media (max-width: 520px) {
+      .ranking-content {
+        padding-top: 14px;
+      }
+
+      .rank-title {
+        font-size: 22px;
+      }
+
+      .spec-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .podium {
+        grid-template-columns: 1fr;
+      }
+
+      .podium-card {
+        min-height: 86px;
+      }
+
+      .player-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ranking-panel .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
   </style>
-  <link rel="stylesheet" crossorigin href="/assets/style-Dhj0FIYl.css">
+  <link rel="stylesheet" crossorigin href="/assets/style-5IWuPw4P.css">
 </head>
 <body>
 
@@ -173,84 +418,269 @@
     <span class="app-version">ランキング</span>
   </div>
 
-  <div class="ranking-content">
+  <main class="ranking-content">
+    <section class="rank-hero">
+      <div class="rank-kicker">ONE SHOT RANKING</div>
+      <h1 class="rank-title">一撃の出玉で、全国TOP10を狙う</h1>
+      <p class="rank-copy">固定スペックの一発勝負。スコアはチャレンジ中の総出玉で競います。</p>
+      <button id="challengeStartBtn" class="challenge-btn" type="button">チャレンジする</button>
+    </section>
 
-    <!-- 固定スペック -->
-    <div class="spec-card">
-      <div>
-        <div class="spec-label">チャレンジスペック（固定）</div>
-        <div class="spec-values">
-          <div class="spec-item">
-            <div class="spec-item-label">確率</div>
-            <div class="spec-item-val">1/319</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-item-label">突破率</div>
-            <div class="spec-item-val">60%</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-item-label">継続率</div>
-            <div class="spec-item-val">81%</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-item-label">出玉</div>
-            <div class="spec-item-val">1500玉</div>
-          </div>
+    <section class="spec-card">
+      <div class="section-head">
+        <div class="section-title">チャレンジスペック</div>
+        <div class="section-note">固定ルール</div>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-item">
+          <div class="spec-item-label">確率</div>
+          <div class="spec-item-val">1/319</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-item-label">突破率</div>
+          <div class="spec-item-val">60%</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-item-label">継続率</div>
+          <div class="spec-item-val">81%</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-item-label">出玉</div>
+          <div class="spec-item-val">1500玉</div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- チャレンジボタン -->
-    <a href="challenge.html" class="challenge-btn">🎰 チャレンジする</a>
+    <section class="player-card">
+      <div class="section-head">
+        <div class="section-title">あなたの記録</div>
+        <div class="section-note" id="playerUpdated">未挑戦</div>
+      </div>
+      <div class="player-grid">
+        <div class="player-stat">
+          <div class="player-label">自己ベスト</div>
+          <div class="player-value good" id="bestScore">0<span class="score-unit">玉</span></div>
+        </div>
+        <div class="player-stat">
+          <div class="player-label">直近スコア</div>
+          <div class="player-value" id="lastScore">0<span class="score-unit">玉</span></div>
+        </div>
+        <div class="player-stat">
+          <div class="player-label">自己順位</div>
+          <div class="player-value" id="myRank">--<span class="score-unit">位</span></div>
+        </div>
+      </div>
+    </section>
 
-    <!-- ランキング -->
-    <div class="ranking-header">全国ランキング TOP10</div>
-
-    <div class="ranking-list" id="rankingList">
-      <div class="ranking-empty">まだランキングデータがありません</div>
-    </div>
+    <section class="ranking-panel">
+      <div class="section-head">
+        <div>
+          <div class="section-title" id="rankingTitle">全国ランキング TOP10</div>
+          <div class="ranking-status" id="rankingStatus">読み込み中</div>
+        </div>
+        <div class="rank-tabs" aria-label="ランキング表示件数">
+          <button class="rank-tab active" type="button" data-limit="10">TOP10</button>
+          <button class="rank-tab" type="button" data-limit="30">TOP30</button>
+        </div>
+      </div>
+      <div id="podium" class="podium" hidden></div>
+      <div class="ranking-list" id="rankingList">
+        <div class="ranking-empty">ランキングを読み込んでいます</div>
+      </div>
+    </section>
 
     <a href="index.html" class="back-link">← トップに戻る</a>
-
-  </div>
+  </main>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    const SUPABASE_URL = "https://cyvfbeppvumyqexrnqcr.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5dmZiZXBwdnVteXFleHJucWNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NTE3MDUsImV4cCI6MjA5NDEyNzcwNX0.GBmnaN_EkpzWY27GmdJOMO-5y5uybidwf9zwEXvz1Wc";
+    const SUPABASE_URL = "https://qkacufmyiljfojlqrmke.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_wEsGe95_6bgyp7uEvjRCiw_dYDXkgXj";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function loadRanking() {
-      const { data, error } = await supabaseClient
-        .from("ranking")
-        .select("nickname, score")
-        .order("score", { ascending: false })
-        .limit(10);
+    const rankingList = document.getElementById("rankingList");
+    const rankingStatus = document.getElementById("rankingStatus");
+    const rankingTitle = document.getElementById("rankingTitle");
+    const podium = document.getElementById("podium");
+    const bestScore = document.getElementById("bestScore");
+    const lastScore = document.getElementById("lastScore");
+    const myRank = document.getElementById("myRank");
+    const playerUpdated = document.getElementById("playerUpdated");
+    const challengeStartBtn = document.getElementById("challengeStartBtn");
+    const rankTabs = document.querySelectorAll(".rank-tab");
+    let rankingLimit = 10;
 
-      if (error) {
-        console.error(error);
-        return;
-      }
-      renderRanking(data);
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
-    function renderRanking(data) {
-      const list = document.getElementById("rankingList");
-      if (!data || data.length === 0) {
-        list.innerHTML = '<div class="ranking-empty">まだランキングデータがありません</div>';
-        return;
+    function formatBalls(value) {
+      const num = Number(value) || 0;
+      return `${num.toLocaleString()}<span class="score-unit">玉</span>`;
+    }
+
+    function formatChain(value) {
+      const num = Number(value) || 0;
+      return `${num.toLocaleString()}連`;
+    }
+
+    function formatDate(value) {
+      if (!value) return "未挑戦";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "未挑戦";
+      return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    function readPlayerRecord() {
+      const fallback = { score: 0, at: "" };
+      try {
+        return {
+          best: JSON.parse(localStorage.getItem("ichigekiBest") || "null") || fallback,
+          last: JSON.parse(localStorage.getItem("ichigekiLastResult") || "null") || fallback,
+        };
+      } catch {
+        return { best: fallback, last: fallback };
       }
-      list.innerHTML = data.map((item, i) => `
-        <div class="ranking-item">
-          <div class="ranking-num ${i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : ''}">${i + 1}</div>
-          <div class="ranking-name">${item.nickname}</div>
-          <div class="ranking-score">${item.score.toLocaleString()}<span>玉</span></div>
+    }
+
+    function readLocalRanking() {
+      try {
+        const data = JSON.parse(localStorage.getItem("ichigekiLocalRanking") || "[]");
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function renderPlayerRecord() {
+      const record = readPlayerRecord();
+      bestScore.innerHTML = formatBalls(record.best.score);
+      lastScore.innerHTML = formatBalls(record.last.score);
+      lastScore.classList.toggle("dim", !record.last.score);
+      myRank.innerHTML = record.best.score ? `確認中<span class="score-unit">位</span>` : `--<span class="score-unit">位</span>`;
+      myRank.classList.toggle("dim", !record.best.score);
+      playerUpdated.textContent = formatDate(record.last.at || record.best.at);
+      return record;
+    }
+
+    async function loadPlayerRank(record) {
+      if (!record.best.score) return;
+      try {
+        const { count, error } = await supabaseClient
+          .from("ranking")
+          .select("score", { count: "exact", head: true })
+          .gt("score", Number(record.best.score));
+
+        if (error) throw error;
+        myRank.innerHTML = `${Number(count || 0) + 1}<span class="score-unit">位</span>`;
+        myRank.classList.remove("dim");
+      } catch (error) {
+        console.error(error);
+        myRank.innerHTML = `--<span class="score-unit">位</span>`;
+        myRank.classList.add("dim");
+      }
+    }
+
+    function renderPodium(data) {
+      const top3 = data.slice(0, 3);
+      podium.hidden = top3.length === 0;
+      podium.innerHTML = top3.map((item, i) => `
+        <div class="podium-card rank-${i + 1}">
+          <div class="podium-rank">#${i + 1}</div>
+          <div class="podium-name">${escapeHtml(item.nickname || "NO NAME")}</div>
+          <div class="podium-score">${Number(item.score || 0).toLocaleString()}<span class="score-unit">玉</span></div>
+          <div class="podium-chain">${formatChain(item.chain_count)}</div>
         </div>
       `).join("");
     }
 
+    function mergeRankingData(remoteData) {
+      const merged = [...(remoteData || []), ...readLocalRanking()];
+      return merged
+        .sort((a, b) => Number(b.score || 0) - Number(a.score || 0))
+        .slice(0, rankingLimit);
+    }
+
+    function renderRanking(data, source = "online") {
+      const rankingData = mergeRankingData(data);
+      rankingTitle.textContent = `全国ランキング TOP${rankingLimit}`;
+      if (!rankingData || rankingData.length === 0) {
+        podium.hidden = true;
+        rankingStatus.textContent = "0件";
+        rankingList.innerHTML = `
+          <div class="ranking-empty">
+            まだランキングデータがありません<br>
+            最初の一撃を登録してみよう
+          </div>
+        `;
+        return;
+      }
+
+      const hasLocal = rankingData.some(item => item.local_only);
+      rankingStatus.textContent = source === "local"
+        ? `${rankingData.length}件表示・ローカル`
+        : hasLocal
+          ? `${rankingData.length}件表示・一部ローカル`
+          : `${rankingData.length}件表示`;
+      renderPodium(rankingData);
+      rankingList.innerHTML = rankingData.map((item, i) => `
+        <div class="ranking-item">
+          <div class="ranking-num ${i === 0 ? "top1" : i === 1 ? "top2" : i === 2 ? "top3" : ""}">${i + 1}</div>
+          <div class="ranking-name">${escapeHtml(item.nickname || "NO NAME")}${item.local_only ? " LOCAL" : ""}</div>
+          <div class="ranking-score">${Number(item.score || 0).toLocaleString()}<span class="score-unit">玉</span></div>
+          <div class="ranking-chain">${formatChain(item.chain_count)}</div>
+        </div>
+      `).join("");
+    }
+
+    async function loadRanking() {
+      rankingStatus.textContent = "読み込み中";
+      try {
+        let { data, error } = await supabaseClient
+          .from("ranking")
+          .select("nickname, score, chain_count")
+          .order("score", { ascending: false })
+          .limit(rankingLimit);
+
+        if (error && String(error.message || "").includes("chain_count")) {
+          const fallback = await supabaseClient
+            .from("ranking")
+            .select("nickname, score")
+            .order("score", { ascending: false })
+            .limit(rankingLimit);
+          data = fallback.data;
+          error = fallback.error;
+        }
+
+        if (error) throw error;
+        renderRanking(data);
+      } catch (error) {
+        console.error(error);
+        renderRanking([], "local");
+      }
+    }
+
+    rankTabs.forEach(button => {
+      button.addEventListener("click", () => {
+        rankingLimit = Number(button.dataset.limit) || 10;
+        rankTabs.forEach(tab => tab.classList.toggle("active", tab === button));
+        loadRanking();
+      });
+    });
+
+    challengeStartBtn.addEventListener("click", () => {
+      window.location.href = "challenge.html?start=1";
+    });
+
+    const playerRecord = renderPlayerRecord();
+    loadPlayerRank(playerRecord);
     loadRanking();
   </script>
 
