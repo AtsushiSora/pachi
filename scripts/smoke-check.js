@@ -95,6 +95,14 @@ expect(Array.isArray(manifest.icons) && manifest.icons.length >= 3, "manifest: i
 expect(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3, "manifest: shortcuts が不足しています");
 expect(Array.isArray(manifest.screenshots) && manifest.screenshots.length >= 2, "manifest: screenshots が不足しています");
 
+const googleSellerLine = "google.com, pub-2599640417413447, DIRECT, f08c47fec0942fa0";
+expect(read("ads.txt").trim() === googleSellerLine, "ads.txt: Google販売者情報が想定と違います");
+expect(read("app-ads.txt").trim() === googleSellerLine, "app-ads.txt: Google販売者情報が想定と違います");
+
+const securityTxt = read(".well-known/security.txt");
+expect(securityTxt.includes("Contact: mailto:ichigekipachi@proton.me"), "security.txt: Contact がありません");
+expect(securityTxt.includes("Canonical: https://ichigekipachi.netlify.app/.well-known/security.txt"), "security.txt: Canonical がありません");
+
 const sitemap = read("sitemap.xml");
 for (const page of sharePages) {
   const url = page === "index.html"
