@@ -27,6 +27,34 @@ const ltRatioRemain = document.getElementById("ltRatioRemain");
 const retryBtn      = document.getElementById("retryBtn");
 const simAdOverlay  = document.getElementById("simAdOverlay");
 const simAdNextBtn  = document.getElementById("simAdNextBtn");
+const startBtn      = document.getElementById("startBtn");
+const backBtn       = document.getElementById("backBtn");
+const hitRate       = document.getElementById("hitRate");
+const breakRate     = document.getElementById("breakRate");
+const breakPayout   = document.getElementById("breakPayout");
+const failPayout    = document.getElementById("failPayout");
+const continueRate  = document.getElementById("continueRate");
+const spinPer250    = document.getElementById("spinPer250");
+const payout1       = document.getElementById("payout1");
+const payout2       = document.getElementById("payout2");
+const payout3       = document.getElementById("payout3");
+const payout4       = document.getElementById("payout4");
+const ratio1        = document.getElementById("ratio1");
+const ratio2        = document.getElementById("ratio2");
+const ratio3        = document.getElementById("ratio3");
+const ratio4        = document.getElementById("ratio4");
+const enablePayout2 = document.getElementById("enablePayout2");
+const enablePayout3 = document.getElementById("enablePayout3");
+const enablePayout4 = document.getElementById("enablePayout4");
+const ltEnabled     = document.getElementById("ltEnabled");
+const ltRate        = document.getElementById("ltRate");
+const ltContinueRate = document.getElementById("ltContinueRate");
+const ltPayout1     = document.getElementById("ltPayout1");
+const ltPayout2     = document.getElementById("ltPayout2");
+const ltRatio1      = document.getElementById("ltRatio1");
+const ltRatio2      = document.getElementById("ltRatio2");
+const enableLtPayout1 = document.getElementById("enableLtPayout1");
+const enableLtPayout2 = document.getElementById("enableLtPayout2");
 let retryCount      = Number(sessionStorage.getItem("ichigekiSimRetryCount") || 0);
 
 // ========================
@@ -267,9 +295,9 @@ function setPreset(type) {
 // ========================
 // ボタンイベント
 // ========================
-document.getElementById("startBtn").addEventListener("click", simulate);
+startBtn.addEventListener("click", simulate);
 retryBtn.addEventListener("click", handleRetry);
-document.getElementById("backBtn").addEventListener("click", () => {
+backBtn.addEventListener("click", () => {
   spinning = false;
   playScreen.style.display    = "none";
   settingScreen.style.display = "block";
