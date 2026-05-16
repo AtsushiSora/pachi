@@ -48,8 +48,10 @@ AdSense / AdMob連携用の入口は入っています。
 - `ads-config.js`: AdSenseのクライアントIDと広告ユニットIDを設定
 - `ads.js`: 広告枠の描画
 - `ads.txt`: AdSense向けの認証ファイル
+- `app-ads.txt`: AdMob向けの認証ファイル
 
 AdSense審査後、広告ユニットIDが発行されたら `ads-config.js` の `slots.footer` と `slots.register` に設定します。
+スマホアプリ版をAdMobに登録する時は、デベロッパーWebサイトとして公開URLを設定し、`https://ichigekipachi.netlify.app/app-ads.txt` が見える状態にします。
 
 ## PWA
 

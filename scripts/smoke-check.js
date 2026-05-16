@@ -33,6 +33,7 @@ const requiredFiles = [
   "robots.txt",
   "sitemap.xml",
   "ads.txt",
+  "app-ads.txt",
   ".well-known/security.txt",
   "icon.svg",
   "icon-192.png",
