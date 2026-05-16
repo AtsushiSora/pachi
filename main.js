@@ -213,15 +213,50 @@ function validateStartSettings() {
     return "250玉あたり回転数は1以上にしてください。";
   }
 
-  if (getNormalRatioTotal() !== 100) {
-    return "通常RUSH出玉の合計を100%にしてください。";
-  }
-
-  if (ltEnabled.checked && getLtRatioTotal() !== 100) {
-    return "LT出玉の合計を100%にしてください。";
-  }
-
   return "";
+}
+
+function normalizeRatioGroup(items) {
+  const enabledItems = items.filter(item => item.enabled());
+  if (!enabledItems.length) return;
+
+  let total = enabledItems.reduce((sum, item) => sum + Number(item.input.value || 0), 0);
+  if (total <= 0) {
+    enabledItems[0].input.value = 100;
+    enabledItems.slice(1).forEach(item => { item.input.value = 0; });
+    return;
+  }
+
+  if (total !== 100) {
+    let normalizedTotal = 0;
+    enabledItems.forEach((item, index) => {
+      const value = index === enabledItems.length - 1
+        ? 100 - normalizedTotal
+        : Math.max(0, Math.round((Number(item.input.value || 0) / total) * 100));
+      item.input.value = value;
+      normalizedTotal += value;
+    });
+  }
+}
+
+function normalizeStartRatios() {
+  normalizeRatioGroup([
+    { input: ratio1, enabled: () => true },
+    { input: ratio2, enabled: () => enablePayout2.checked },
+    { input: ratio3, enabled: () => enablePayout3.checked },
+    { input: ratio4, enabled: () => enablePayout4.checked },
+  ]);
+
+  if (ltEnabled.checked) {
+    normalizeRatioGroup([
+      { input: ltRatio1, enabled: () => enableLtPayout1.checked },
+      { input: ltRatio2, enabled: () => enableLtPayout2.checked },
+    ]);
+  }
+
+  syncSettingSliders();
+  updateRatioTotal();
+  saveSettings();
 }
 
 // ========================
@@ -400,6 +435,7 @@ async function simulate() {
     startMessage.textContent = validationMessage;
     return;
   }
+  normalizeStartRatios();
   spinning = true;
 
   // リセット

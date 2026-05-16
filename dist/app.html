@@ -230,6 +230,7 @@
 
     /* 体力0メッセージ */
     .hp-empty-msg { background: rgba(255,61,61,.1); border: 1px solid var(--red); border-radius: 6px; padding: 6px; text-align: center; font-size: 11px; color: var(--red); display: none; flex-shrink: 0; }
+    .hp-empty-msg.show { display: block; }
 
     /* FX */
     .payout-fx { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); font-family: 'Orbitron', sans-serif; font-size: 44px; font-weight: 900; color: var(--gold2); text-shadow: 0 0 22px var(--gold); pointer-events: none; z-index: 999; white-space: nowrap; }
@@ -631,6 +632,30 @@ function updateRatioTotal() {
   el.className   = 'ratio-total '+(total===100?'ratio-ok':'ratio-over');
 }
 
+function normalizeRounds() {
+  if (!rounds.length) {
+    rounds = [{ label:'10R', payout:1500, ratio:100 }];
+    renderRounds();
+    return;
+  }
+
+  let total = rounds.reduce((s,r) => s + (parseInt(r.ratio, 10) || 0), 0);
+  if (total <= 0) {
+    rounds[0].ratio = 100;
+    rounds.slice(1).forEach(r => { r.ratio = 0; });
+  } else if (total !== 100) {
+    let normalizedTotal = 0;
+    rounds.forEach((round, index) => {
+      const current = parseInt(round.ratio, 10) || 0;
+      round.ratio = index === rounds.length - 1
+        ? 100 - normalizedTotal
+        : Math.max(0, Math.round((current / total) * 100));
+      normalizedTotal += round.ratio;
+    });
+  }
+  renderRounds();
+}
+
 function getRandomPayout() {
   const rand = Math.random() * 100;
   let cum = 0;
@@ -774,6 +799,7 @@ function toggleSim() {
     updateHp();
   } else {
     if (starting) return;
+    normalizeRounds();
     startSim();
   }
 }
@@ -781,7 +807,7 @@ function toggleSim() {
 async function startSim() {
   if (running || starting) return;
   if (hp <= 0) {
-    document.getElementById('hpEmptyMsg').style.display = 'block';
+    document.getElementById('hpEmptyMsg').classList.add('show');
     updateHp();
     return;
   }
@@ -858,7 +884,7 @@ function resetSim() {
   document.getElementById('startLabel').textContent = 'START';
   document.getElementById('startSub').textContent   = 'スタート';
   document.getElementById('startBtn').classList.remove('stop');
-  document.getElementById('hpEmptyMsg').style.display = 'none';
+  document.getElementById('hpEmptyMsg').classList.remove('show');
   setMode('normal');
   resetBigWin();
   updateStats();
@@ -915,10 +941,10 @@ function updateHp() {
   const msg = document.getElementById('hpEmptyMsg');
   const btn = document.getElementById('startBtn');
   if (hp <= 0 && !running) {
-    msg.style.display = 'block';
-    btn.disabled = true;
+    msg.classList.add('show');
+    btn.disabled = false;
   } else {
-    msg.style.display = 'none';
+    msg.classList.remove('show');
     btn.disabled = false;
   }
   document.getElementById('hpAdBtn').disabled = hp >= HP_MAX;
