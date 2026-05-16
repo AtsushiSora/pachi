@@ -12,6 +12,7 @@
 - `ranking.html`: 全国ランキング
 - `challenge.html`: ランキングチャレンジ
 - `howto.html`: 使い方
+- `safety.html`: 安心して使うために
 - `privacy.html`: プライバシーポリシー
 - `disclaimer.html`: 免責事項
 - `404.html`: ページ未検出

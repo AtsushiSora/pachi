@@ -10,6 +10,7 @@ const publicPages = [
   "ranking.html",
   "challenge.html",
   "howto.html",
+  "safety.html",
   "privacy.html",
   "disclaimer.html",
   "offline.html",
@@ -23,6 +24,7 @@ const sharePages = [
   "ranking.html",
   "challenge.html",
   "howto.html",
+  "safety.html",
   "privacy.html",
   "disclaimer.html",
 ];

@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => {
           ranking:   'ranking.html',
           challenge: 'challenge.html',
           howto:     'howto.html',
+          safety:    'safety.html',
           privacy:   'privacy.html',
           disclaimer:'disclaimer.html',
           offline:   'offline.html',
