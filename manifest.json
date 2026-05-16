@@ -31,6 +31,22 @@
       "purpose": "any maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/screenshot-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "トップ画面から各シミュレーターと全国チャレンジへ移動できます。"
+    },
+    {
+      "src": "/screenshot-ranking.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "一撃、連チャン、ハマりのランキングに挑戦できます。"
+    }
+  ],
   "shortcuts": [
     {
       "name": "全国チャレンジ",

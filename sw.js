@@ -1,4 +1,4 @@
-const CACHE_NAME = "ichigeki-pwa-v8";
+const CACHE_NAME = "ichigeki-pwa-v9";
 const CORE_ASSETS = [
   "/",
   "/index.html",
@@ -20,7 +20,9 @@ const CORE_ASSETS = [
   "/icon.svg",
   "/icon-192.png",
   "/icon-512.png",
-  "/apple-touch-icon.png"
+  "/apple-touch-icon.png",
+  "/screenshot-home.png",
+  "/screenshot-ranking.png"
 ];
 
 self.addEventListener("install", event => {
