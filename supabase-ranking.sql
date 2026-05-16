@@ -1,5 +1,9 @@
 -- ICHIGEKI online ranking setup
 -- Supabase SQL EditorでこのSQLを実行してください。
+-- 目的:
+-- 1. ランキング用テーブルを作る
+-- 2. 誰でも閲覧・登録はできる
+-- 3. ブラウザから順位や差玉を書き換えられても、不自然な値はDB側で弾く
 
 create extension if not exists pgcrypto;
 
@@ -23,6 +27,10 @@ alter table public.ranking
 
 alter table public.ranking enable row level security;
 
+grant usage on schema public to anon;
+grant select, insert on public.ranking to anon;
+revoke update, delete on public.ranking from anon, authenticated;
+
 drop policy if exists ranking_select on public.ranking;
 drop policy if exists ranking_insert on public.ranking;
 
@@ -37,13 +45,19 @@ on public.ranking
 for insert
 to anon
 with check (
-  nickname <> ''
+  btrim(nickname) <> ''
   and char_length(nickname) <= 10
+  and nickname = btrim(nickname)
   and score >= 0
+  and score <= 2000000
   and chain_count >= 0
+  and chain_count <= 10000
   and spins >= 0
+  and spins <= 2000000
   and used_balls >= 0
+  and used_balls <= 2000000
   and diff = score - used_balls
+  and created_at <= now() + interval '5 minutes'
 );
 
 do $$
@@ -57,6 +71,43 @@ begin
     alter table public.ranking
       add constraint ranking_diff_matches_score
       check (diff = score - used_balls) not valid;
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'ranking_nickname_is_clean'
+      and conrelid = 'public.ranking'::regclass
+  ) then
+    alter table public.ranking
+      add constraint ranking_nickname_is_clean
+      check (
+        btrim(nickname) <> ''
+        and char_length(nickname) <= 10
+        and nickname = btrim(nickname)
+      ) not valid;
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'ranking_values_are_reasonable'
+      and conrelid = 'public.ranking'::regclass
+  ) then
+    alter table public.ranking
+      add constraint ranking_values_are_reasonable
+      check (
+        score between 0 and 2000000
+        and chain_count between 0 and 10000
+        and spins between 0 and 2000000
+        and used_balls between 0 and 2000000
+      ) not valid;
   end if;
 end $$;
 
