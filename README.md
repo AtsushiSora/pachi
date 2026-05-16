@@ -30,8 +30,7 @@ npm test
 
 ## リリース前チェック
 
-1. `npm test`
-2. `npm run build`
+1. `npm run release:check`
 3. スマホでトップ、ランキング、チャレンジ、スペック、実戦を確認
 4. ランキング登録と結果シェアを確認
 5. Netlifyのデプロイ完了を確認
@@ -56,3 +55,8 @@ AdSense審査後、広告ユニットIDが発行されたら `ads-config.js` の
 
 `manifest.json` と `sw.js` でスマホのホーム画面追加に対応しています。
 Service Workerのキャッシュ内容を変えた時は、`sw.js` の `CACHE_NAME` を更新してください。
+
+## セキュリティ連絡先
+
+- `SECURITY.md`: リポジトリ向けの連絡先
+- `.well-known/security.txt`: 公開サイト向けの標準連絡先
