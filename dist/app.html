@@ -237,6 +237,32 @@
     .hp-empty-msg { background: rgba(255,61,61,.1); border: 1px solid var(--red); border-radius: 6px; padding: 6px; text-align: center; font-size: 11px; color: var(--red); display: none; flex-shrink: 0; }
     .hp-empty-msg.show { display: block; }
 
+    .reward-toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(92px + env(safe-area-inset-bottom));
+      transform: translate(-50%, 12px);
+      z-index: 110;
+      width: min(calc(100% - 32px), 360px);
+      background: rgba(18, 24, 44, .96);
+      border: 1px solid var(--border-hi);
+      border-radius: 10px;
+      box-shadow: 0 12px 34px rgba(0,0,0,.45);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      padding: 12px 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+    }
+
+    .reward-toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
     /* FX */
     .payout-fx { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); font-family: 'Orbitron', sans-serif; font-size: 44px; font-weight: 900; color: var(--gold2); text-shadow: 0 0 22px var(--gold); pointer-events: none; z-index: 999; white-space: nowrap; }
     .payout-fx.show { animation: fxPop .7s cubic-bezier(.175,.885,.32,1.275); }
@@ -484,6 +510,7 @@
 
 <!-- FX -->
 <div class="payout-fx" id="payoutFx"></div>
+<div class="reward-toast" id="rewardToast" role="status" aria-live="polite"></div>
 
 <script>
 // ========================
@@ -511,6 +538,7 @@ let starting  = false;
 let fastMode  = true;
 let spins = 0, totalPayout = 0, currentBalls = 0, investedBalls = 0, chainCount = 0;
 let hp = 5;
+let rewardTimer = null;
 
 // ========================
 // ヘルパー
@@ -941,6 +969,15 @@ function recoverHp(amount=1) {
   updateHp();
 }
 
+function showRewardToast(message) {
+  const toast = document.getElementById('rewardToast');
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(rewardTimer);
+  rewardTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
 function updateHp() {
   for (let i=1;i<=5;i++) document.getElementById('hp'+i).classList.toggle('off', i>hp);
   const msg = document.getElementById('hpEmptyMsg');
@@ -968,9 +1005,22 @@ function updateHpTimer() {
 }
 
 function watchAd() {
-  // TODO: AdMob リワード広告をここに実装
-  recoverHp(HP_MAX);
-  alert('広告視聴完了！体力が全回復しました。');
+  if (hp >= HP_MAX) {
+    showRewardToast('体力はすでに満タンです');
+    return;
+  }
+
+  const btn = document.getElementById('hpAdBtn');
+  btn.disabled = true;
+  btn.textContent = '広告を確認中...';
+  showRewardToast('広告を確認しています');
+
+  setTimeout(() => {
+    recoverHp(HP_MAX);
+    btn.textContent = '📺 広告を見て回復';
+    updateHp();
+    showRewardToast('体力が全回復しました');
+  }, 900);
 }
 
 setInterval(() => {
