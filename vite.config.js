@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => {
           privacy:   'privacy.html',
           disclaimer:'disclaimer.html',
           offline:   'offline.html',
+          notfound:  '404.html',
         }
       }
     }

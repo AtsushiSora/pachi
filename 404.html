@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0e0e0e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="一撃スロパチ">
+  <meta name="application-name" content="一撃スロパチ">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="ICHIGEKI 一撃スロパチのページが見つからない場合の案内ページです。">
+  <title>ページが見つかりません | ICHIGEKI〜スロパチ〜</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .notfound-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 18px 120px;
+    }
+
+    .notfound-panel {
+      width: min(100%, 440px);
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 18px;
+      padding: 26px 22px;
+      text-align: center;
+    }
+
+    .notfound-logo {
+      font-family: "DM Mono", monospace;
+      font-size: 28px;
+      color: #e8e8e8;
+      letter-spacing: 4px;
+      margin-bottom: 24px;
+    }
+
+    .notfound-kicker {
+      font-family: "DM Mono", monospace;
+      font-size: 12px;
+      color: #4caf50;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .notfound-title {
+      font-size: 20px;
+      color: #e8e8e8;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .notfound-text {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.9;
+      margin-bottom: 22px;
+    }
+
+    .notfound-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .notfound-button {
+      display: block;
+      width: 100%;
+      border: 1px solid #2d2d2d;
+      border-radius: 12px;
+      background: #0e0e0e;
+      color: #e8e8e8;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 15px;
+    }
+
+    .notfound-button.primary {
+      background: #e8e8e8;
+      color: #080808;
+      border-color: #e8e8e8;
+    }
+  </style>
+</head>
+<body>
+  <main class="notfound-wrap">
+    <section class="notfound-panel">
+      <div class="notfound-logo">ICHIGEKI</div>
+      <div class="notfound-kicker">404</div>
+      <h1 class="notfound-title">ページが見つかりません</h1>
+      <p class="notfound-text">
+        URLが変わったか、ページが存在しない可能性があります。
+        トップからもう一度選んでください。
+      </p>
+      <div class="notfound-actions">
+        <a class="notfound-button primary" href="/">トップに戻る</a>
+        <a class="notfound-button" href="ranking.html">全国チャレンジを見る</a>
+        <a class="notfound-button" href="howto.html">使い方を見る</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-ad-band" data-ad-placement="footer"><span>AD</span>広告枠</footer>
+
+  <script src="ads-config.js"></script>
+  <script src="ads.js"></script>
+  <script src="pwa.js"></script>
+</body>
+</html>
