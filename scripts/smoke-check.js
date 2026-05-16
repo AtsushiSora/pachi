@@ -29,6 +29,11 @@ const sharePages = [
   "disclaimer.html",
 ];
 
+const noindexPages = [
+  "offline.html",
+  "404.html",
+];
+
 const requiredFiles = [
   "manifest.json",
   "sw.js",
@@ -87,6 +92,11 @@ for (const page of sharePages) {
   expect(has(html, /property="og:image"/), `${page}: og:image がありません`);
   expect(has(html, /name="twitter:card"/), `${page}: twitter:card がありません`);
   expect(has(html, /<link rel="canonical"/), `${page}: canonical がありません`);
+}
+
+for (const page of noindexPages) {
+  const html = read(page);
+  expect(has(html, /<meta name="robots" content="noindex"/), `${page}: noindex がありません`);
 }
 
 const manifest = JSON.parse(read("manifest.json"));
