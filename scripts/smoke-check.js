@@ -123,6 +123,21 @@ for (const page of sharePages) {
   expect(sitemap.includes(`<loc>${url}</loc>`), `sitemap.xml: ${url} がありません`);
 }
 
+for (const page of noindexPages) {
+  const url = `https://ichigekipachi.netlify.app/${page}`;
+  expect(!sitemap.includes(`<loc>${url}</loc>`), `sitemap.xml: noindex の ${url} が含まれています`);
+}
+
+const robots = read("robots.txt");
+expect(robots.includes("Sitemap: https://ichigekipachi.netlify.app/sitemap.xml"), "robots.txt: Sitemap がありません");
+
+const netlify = read("netlify.toml");
+for (const file of ["/ads.txt", "/app-ads.txt", "/.well-known/security.txt"]) {
+  expect(netlify.includes(`for = "${file}"`), `netlify.toml: ${file} のheaders設定がありません`);
+}
+expect(netlify.includes('Content-Type = "text/plain; charset=utf-8"'), "netlify.toml: text/plain のContent-Type設定がありません");
+expect(netlify.includes('for = "/sw.js"') && netlify.includes("no-cache, no-store, must-revalidate"), "netlify.toml: sw.js のno-cache設定がありません");
+
 const sw = read("sw.js");
 for (const file of ["index.html", "sim.html", "app.html", "ranking.html", "challenge.html", "offline.html", "404.html"]) {
   expect(sw.includes(`"/${file}"`), `sw.js: /${file} がキャッシュ対象にありません`);
