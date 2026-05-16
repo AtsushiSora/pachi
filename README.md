@@ -1,0 +1,58 @@
+# ICHIGEKI 一撃スロパチ
+
+パチンコのスペック試算、実戦風シミュレーター、全国ランキングチャレンジを楽しめるWebアプリです。
+
+公開URL: https://ichigekipachi.netlify.app/
+
+## 主なページ
+
+- `index.html`: トップ
+- `sim.html`: スペックシミュレーター
+- `app.html`: 実戦シミュレーター
+- `ranking.html`: 全国ランキング
+- `challenge.html`: ランキングチャレンジ
+- `howto.html`: 使い方
+- `privacy.html`: プライバシーポリシー
+- `disclaimer.html`: 免責事項
+- `404.html`: ページ未検出
+- `offline.html`: オフライン表示
+
+## 開発コマンド
+
+```bash
+npm run dev
+npm run check
+npm run build
+npm test
+```
+
+`npm run check` は公開前の簡易チェックです。主要ページ、メタ情報、PWA設定、sitemap、Service Workerのキャッシュ対象を確認します。
+
+## リリース前チェック
+
+1. `npm test`
+2. `npm run build`
+3. スマホでトップ、ランキング、チャレンジ、スペック、実戦を確認
+4. ランキング登録と結果シェアを確認
+5. Netlifyのデプロイ完了を確認
+
+## オンラインランキング
+
+Supabaseを使っています。ランキング公開前またはセキュリティ調整時は、Supabase SQL Editorで `supabase-ranking.sql` を実行してください。
+
+詳しい手順は `SUPABASE_SECURITY.md` を参照してください。
+
+## 広告
+
+AdSense / AdMob連携用の入口は入っています。
+
+- `ads-config.js`: AdSenseのクライアントIDと広告ユニットIDを設定
+- `ads.js`: 広告枠の描画
+- `ads.txt`: AdSense向けの認証ファイル
+
+AdSense審査後、広告ユニットIDが発行されたら `ads-config.js` の `slots.footer` と `slots.register` に設定します。
+
+## PWA
+
+`manifest.json` と `sw.js` でスマホのホーム画面追加に対応しています。
+Service Workerのキャッシュ内容を変えた時は、`sw.js` の `CACHE_NAME` を更新してください。

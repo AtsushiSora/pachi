@@ -1,11 +1,12 @@
 {
   "name": "pachi",
   "version": "1.0.0",
-  "description": "",
+  "description": "ICHIGEKI 一撃スロパチのWebアプリ",
   "main": "main.js",
   "scripts": {
     "test": "npm run check",
     "check": "node scripts/smoke-check.js",
+    "release:check": "npm run check && npm run build",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -21,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/AtsushiSora/pachi/issues"
   },
-  "homepage": "https://github.com/AtsushiSora/pachi#readme",
+  "homepage": "https://ichigekipachi.netlify.app/",
   "devDependencies": {
     "vite": "^8.0.12"
   },
