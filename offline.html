@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0e0e0e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ICHIGEKI">
+  <title>オフライン | ICHIGEKI〜スロパチ〜</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .offline-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 18px 120px;
+    }
+
+    .offline-panel {
+      width: min(100%, 440px);
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 18px;
+      padding: 26px 22px;
+      text-align: center;
+    }
+
+    .offline-logo {
+      font-family: "DM Mono", monospace;
+      font-size: 28px;
+      color: #e8e8e8;
+      letter-spacing: 4px;
+      margin-bottom: 24px;
+    }
+
+    .offline-kicker {
+      font-size: 11px;
+      color: #666;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .offline-title {
+      font-size: 20px;
+      color: #e8e8e8;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .offline-text {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.9;
+      margin-bottom: 22px;
+    }
+
+    .offline-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .offline-button {
+      display: block;
+      width: 100%;
+      border: 1px solid #2d2d2d;
+      border-radius: 12px;
+      background: #0e0e0e;
+      color: #e8e8e8;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 15px;
+    }
+
+    .offline-button.primary {
+      background: #e8e8e8;
+      color: #080808;
+      border-color: #e8e8e8;
+    }
+  </style>
+</head>
+<body>
+  <main class="offline-wrap">
+    <section class="offline-panel">
+      <div class="offline-logo">ICHIGEKI</div>
+      <div class="offline-kicker">OFFLINE</div>
+      <h1 class="offline-title">通信できません</h1>
+      <p class="offline-text">
+        ネットワークに接続できないため、オンラインランキングや広告の読み込みができません。
+        接続が戻ったら再読み込みしてください。
+      </p>
+      <div class="offline-actions">
+        <a class="offline-button primary" href="/">トップに戻る</a>
+        <a class="offline-button" href="sim.html">スペックシミュレーターを開く</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-ad-band" data-ad-placement="footer"><span>AD</span>広告枠</footer>
+  <script src="pwa.js"></script>
+</body>
+</html>

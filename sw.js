@@ -1,7 +1,8 @@
-const CACHE_NAME = "ichigeki-pwa-v2";
+const CACHE_NAME = "ichigeki-pwa-v3";
 const CORE_ASSETS = [
   "/",
   "/index.html",
+  "/offline.html",
   "/sim.html",
   "/app.html",
   "/ranking.html",
@@ -60,7 +61,7 @@ self.addEventListener("fetch", event => {
           caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
           return response;
         })
-        .catch(() => caches.match(request).then(cached => cached || caches.match("/index.html")))
+        .catch(() => caches.match(request).then(cached => cached || caches.match("/offline.html") || caches.match("/index.html")))
     );
     return;
   }
