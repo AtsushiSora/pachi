@@ -114,6 +114,12 @@
       line-height: 1.6;
     }
 
+    .top-install-note {
+      display: block;
+      margin-top: 3px;
+      color: #8d8d8d;
+    }
+
     .top-install-btn {
       flex-shrink: 0;
       min-width: 88px;
@@ -270,7 +276,7 @@
     <section class="top-install" id="installCard">
       <div>
         <div class="top-install-title">スマホに追加</div>
-        <div class="top-install-text">ホーム画面からアプリ風に起動できます。</div>
+        <div class="top-install-text" id="installText">ホーム画面からアプリ風に起動できます。</div>
       </div>
       <button class="top-install-btn" id="installBtn" type="button">追加</button>
     </section>
@@ -342,16 +348,41 @@
     (() => {
       const card = document.getElementById("installCard");
       const button = document.getElementById("installBtn");
+      const text = document.getElementById("installText");
       let deferredInstallPrompt = null;
       const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+      const userAgent = navigator.userAgent || "";
+      const isIos = /iphone|ipad|ipod/i.test(userAgent);
+      const isAndroid = /android/i.test(userAgent);
 
       if (isStandalone && card) {
         card.hidden = true;
+        return;
+      }
+
+      if (isIos && text && button) {
+        text.innerHTML = `Safariの共有ボタンから追加できます。<span class="top-install-note">手順を開きます。</span>`;
+        button.textContent = "手順";
+      } else if (isAndroid && text && button) {
+        text.innerHTML = `Chromeからホーム画面に追加できます。<span class="top-install-note">対応端末では直接インストールできます。</span>`;
+        button.textContent = "追加";
+      } else if (text && button) {
+        text.innerHTML = `スマホのホーム画面から起動できます。<span class="top-install-note">詳しい手順を開きます。</span>`;
+        button.textContent = "手順";
       }
 
       window.addEventListener("beforeinstallprompt", (event) => {
         event.preventDefault();
         deferredInstallPrompt = event;
+        if (button) button.textContent = "追加";
+        if (text) {
+          text.innerHTML = `ホーム画面からアプリ風に起動できます。<span class="top-install-note">この端末では直接インストールできます。</span>`;
+        }
+      });
+
+      window.addEventListener("appinstalled", () => {
+        if (card) card.hidden = true;
+        deferredInstallPrompt = null;
       });
 
       button?.addEventListener("click", async () => {

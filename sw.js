@@ -1,4 +1,4 @@
-const CACHE_NAME = "ichigeki-pwa-v9";
+const CACHE_NAME = "ichigeki-pwa-v10";
 const CORE_ASSETS = [
   "/",
   "/index.html",
