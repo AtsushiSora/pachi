@@ -564,6 +564,20 @@ input[type="number"]:focus {
   transform: translateY(-1px);
 }
 
+.start-message {
+  min-height: 20px;
+  margin-top: 10px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.start-message:empty {
+  display: none;
+}
+
 /* ======================== */
 /* プレイ画面               */
 /* ======================== */

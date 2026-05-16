@@ -28,6 +28,7 @@ const retryBtn      = document.getElementById("retryBtn");
 const simAdOverlay  = document.getElementById("simAdOverlay");
 const simAdNextBtn  = document.getElementById("simAdNextBtn");
 const startBtn      = document.getElementById("startBtn");
+const startMessage  = document.getElementById("startMessage");
 const backBtn       = document.getElementById("backBtn");
 const hitRate       = document.getElementById("hitRate");
 const breakRate     = document.getElementById("breakRate");
@@ -66,6 +67,7 @@ document.querySelectorAll(".step-btn").forEach(btn => {
 
 document.querySelectorAll(".setting-slider").forEach(slider => {
   slider.addEventListener("input", () => {
+    clearStartMessage();
     const target = document.getElementById(slider.dataset.target);
     target.value = clampRatioValue(target.id, Number(slider.value));
     if (isPayoutInput(target.id)) snapPayoutInput(target);
@@ -77,6 +79,7 @@ document.querySelectorAll(".setting-slider").forEach(slider => {
 
 document.querySelectorAll("input[type='number']").forEach(input => {
   input.addEventListener("input", () => {
+    clearStartMessage();
     syncSettingSlider(input.id);
     updateRatioTotal();
     saveSettings();
@@ -88,10 +91,19 @@ document.querySelectorAll("input[type='number']").forEach(input => {
   });
 });
 
+document.querySelectorAll("input[type='checkbox']").forEach(input => {
+  input.addEventListener("change", () => {
+    clearStartMessage();
+    updateRatioTotal();
+    saveSettings();
+  });
+});
+
 // ========================
 // 数値変更
 // ========================
 function changeValue(button) {
+  clearStartMessage();
   const target = document.getElementById(button.dataset.target);
   let value = Number(target.value);
   value += Number(button.dataset.change);
@@ -170,6 +182,46 @@ function updateRatioTotal() {
   ltRatioTotal.textContent  = `合計 ${ltTotal}%`;
   ltRatioRemain.textContent = `残り ${100 - ltTotal}%`;
   ltRatioRemain.className   = ltTotal === 100 ? "ok" : "over";
+}
+
+function clearStartMessage() {
+  startMessage.textContent = "";
+}
+
+function getNormalRatioTotal() {
+  return Number(ratio1.value) +
+    (enablePayout2.checked ? Number(ratio2.value) : 0) +
+    (enablePayout3.checked ? Number(ratio3.value) : 0) +
+    (enablePayout4.checked ? Number(ratio4.value) : 0);
+}
+
+function getLtRatioTotal() {
+  return (enableLtPayout1.checked ? Number(ltRatio1.value) : 0) +
+    (enableLtPayout2.checked ? Number(ltRatio2.value) : 0);
+}
+
+function validateStartSettings() {
+  startMessage.textContent = "";
+  const hit = Number(hitRate.value);
+  const spins = Number(spinPer250.value);
+
+  if (!Number.isFinite(hit) || hit <= 0) {
+    return "当たり確率は1以上にしてください。";
+  }
+
+  if (!Number.isFinite(spins) || spins <= 0) {
+    return "250玉あたり回転数は1以上にしてください。";
+  }
+
+  if (getNormalRatioTotal() !== 100) {
+    return "通常RUSH出玉の合計を100%にしてください。";
+  }
+
+  if (ltEnabled.checked && getLtRatioTotal() !== 100) {
+    return "LT出玉の合計を100%にしてください。";
+  }
+
+  return "";
 }
 
 // ========================
@@ -343,6 +395,11 @@ function showRetryAd() {
 // ========================
 async function simulate() {
   if (spinning) return;
+  const validationMessage = validateStartSettings();
+  if (validationMessage) {
+    startMessage.textContent = validationMessage;
+    return;
+  }
   spinning = true;
 
   // リセット
