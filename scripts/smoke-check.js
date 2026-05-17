@@ -210,6 +210,16 @@ function checkStructuredData(page, html) {
   }
 }
 
+function checkBlankTargetLinks(page, html) {
+  const links = html.matchAll(/<a\b[^>]*>/gi);
+  for (const link of links) {
+    const tag = link[0];
+    if (!/\btarget\s*=\s*["']_blank["']/i.test(tag)) continue;
+    const rel = getAttribute(tag, /<a\b[^>]*>/i, "rel");
+    expect(/\bnoopener\b/i.test(rel), `${page}: target="_blank" のリンクに rel="noopener" がありません`);
+  }
+}
+
 for (const file of requiredFiles) {
   expect(exists(file), `${file} が見つかりません`);
 }
@@ -233,6 +243,7 @@ for (const page of publicPages) {
   expect(has(html, /<link rel="apple-touch-icon"/), `${page}: apple-touch-icon link がありません`);
   checkInlineScripts(page, html);
   checkStructuredData(page, html);
+  checkBlankTargetLinks(page, html);
 
   const localRefs = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)]
     .map(match => match[1])
