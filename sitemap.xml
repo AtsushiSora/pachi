@@ -43,6 +43,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://ichigekipachi.netlify.app/contact.html</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://ichigekipachi.netlify.app/privacy.html</loc>
     <lastmod>2026-05-16</lastmod>
     <changefreq>yearly</changefreq>

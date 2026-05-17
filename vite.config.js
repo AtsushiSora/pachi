@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
           challenge: 'challenge.html',
           howto:     'howto.html',
           safety:    'safety.html',
+          contact:   'contact.html',
           privacy:   'privacy.html',
           disclaimer:'disclaimer.html',
           offline:   'offline.html',

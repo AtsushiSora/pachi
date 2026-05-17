@@ -15,6 +15,7 @@
 - `challenge.html`: ランキングチャレンジ
 - `howto.html`: 使い方
 - `safety.html`: 安心して使うために
+- `contact.html`: お問い合わせ
 - `privacy.html`: プライバシーポリシー
 - `disclaimer.html`: 免責事項
 - `404.html`: ページ未検出

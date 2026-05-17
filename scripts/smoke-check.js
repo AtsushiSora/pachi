@@ -11,6 +11,7 @@ const publicPages = [
   "challenge.html",
   "howto.html",
   "safety.html",
+  "contact.html",
   "privacy.html",
   "disclaimer.html",
   "offline.html",
@@ -25,6 +26,7 @@ const sharePages = [
   "challenge.html",
   "howto.html",
   "safety.html",
+  "contact.html",
   "privacy.html",
   "disclaimer.html",
 ];
@@ -147,7 +149,7 @@ expect(netlify.includes('Content-Type = "text/plain; charset=utf-8"'), "netlify.
 expect(netlify.includes('for = "/sw.js"') && netlify.includes("no-cache, no-store, must-revalidate"), "netlify.toml: sw.js のno-cache設定がありません");
 
 const sw = read("sw.js");
-for (const file of ["index.html", "sim.html", "app.html", "ranking.html", "challenge.html", "offline.html", "404.html"]) {
+for (const file of publicPages) {
   expect(sw.includes(`"/${file}"`), `sw.js: /${file} がキャッシュ対象にありません`);
 }
 
