@@ -108,6 +108,8 @@ const pkg = JSON.parse(read("package.json"));
 const indexHtml = read("index.html");
 const rankingHtml = read("ranking.html");
 const challengeHtml = read("challenge.html");
+const aboutHtml = read("about.html");
+const contactHtml = read("contact.html");
 expect(manifest.name === "ICHIGEKI 一撃スロパチ", "manifest: name が想定と違います");
 expect(manifest.short_name === "一撃スロパチ", "manifest: short_name が想定と違います");
 expect(manifest.display === "standalone", "manifest: display が standalone ではありません");
@@ -125,6 +127,9 @@ expect(rankingHtml.includes("diff === score - Number(usedBalls || 0)"), "ranking
 expect(rankingHtml.includes("diff, used_balls"), "ranking.html: 差玉と使用玉を取得していません");
 expect(rankingHtml.includes("window.supabase") && rankingHtml.includes("renderRanking([], \"local\")"), "ranking.html: Supabase未読込時のローカル表示がありません");
 expect(challengeHtml.includes("window.supabase") && challengeHtml.includes("Supabase client is not available"), "challenge.html: Supabase未読込時のローカル登録 fallback がありません");
+expect(indexHtml.includes('"publisher"') && indexHtml.includes('"ICHIGEKI運営"'), "index.html: publisher構造化データがありません");
+expect(aboutHtml.includes('"@type": "AboutPage"') && aboutHtml.includes('"@type": "Organization"'), "about.html: AboutPage構造化データがありません");
+expect(contactHtml.includes('"@type": "ContactPage"') && contactHtml.includes("ichigekipachi@proton.me"), "contact.html: ContactPage構造化データがありません");
 
 const googleSellerLine = "google.com, pub-2599640417413447, DIRECT, f08c47fec0942fa0";
 expect(read("ads.txt").trim() === googleSellerLine, "ads.txt: Google販売者情報が想定と違います");
