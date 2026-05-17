@@ -100,12 +100,17 @@ for (const page of noindexPages) {
 }
 
 const manifest = JSON.parse(read("manifest.json"));
+const pkg = JSON.parse(read("package.json"));
+const indexHtml = read("index.html");
 expect(manifest.name === "ICHIGEKI 一撃スロパチ", "manifest: name が想定と違います");
 expect(manifest.short_name === "一撃スロパチ", "manifest: short_name が想定と違います");
 expect(manifest.display === "standalone", "manifest: display が standalone ではありません");
 expect(Array.isArray(manifest.icons) && manifest.icons.length >= 3, "manifest: icons が不足しています");
 expect(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3, "manifest: shortcuts が不足しています");
 expect(Array.isArray(manifest.screenshots) && manifest.screenshots.length >= 2, "manifest: screenshots が不足しています");
+expect(pkg.version === "2.0.0", "package.json: version が 2.0.0 ではありません");
+expect(indexHtml.includes("v2.0"), "index.html: 表示バージョン v2.0 がありません");
+expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
 
 const googleSellerLine = "google.com, pub-2599640417413447, DIRECT, f08c47fec0942fa0";
 expect(read("ads.txt").trim() === googleSellerLine, "ads.txt: Google販売者情報が想定と違います");

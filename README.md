@@ -4,6 +4,8 @@
 
 公開URL: https://ichigekipachi.netlify.app/
 
+現在のバージョン: v2.0.0
+
 ## 主なページ
 
 - `index.html`: トップ
@@ -28,6 +30,8 @@ npm test
 ```
 
 `npm run check` は公開前の簡易チェックです。主要ページ、メタ情報、PWA設定、sitemap、Service Workerのキャッシュ対象を確認します。
+
+更新内容は `CHANGELOG.md` にまとめています。
 
 ## リリース前チェック
 
