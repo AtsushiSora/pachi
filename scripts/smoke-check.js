@@ -202,6 +202,10 @@ function getTitle(html) {
   return match ? match[1].trim() : "";
 }
 
+function getMetaContent(html, selectorPattern) {
+  return getAttribute(html, selectorPattern, "content").trim();
+}
+
 function checkJavaScriptSyntax(label, code) {
   try {
     new Function(code);
@@ -284,11 +288,18 @@ for (const file of [...publicPages, ...scriptFiles, "manifest.json", "netlify.to
   }
 }
 
+const pageTitles = new Map();
+const pageDescriptions = new Map();
+const ogTitles = new Map();
+const ogDescriptions = new Map();
+
 for (const page of publicPages) {
   expect(exists(page), `${page} が見つかりません`);
   if (!exists(page)) continue;
 
   const html = read(page);
+  const title = getTitle(html);
+  const description = getMetaContent(html, /<meta[^>]+name=["']description["'][^>]*>/i);
   expect(has(html, /<html lang="ja">/), `${page}: lang="ja" がありません`);
   expect(has(html, /<meta name="viewport"/), `${page}: viewport がありません`);
   expect(has(html, /<meta name="theme-color"/), `${page}: theme-color がありません`);
@@ -300,7 +311,13 @@ for (const page of publicPages) {
   expect(has(html, /<meta name="format-detection" content="telephone=no"/), `${page}: format-detection がありません`);
   expect(has(html, /<meta name="description"/), `${page}: description がありません`);
   expect(has(html, /<title>.+<\/title>/), `${page}: title がありません`);
-  expect(getTitle(html).includes("ICHIGEKI"), `${page}: title に ICHIGEKI がありません`);
+  expect(title.includes("ICHIGEKI"), `${page}: title に ICHIGEKI がありません`);
+  expect(title.length >= 12 && title.length <= 60, `${page}: title の長さが想定外です`);
+  expect(description.length >= 24 && description.length <= 120, `${page}: description の長さが想定外です`);
+  expect(!pageTitles.has(title), `${page}: title が ${pageTitles.get(title)} と重複しています`);
+  expect(!pageDescriptions.has(description), `${page}: description が ${pageDescriptions.get(description)} と重複しています`);
+  pageTitles.set(title, page);
+  pageDescriptions.set(description, page);
   expect(!html.includes("シュミ"), `${page}: 「シュミ」表記があります。「シミュ」に統一してください`);
   expect(has(html, /<link rel="manifest"/), `${page}: manifest link がありません`);
   expect(has(html, /<link rel="icon"/), `${page}: icon link がありません`);
@@ -335,10 +352,18 @@ for (const page of publicPages) {
 
 for (const page of sharePages) {
   const html = read(page);
+  const ogTitle = getMetaContent(html, /<meta[^>]+property=["']og:title["'][^>]*>/i);
+  const ogDescription = getMetaContent(html, /<meta[^>]+property=["']og:description["'][^>]*>/i);
   expect(has(html, /property="og:title"/), `${page}: og:title がありません`);
   expect(has(html, /property="og:description"/), `${page}: og:description がありません`);
   expect(has(html, /property="og:image"/), `${page}: og:image がありません`);
   expect(has(html, /property="og:site_name" content="ICHIGEKI 一撃スロパチ"/), `${page}: og:site_name が想定と違います`);
+  expect(ogTitle.includes("ICHIGEKI"), `${page}: og:title に ICHIGEKI がありません`);
+  expect(ogDescription.length >= 24 && ogDescription.length <= 120, `${page}: og:description の長さが想定外です`);
+  expect(!ogTitles.has(ogTitle), `${page}: og:title が ${ogTitles.get(ogTitle)} と重複しています`);
+  expect(!ogDescriptions.has(ogDescription), `${page}: og:description が ${ogDescriptions.get(ogDescription)} と重複しています`);
+  ogTitles.set(ogTitle, page);
+  ogDescriptions.set(ogDescription, page);
   expect(
     getAttribute(html, /<meta[^>]+property=["']og:url["'][^>]*>/i, "content") === expectedPageUrl(page),
     `${page}: og:url が公開URLと一致しません`
