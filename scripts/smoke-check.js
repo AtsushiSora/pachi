@@ -238,6 +238,22 @@ for (const file of scriptFiles) {
   if (exists(file)) checkJavaScriptSyntax(file, read(file));
 }
 
+const localPreviewTokenAllowlist = new Map([
+  ["app.html", ["file:", "localhost", "127.0.0.1"]],
+  ["pwa.js", ["localhost", "127.0.0.1"]],
+]);
+
+for (const file of [...publicPages, ...scriptFiles, "manifest.json", "netlify.toml"]) {
+  if (!exists(file)) continue;
+
+  const content = read(file);
+  const allowlist = localPreviewTokenAllowlist.get(file) || [];
+  for (const token of ["/Users/", "Desktop/", "Downloads/", "file://", "localhost", "127.0.0.1"]) {
+    if (allowlist.includes(token)) continue;
+    expect(!content.includes(token), `${file}: 公開ファイルにローカル開発用の ${token} が含まれています`);
+  }
+}
+
 for (const page of publicPages) {
   expect(exists(page), `${page} が見つかりません`);
   if (!exists(page)) continue;
