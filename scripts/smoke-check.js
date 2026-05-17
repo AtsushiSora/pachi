@@ -259,6 +259,7 @@ expect(netlify.includes('Content-Type = "text/plain; charset=utf-8"'), "netlify.
 expect(netlify.includes('for = "/sw.js"') && netlify.includes("no-cache, no-store, must-revalidate"), "netlify.toml: sw.js のno-cache設定がありません");
 
 const sw = read("sw.js");
+expect(/const CACHE_NAME = "ichigeki-pwa-v\d+";/.test(sw), "sw.js: CACHE_NAME の形式が想定と違います");
 for (const file of publicPages) {
   expect(sw.includes(`"/${file}"`), `sw.js: /${file} がキャッシュ対象にありません`);
 }
