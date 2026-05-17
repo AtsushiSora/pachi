@@ -220,6 +220,15 @@ function checkBlankTargetLinks(page, html) {
   }
 }
 
+function checkDuplicateIds(page, html) {
+  const seen = new Set();
+  for (const match of html.matchAll(/\bid=["']([^"']+)["']/gi)) {
+    const id = match[1];
+    expect(!seen.has(id), `${page}: id="${id}" が重複しています`);
+    seen.add(id);
+  }
+}
+
 for (const file of requiredFiles) {
   expect(exists(file), `${file} が見つかりません`);
 }
@@ -244,6 +253,7 @@ for (const page of publicPages) {
   checkInlineScripts(page, html);
   checkStructuredData(page, html);
   checkBlankTargetLinks(page, html);
+  checkDuplicateIds(page, html);
 
   const localRefs = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)]
     .map(match => match[1])
