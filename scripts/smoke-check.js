@@ -161,6 +161,8 @@ expect(read("app-ads.txt").trim() === googleSellerLine, "app-ads.txt: Google販�
 
 const securityTxt = read(".well-known/security.txt");
 expect(securityTxt.includes("Contact: mailto:ichigekipachi@proton.me"), "security.txt: Contact がありません");
+expect(securityTxt.includes("Expires: 2027-05-17T00:00:00.000Z"), "security.txt: Expires がありません");
+expect(securityTxt.includes("Preferred-Languages: ja"), "security.txt: Preferred-Languages がありません");
 expect(securityTxt.includes("Canonical: https://ichigekipachi.netlify.app/.well-known/security.txt"), "security.txt: Canonical がありません");
 
 const sitemap = read("sitemap.xml");

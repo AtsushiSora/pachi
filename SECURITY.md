@@ -17,3 +17,5 @@ ICHIGEKI 一撃スロパチで不具合やセキュリティ上の問題を見�
 - Supabaseの `secret key` や `service_role key` は公開しない
 - 公開アプリに入れるのは `publishable key` のみ
 - ランキングの不正登録対策は `supabase-ranking.sql` とアプリ側バリデーションで管理する
+
+公開サイト向けの標準連絡先は `.well-known/security.txt` にも掲載しています。
