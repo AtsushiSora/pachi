@@ -23,11 +23,14 @@
 ## 開発コマンド
 
 ```bash
+nvm use
 npm run dev
 npm run check
 npm run build
 npm test
 ```
+
+Node.jsは `.nvmrc` に合わせて22系を使います。
 
 `npm run check` は公開前の簡易チェックです。主要ページ、メタ情報、PWA設定、sitemap、Service Workerのキャッシュ対象を確認します。
 
@@ -36,9 +39,9 @@ npm test
 ## リリース前チェック
 
 1. `npm run release:check`
-3. スマホでトップ、ランキング、チャレンジ、スペック、実戦を確認
-4. ランキング登録と結果シェアを確認
-5. Netlifyのデプロイ完了を確認
+2. スマホでトップ、ランキング、チャレンジ、スペック、実戦を確認
+3. ランキング登録と結果シェアを確認
+4. Netlifyのデプロイ完了を確認
 
 ## オンラインランキング
 

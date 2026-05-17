@@ -109,6 +109,9 @@ expect(Array.isArray(manifest.icons) && manifest.icons.length >= 3, "manifest: i
 expect(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3, "manifest: shortcuts が不足しています");
 expect(Array.isArray(manifest.screenshots) && manifest.screenshots.length >= 2, "manifest: screenshots が不足しています");
 expect(pkg.version === "2.0.0", "package.json: version が 2.0.0 ではありません");
+expect(pkg.private === true, "package.json: private が true ではありません");
+expect(pkg.engines && pkg.engines.node === ">=22", "package.json: engines.node が >=22 ではありません");
+expect(read(".nvmrc").trim() === "22", ".nvmrc: Nodeバージョンが22ではありません");
 expect(indexHtml.includes("v2.0"), "index.html: 表示バージョン v2.0 がありません");
 expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
 
