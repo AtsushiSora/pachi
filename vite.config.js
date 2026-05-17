@@ -1,11 +1,7 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
+export default defineConfig(() => {
   return {
-    define: {
-      'import.meta.env.VITE_ENCRYPT_KEY': JSON.stringify(env.VITE_ENCRYPT_KEY)
-    },
     build: {
       outDir: 'dist',
       rollupOptions: {
