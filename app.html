@@ -240,6 +240,7 @@
     .btn-start:disabled { opacity: .4; cursor: not-allowed; transform: none; }
     .btn-speed { background: linear-gradient(135deg,#1a3000,#0f2000); border: 1px solid #44aa00; color: #88ff44; font-family: 'Noto Sans JP', sans-serif; font-size: 9px; padding: 4px 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 3px; }
     .speed-on  { background: #44aa00; color: #001800; border-radius: 3px; padding: 1px 4px; font-weight: 900; font-size: 9px; }
+    .speed-off { background: #555; color: #fff; }
 
     /* 体力0メッセージ */
     .hp-empty-msg { background: rgba(255,61,61,.1); border: 1px solid var(--red); border-radius: 6px; padding: 6px; text-align: center; font-size: 11px; color: var(--red); display: none; flex-shrink: 0; }
@@ -510,7 +511,7 @@
     <span id="startLabel">START</span>
     <small id="startSub">スタート</small>
   </button>
-  <button class="btn-speed" onclick="toggleSpeed(this)">高速 <span class="speed-on" id="speedLabel">ON</span></button>
+  <button class="btn-speed" onclick="toggleSpeed(this)">高速 <span class="speed-on speed-off" id="speedLabel">OFF</span></button>
 </div>
 
 <p class="foot-note">※エンターテインメント目的のシミュレーターです。実際のパチンコ機の挙動とは異なる場合があります。</p>
@@ -543,7 +544,7 @@ let rounds = [
 // ========================
 let running   = false;
 let starting  = false;
-let fastMode  = true;
+let fastMode  = false;
 let spins = 0, totalPayout = 0, currentBalls = 0, investedBalls = 0, chainCount = 0;
 let hp = 5;
 let rewardTimer = null;

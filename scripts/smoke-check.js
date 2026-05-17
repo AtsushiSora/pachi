@@ -161,6 +161,7 @@ const manifest = JSON.parse(read("manifest.json"));
 const pkg = JSON.parse(read("package.json"));
 const indexHtml = read("index.html");
 const howtoHtml = read("howto.html");
+const appHtml = read("app.html");
 const rankingHtml = read("ranking.html");
 const challengeHtml = read("challenge.html");
 const aboutHtml = read("about.html");
@@ -199,6 +200,8 @@ expect(
   appearsInOrder(howtoHtml, ["全国チャレンジ", "実戦シミュレーター", "スペックシミュレーター"]),
   "howto.html: モード説明の順番が想定と違います"
 );
+expect(appHtml.includes("let fastMode  = false;"), "app.html: 高速モードの初期値がOFFではありません");
+expect(appHtml.includes('id="speedLabel">OFF</span>'), "app.html: 高速ボタンの初期表示がOFFではありません");
 expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
 expect(exists("APP_RELEASE_CHECKLIST.md"), "APP_RELEASE_CHECKLIST.md が見つかりません");
 const appChecklist = read("APP_RELEASE_CHECKLIST.md");
