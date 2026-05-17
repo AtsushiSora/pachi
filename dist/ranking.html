@@ -753,6 +753,44 @@
       }
     }
 
+    function toSafeInteger(value) {
+      const num = Number(value);
+      if (!Number.isFinite(num)) return 0;
+      return Math.trunc(num);
+    }
+
+    function normalizeRankingEntry(item) {
+      if (!item || typeof item !== "object") return null;
+      const score = toSafeInteger(item.score);
+      const chainCount = toSafeInteger(item.chain_count);
+      const spins = toSafeInteger(item.spins);
+      const usedBalls = item.used_balls == null ? null : toSafeInteger(item.used_balls);
+      const diff = item.diff == null ? null : toSafeInteger(item.diff);
+      const nickname = String(item.nickname || "NO NAME")
+        .replace(/\s+/g, " ")
+        .replace(/[<>]/g, "")
+        .trim()
+        .slice(0, 10) || "NO NAME";
+
+      const reasonable =
+        score >= 0 && score <= 2000000 &&
+        chainCount >= 0 && chainCount <= 10000 &&
+        spins >= 0 && spins <= 2000000 &&
+        (usedBalls === null || (usedBalls >= 0 && usedBalls <= 2000000)) &&
+        (diff === null || diff === score - Number(usedBalls || 0));
+
+      if (!reasonable) return null;
+      return {
+        ...item,
+        nickname,
+        score,
+        chain_count: chainCount,
+        spins,
+        used_balls: usedBalls,
+        diff,
+      };
+    }
+
     function renderPlayerRecord() {
       const record = readPlayerRecord();
       bestScore.innerHTML = formatBalls(record.best.score);
@@ -799,7 +837,9 @@
 
     function mergeRankingData(remoteData) {
       const mode = getRankMode();
-      const merged = [...(remoteData || []), ...readLocalRanking()];
+      const merged = [...(remoteData || []), ...readLocalRanking()]
+        .map(normalizeRankingEntry)
+        .filter(Boolean);
       return merged
         .sort((a, b) => mode.getValue(b) - mode.getValue(a))
         .slice(0, rankingLimit);
@@ -847,11 +887,11 @@
       try {
         let { data, error } = await supabaseClient
           .from("ranking")
-          .select("nickname, score, chain_count, spins")
+          .select("nickname, score, chain_count, spins, diff, used_balls")
           .order(mode.order, { ascending: false })
           .limit(rankingLimit);
 
-        if (error && (String(error.message || "").includes("chain_count") || String(error.message || "").includes("spins"))) {
+        if (error && /(chain_count|spins|diff|used_balls)/.test(String(error.message || ""))) {
           const fallback = await supabaseClient
             .from("ranking")
             .select("nickname, score")
