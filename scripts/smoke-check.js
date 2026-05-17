@@ -121,6 +121,8 @@ const rankingHtml = read("ranking.html");
 const challengeHtml = read("challenge.html");
 const aboutHtml = read("about.html");
 const contactHtml = read("contact.html");
+const offlineHtml = read("offline.html");
+const notFoundHtml = read("404.html");
 expect(manifest.name === "ICHIGEKI 一撃スロパチ", "manifest: name が想定と違います");
 expect(manifest.short_name === "一撃スロパチ", "manifest: short_name が想定と違います");
 expect(manifest.display === "standalone", "manifest: display が standalone ではありません");
@@ -150,6 +152,8 @@ expect(challengeHtml.includes("window.supabase") && challengeHtml.includes("Supa
 expect(indexHtml.includes('"publisher"') && indexHtml.includes('"ICHIGEKI運営"'), "index.html: publisher構造化データがありません");
 expect(aboutHtml.includes('"@type": "AboutPage"') && aboutHtml.includes('"@type": "Organization"'), "about.html: AboutPage構造化データがありません");
 expect(contactHtml.includes('"@type": "ContactPage"') && contactHtml.includes("ichigekipachi@proton.me"), "contact.html: ContactPage構造化データがありません");
+expect(offlineHtml.includes('href="sim.html"') && offlineHtml.includes('href="app.html"') && offlineHtml.includes('href="howto.html"'), "offline.html: オフライン時の主要導線が不足しています");
+expect(notFoundHtml.includes('href="contact.html"'), "404.html: お問い合わせ導線がありません");
 
 const googleSellerLine = "google.com, pub-2599640417413447, DIRECT, f08c47fec0942fa0";
 expect(read("ads.txt").trim() === googleSellerLine, "ads.txt: Google販売者情報が想定と違います");
