@@ -564,6 +564,29 @@ input[type="number"]:focus {
   transform: translateY(-1px);
 }
 
+.setting-back-btn {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  background: #111;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.setting-back-btn:hover,
+.setting-back-btn:active {
+  color: var(--text-sub);
+  border-color: var(--border-hi);
+  background: var(--bg-btn);
+}
+
 .start-message {
   min-height: 20px;
   margin-top: 10px;
