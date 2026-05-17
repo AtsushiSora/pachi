@@ -333,6 +333,7 @@ const rankingHtml = read("ranking.html");
 const challengeHtml = read("challenge.html");
 const mainJs = read("main.js");
 const pwaJs = read("pwa.js");
+const styleCss = read("style.css");
 const aboutHtml = read("about.html");
 const contactHtml = read("contact.html");
 const offlineHtml = read("offline.html");
@@ -540,6 +541,10 @@ expect(adsJs.includes("slots[slotName]") && adsJs.includes("hasAdsenseConfig(slo
 expect(adsJs.includes('script[data-ichigeki-adsense]') && adsJs.includes("scriptLoading"), "ads.js: AdSense loader の重複読み込み防止がありません");
 expect(adsJs.includes('target.classList.remove("ad-live")') && adsJs.includes('<span>AD</span>広告枠'), "ads.js: 広告読み込み失敗時のfallbackがありません");
 expect(adsJs.includes("window.adsbygoogle.push({})"), "ads.js: AdSense表示開始処理がありません");
+expect(styleCss.includes(".footer-ad-band") && styleCss.includes("position: fixed") && styleCss.includes("env(safe-area-inset-bottom)"), "style.css: フッター広告の画面下固定設定が不足しています");
+expect(styleCss.includes("body") && styleCss.includes("padding-bottom: 118px"), "style.css: フッター広告ぶんの下余白が不足しています");
+expect(styleCss.includes(".footer-ad-band.ad-live") && styleCss.includes(".footer-ad-band .adsbygoogle"), "style.css: AdSense表示時のフッター広告スタイルが不足しています");
+expect(appHtml.includes(".footer-ad-band") && appHtml.includes("position: fixed") && appHtml.includes("env(safe-area-inset-bottom)"), "app.html: 実戦ページのフッター広告固定設定が不足しています");
 
 for (const page of publicPages) {
   const html = read(page);
