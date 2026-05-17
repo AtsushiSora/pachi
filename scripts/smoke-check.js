@@ -130,6 +130,10 @@ function normalizeLocalReference(value) {
   return normalized;
 }
 
+function normalizeManifestAsset(value) {
+  return normalizeLocalReference(value);
+}
+
 const anchorCache = new Map();
 
 function anchorsFor(file) {
@@ -159,6 +163,11 @@ function getAnchorReference(currentPage, value) {
 
 function extractQuotedPaths(text) {
   return [...text.matchAll(/"([^"]+)"/g)].map(match => match[1]);
+}
+
+function extractCoreAssets(text) {
+  const match = text.match(/const CORE_ASSETS = \[([\s\S]*?)\];/);
+  return match ? extractQuotedPaths(match[1]) : [];
 }
 
 function extractSitemapEntries(xml) {
@@ -367,11 +376,17 @@ const supabaseSecurity = read("SUPABASE_SECURITY.md");
 const releaseWorkflow = read(".github/workflows/release-check.yml");
 expect(manifest.name === "ICHIGEKI 一撃スロパチ", "manifest: name が想定と違います");
 expect(manifest.short_name === "一撃スロパチ", "manifest: short_name が想定と違います");
+expect(manifest.id === "/", "manifest: id が / ではありません");
+expect(manifest.background_color === "#0e0e0e", "manifest: background_color が想定と違います");
+expect(manifest.theme_color === "#0e0e0e", "manifest: theme_color が想定と違います");
 expect(manifest.display === "standalone", "manifest: display が standalone ではありません");
 expect(Array.isArray(manifest.icons) && manifest.icons.length >= 3, "manifest: icons が不足しています");
 expect(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3, "manifest: shortcuts が不足しています");
 expect(Array.isArray(manifest.screenshots) && manifest.screenshots.length >= 2, "manifest: screenshots が不足しています");
 expect(manifest.lang === "ja", "manifest: lang が ja ではありません");
+for (const category of ["games", "entertainment", "utilities"]) {
+  expect(manifest.categories?.includes(category), `manifest: categories に ${category} がありません`);
+}
 expect(Array.isArray(manifest.display_override) && manifest.display_override.includes("standalone"), "manifest: display_override に standalone がありません");
 expect(
   manifest.shortcuts.slice(0, 3).map(shortcut => shortcut.url).join(",") === "/ranking.html,/app.html,/sim.html",
@@ -385,6 +400,14 @@ expect(manifest.orientation === "portrait", "manifest: orientation が portrait 
 expect(manifest.scope === "/", "manifest: scope が / ではありません");
 expect(manifest.start_url === "/", "manifest: start_url が / ではありません");
 expect(manifest.icons.some(icon => icon.src === "/icon-512.png" && icon.purpose.includes("maskable")), "manifest: maskable icon がありません");
+const manifestAssets = [
+  ...manifest.icons.map(icon => icon.src),
+  ...manifest.screenshots.map(screenshot => screenshot.src),
+  ...manifest.shortcuts.flatMap(shortcut => (shortcut.icons || []).map(icon => icon.src)),
+].map(normalizeManifestAsset).filter(Boolean);
+for (const asset of manifestAssets) {
+  expect(exists(asset), `manifest: ${asset} が見つかりません`);
+}
 expect(readPngSize("icon-192.png")?.width === 192 && readPngSize("icon-192.png")?.height === 192, "icon-192.png: サイズが192x192ではありません");
 expect(readPngSize("icon-512.png")?.width === 512 && readPngSize("icon-512.png")?.height === 512, "icon-512.png: サイズが512x512ではありません");
 expect(readPngSize("apple-touch-icon.png")?.width === 180 && readPngSize("apple-touch-icon.png")?.height === 180, "apple-touch-icon.png: サイズが180x180ではありません");
@@ -662,8 +685,11 @@ for (const file of publicPages) {
   expect(sw.includes(`"/${file}"`), `sw.js: /${file} がキャッシュ対象にありません`);
 }
 
-const cachedAssets = extractQuotedPaths(sw).filter(value => value.startsWith("/"));
-for (const asset of cachedAssets) {
+const cachedAssets = extractCoreAssets(sw).filter(value => value.startsWith("/"));
+const swLocalPaths = extractQuotedPaths(sw).filter(value => value.startsWith("/"));
+expect(cachedAssets.length > 0, "sw.js: CORE_ASSETS が取得できません");
+expect(new Set(cachedAssets).size === cachedAssets.length, "sw.js: キャッシュ対象が重複しています");
+for (const asset of swLocalPaths) {
   const file = normalizeLocalReference(asset);
   if (!file) continue;
   expect(exists(file), `sw.js: キャッシュ対象の ${asset} が見つかりません`);
@@ -671,6 +697,10 @@ for (const asset of cachedAssets) {
 
 for (const asset of ["/style.css", "/main.js", "/presets.js", "/ads-config.js", "/ads.js", "/pwa.js", "/manifest.json"]) {
   expect(cachedAssets.includes(asset), `sw.js: ${asset} がキャッシュ対象にありません`);
+}
+
+for (const asset of manifestAssets) {
+  expect(cachedAssets.includes(`/${asset}`), `sw.js: manifestの ${asset} がキャッシュ対象にありません`);
 }
 
 if (errors.length) {
