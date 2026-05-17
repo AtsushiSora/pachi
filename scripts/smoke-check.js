@@ -64,6 +64,16 @@ function exists(file) {
   return fs.existsSync(path.join(root, file));
 }
 
+function readPngSize(file) {
+  const buffer = fs.readFileSync(path.join(root, file));
+  const signature = buffer.subarray(0, 8).toString("hex");
+  if (signature !== "89504e470d0a1a0a") return null;
+  return {
+    width: buffer.readUInt32BE(16),
+    height: buffer.readUInt32BE(20),
+  };
+}
+
 function expect(condition, message) {
   if (!condition) errors.push(message);
 }
@@ -87,6 +97,7 @@ for (const page of publicPages) {
   expect(has(html, /<title>.+<\/title>/), `${page}: title がありません`);
   expect(has(html, /<link rel="manifest"/), `${page}: manifest link がありません`);
   expect(has(html, /<link rel="icon"/), `${page}: icon link がありません`);
+  expect(has(html, /<link rel="apple-touch-icon"/), `${page}: apple-touch-icon link がありません`);
 }
 
 for (const page of sharePages) {
@@ -116,6 +127,15 @@ expect(manifest.display === "standalone", "manifest: display が standalone で�
 expect(Array.isArray(manifest.icons) && manifest.icons.length >= 3, "manifest: icons が不足しています");
 expect(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3, "manifest: shortcuts が不足しています");
 expect(Array.isArray(manifest.screenshots) && manifest.screenshots.length >= 2, "manifest: screenshots が不足しています");
+expect(manifest.orientation === "portrait", "manifest: orientation が portrait ではありません");
+expect(manifest.scope === "/", "manifest: scope が / ではありません");
+expect(manifest.start_url === "/", "manifest: start_url が / ではありません");
+expect(manifest.icons.some(icon => icon.src === "/icon-512.png" && icon.purpose.includes("maskable")), "manifest: maskable icon がありません");
+expect(readPngSize("icon-192.png")?.width === 192 && readPngSize("icon-192.png")?.height === 192, "icon-192.png: サイズが192x192ではありません");
+expect(readPngSize("icon-512.png")?.width === 512 && readPngSize("icon-512.png")?.height === 512, "icon-512.png: サイズが512x512ではありません");
+expect(readPngSize("apple-touch-icon.png")?.width === 180 && readPngSize("apple-touch-icon.png")?.height === 180, "apple-touch-icon.png: サイズが180x180ではありません");
+expect(readPngSize("screenshot-home.png")?.width === 390 && readPngSize("screenshot-home.png")?.height === 844, "screenshot-home.png: サイズが390x844ではありません");
+expect(readPngSize("screenshot-ranking.png")?.width === 390 && readPngSize("screenshot-ranking.png")?.height === 844, "screenshot-ranking.png: サイズが390x844ではありません");
 expect(pkg.version === "2.0.0", "package.json: version が 2.0.0 ではありません");
 expect(pkg.private === true, "package.json: private が true ではありません");
 expect(pkg.engines && pkg.engines.node === ">=22", "package.json: engines.node が >=22 ではありません");
