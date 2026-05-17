@@ -367,6 +367,13 @@ expect(challengeHtml.includes("window.supabase") && challengeHtml.includes("Supa
 expect(challengeHtml.includes('SUPABASE_KEY = "sb_publishable_'), "challenge.html: publishable key が設定されていません");
 expect(rankingHtml.includes('SUPABASE_KEY = "sb_publishable_'), "ranking.html: publishable key が設定されていません");
 expect(!challengeHtml.includes("service_role") && !rankingHtml.includes("service_role"), "Supabase: service_role key をHTMLへ含めないでください");
+const publicSourceFiles = [...new Set([...publicPages, ...scriptFiles, "manifest.json", "netlify.toml"])];
+for (const file of publicSourceFiles) {
+  const content = read(file);
+  expect(!/sb_secret_[A-Za-z0-9_-]+/.test(content), `${file}: Supabase secret key らしき文字列があります`);
+  expect(!/SUPABASE_SERVICE_ROLE/i.test(content), `${file}: Supabase service role らしき変数があります`);
+  expect(!/service_role/i.test(content), `${file}: service_role を公開ファイルへ含めないでください`);
+}
 expect(challengeHtml.includes("function isResultConsistent()") && challengeHtml.includes("diff === score - usedBalls"), "challenge.html: 登録前の差玉検査がありません");
 expect(challengeHtml.includes("saveLocalRanking(rankingEntry)"), "challenge.html: 登録失敗時のローカル保存がありません");
 expect(challengeHtml.includes('maxlength="10"') && challengeHtml.includes("function validateNickname(value)") && challengeHtml.includes("URLや宣伝文は使えません"), "challenge.html: ニックネーム制限が不足しています");
