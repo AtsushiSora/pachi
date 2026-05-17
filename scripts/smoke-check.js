@@ -322,6 +322,11 @@ expect(rankingHtml.includes('SUPABASE_KEY = "sb_publishable_'), "ranking.html: p
 expect(!challengeHtml.includes("service_role") && !rankingHtml.includes("service_role"), "Supabase: service_role key をHTMLへ含めないでください");
 expect(challengeHtml.includes("function isResultConsistent()") && challengeHtml.includes("diff === score - usedBalls"), "challenge.html: 登録前の差玉検査がありません");
 expect(challengeHtml.includes("saveLocalRanking(rankingEntry)"), "challenge.html: 登録失敗時のローカル保存がありません");
+expect(challengeHtml.includes('maxlength="10"') && challengeHtml.includes("function validateNickname(value)") && challengeHtml.includes("URLや宣伝文は使えません"), "challenge.html: ニックネーム制限が不足しています");
+expect(challengeHtml.includes("function buildShareText()") && challengeHtml.includes("navigator.share") && challengeHtml.includes("showManualShareText(shareText)"), "challenge.html: 結果シェア/コピー fallback が不足しています");
+expect(challengeHtml.includes("function showAdBeforeRanking") && challengeHtml.includes("ランキングへ進む（3）") && challengeHtml.includes('data-ad-placement="register"'), "challenge.html: 登録後広告導線が不足しています");
+expect(challengeHtml.includes('get("start") === "1"') && challengeHtml.includes("requestAnimationFrame"), "challenge.html: ランキングからの自動開始がありません");
+expect(challengeHtml.includes("modalChain") && challengeHtml.includes("modalDiff") && challengeHtml.includes("modalUsed"), "challenge.html: 登録モーダルの結果詳細が不足しています");
 expect(indexHtml.includes('"publisher"') && indexHtml.includes('"ICHIGEKI運営"'), "index.html: publisher構造化データがありません");
 expect(aboutHtml.includes('"@type": "AboutPage"') && aboutHtml.includes('"@type": "Organization"'), "about.html: AboutPage構造化データがありません");
 expect(contactHtml.includes('"@type": "ContactPage"') && contactHtml.includes("ichigekipachi@proton.me"), "contact.html: ContactPage構造化データがありません");
