@@ -490,7 +490,12 @@ expect(adsConfig.includes("enabled: true"), "ads-config.js: 広告が有効に�
 expect(adsConfig.includes('provider: "adsense"'), "ads-config.js: provider が adsense ではありません");
 expect(adsConfig.includes('adsenseClient: "ca-pub-2599640417413447"'), "ads-config.js: AdSenseクライアントIDが想定と違います");
 expect(adsConfig.includes("footer:") && adsConfig.includes("register:"), "ads-config.js: footer/register slot がありません");
+expect(adsConfig.includes('footer: ""') && adsConfig.includes('register: ""'), "ads-config.js: 審査中の空広告ユニットID状態が想定と違います");
 expect(adsJs.includes("data-ad-placement") && adsJs.includes("adsbygoogle") && adsJs.includes("広告枠"), "ads.js: 広告描画/fallback処理が不足しています");
+expect(adsJs.includes("slots[slotName]") && adsJs.includes("hasAdsenseConfig(slotName)"), "ads.js: 広告ユニットID未設定時の表示ガードがありません");
+expect(adsJs.includes('script[data-ichigeki-adsense]') && adsJs.includes("scriptLoading"), "ads.js: AdSense loader の重複読み込み防止がありません");
+expect(adsJs.includes('target.classList.remove("ad-live")') && adsJs.includes('<span>AD</span>広告枠'), "ads.js: 広告読み込み失敗時のfallbackがありません");
+expect(adsJs.includes("window.adsbygoogle.push({})"), "ads.js: AdSense表示開始処理がありません");
 
 for (const page of publicPages) {
   const html = read(page);

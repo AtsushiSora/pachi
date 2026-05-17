@@ -77,6 +77,7 @@ AdSense審査後、広告ユニットIDが発行されたら `ads-config.js` の
 スマホアプリ版をAdMobに登録する時は、デベロッパーWebサイトとして公開URLを設定し、`https://ichigekipachi.netlify.app/app-ads.txt` が見える状態にします。
 
 審査中は広告枠のプレースホルダー表示で問題ありません。広告ユニットIDを入れた後は、必ず `npm run release:check` と実機表示を確認してください。
+現在の `ads-config.js` は審査中のため `slots.footer` と `slots.register` を空にしています。空の間は広告枠のプレースホルダーだけが表示されます。
 
 ## PWA
 
