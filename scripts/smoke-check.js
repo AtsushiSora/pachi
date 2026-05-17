@@ -404,6 +404,7 @@ for (const page of noindexPages) {
 
 const manifest = JSON.parse(read("manifest.json"));
 const pkg = JSON.parse(read("package.json"));
+const readme = read("README.md");
 const indexHtml = read("index.html");
 const simHtml = read("sim.html");
 const howtoHtml = read("howto.html");
@@ -462,9 +463,31 @@ expect(readPngSize("screenshot-ranking.png")?.width === 390 && readPngSize("scre
 expect(pkg.version === "2.0.0", "package.json: version が 2.0.0 ではありません");
 expect(pkg.private === true, "package.json: private が true ではありません");
 expect(pkg.engines && pkg.engines.node === ">=22", "package.json: engines.node が >=22 ではありません");
+expect(pkg.homepage === `${siteUrl}/`, "package.json: homepage が公開URLと一致しません");
+expect(pkg.repository?.url === "git+https://github.com/AtsushiSora/pachi.git", "package.json: repository.url が想定と違います");
+expect(pkg.bugs?.url === "https://github.com/AtsushiSora/pachi/issues", "package.json: bugs.url が想定と違います");
+const expectedScripts = {
+  test: "npm run check",
+  check: "node scripts/smoke-check.js",
+  "release:check": "npm run check && npm run build",
+  dev: "vite",
+  build: "vite build",
+  preview: "vite preview",
+};
+for (const [name, command] of Object.entries(expectedScripts)) {
+  expect(pkg.scripts?.[name] === command, `package.json: scripts.${name} が想定と違います`);
+}
 expect(read(".nvmrc").trim() === "22", ".nvmrc: Nodeバージョンが22ではありません");
 for (const word of ["workflow_dispatch", "push:", "pull_request:", "node-version-file: .nvmrc", "npm ci", "npm run release:check", "timeout-minutes: 10"]) {
   expect(releaseWorkflow.includes(word), `.github/workflows/release-check.yml: ${word} の記載がありません`);
+}
+expect(readme.includes(`公開URL: ${siteUrl}/`), "README.md: 公開URLが想定と違います");
+expect(readme.includes("現在のバージョン: v2.0.0"), "README.md: 表示バージョンが想定と違います");
+for (const page of publicPages) {
+  expect(readme.includes(`\`${page}\``), `README.md: ${page} の説明がありません`);
+}
+for (const command of ["npm run dev", "npm run check", "npm run build", "npm test", "npm run release:check"]) {
+  expect(readme.includes(command), `README.md: ${command} の記載がありません`);
 }
 expect(indexHtml.includes("v2.0"), "index.html: 表示バージョン v2.0 がありません");
 for (const page of legalLinks) {
@@ -529,9 +552,11 @@ const appChecklist = read("APP_RELEASE_CHECKLIST.md");
 for (const word of ["app-ads.txt", "プライバシーポリシーURL", "AdMob", "assetlinks.json", "18歳以上"]) {
   expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
 }
-const readme = read("README.md");
 for (const word of ["自動チェックで守っていること", "秘密鍵混入防止", "CSP", "広告ユニットID", "実機表示"]) {
   expect(readme.includes(word), `README.md: ${word} の記載がありません`);
+}
+for (const word of [`公開Webサイト: ${siteUrl}/`, "ichigekipachi@proton.me", "npm run release:check", "Google Play Console", "Apple Developer Program"]) {
+  expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
 }
 for (const word of ["ランキングの差玉", "AdSense審査中", "SUPABASE_SECURITY.md", "security.txt"]) {
   expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);

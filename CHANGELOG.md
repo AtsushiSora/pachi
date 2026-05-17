@@ -47,6 +47,7 @@
 - PWAマニフェストの基本情報、アセット存在、Service Workerキャッシュ対象の公開前チェックを追加
 - ページタイトル、description、OGタイトル/説明文の重複と長さの公開前チェックを追加
 - ads.txt / app-ads.txt、security.txt、公開ページ内HTTPS URLの公開前チェックを追加
+- package.jsonの公開URL/主要scriptsとREADME/アプリ化チェックリストの公開前チェックを追加
 
 ## v1.0.0
 
