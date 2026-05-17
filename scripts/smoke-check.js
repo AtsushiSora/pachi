@@ -348,6 +348,13 @@ const appChecklist = read("APP_RELEASE_CHECKLIST.md");
 for (const word of ["app-ads.txt", "プライバシーポリシーURL", "AdMob", "assetlinks.json", "18歳以上"]) {
   expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
 }
+const readme = read("README.md");
+for (const word of ["自動チェックで守っていること", "秘密鍵混入防止", "CSP", "広告ユニットID", "実機表示"]) {
+  expect(readme.includes(word), `README.md: ${word} の記載がありません`);
+}
+for (const word of ["ランキングの差玉", "AdSense審査中", "SUPABASE_SECURITY.md", "security.txt"]) {
+  expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
+}
 const changelog = read("CHANGELOG.md");
 for (const word of ["お問い合わせ", "運営者情報", "Supabase未読込時", "構造化データ", "PWAアセット"]) {
   expect(changelog.includes(word), `CHANGELOG.md: ${word} の記載がありません`);

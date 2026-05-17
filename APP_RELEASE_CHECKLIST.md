@@ -18,6 +18,7 @@ ICHIGEKI 一撃スロパチをスマホアプリとして公開する時の確�
 4. `https://ichigekipachi.netlify.app/app-ads.txt` が表示できる
 5. `privacy.html`、`disclaimer.html`、`safety.html`、`about.html`、`contact.html` が公開されている
 6. ランキング登録、結果シェア、オフライン表示を確認する
+7. ランキングの差玉、使用玉、連チャン数が不自然でないことを確認する
 
 ## PWAとして確認すること
 
@@ -52,6 +53,9 @@ ICHIGEKI 一撃スロパチをスマホアプリとして公開する時の確�
 2. アプリ版ではAdMob SDK側の広告ユニットIDを設定する
 3. テスト広告で表示確認する
 4. 本番広告へ切り替える
+5. 広告ユニットID設定後に `npm run release:check` を実行する
+
+AdSense審査中は、Web版の広告枠がプレースホルダー表示でも問題ありません。審査通過後に広告ユニットIDを入れてから本番表示を確認します。
 
 ## 申請前の最終確認
 
@@ -62,3 +66,5 @@ ICHIGEKI 一撃スロパチをスマホアプリとして公開する時の確�
 - 免責事項が見える
 - ランキング不正対策のSupabase SQLが適用されている
 - 秘密鍵や `service_role key` が公開ファイルに入っていない
+- `SUPABASE_SECURITY.md` の手順を見返せる
+- `security.txt` と問い合わせメールが公開されている
