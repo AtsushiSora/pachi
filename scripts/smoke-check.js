@@ -172,6 +172,11 @@ function getAttribute(html, selectorPattern, attr) {
   return attrMatch ? attrMatch[1] : "";
 }
 
+function getTitle(html) {
+  const match = html.match(/<title>([\s\S]*?)<\/title>/i);
+  return match ? match[1].trim() : "";
+}
+
 function checkJavaScriptSyntax(label, code) {
   try {
     new Function(code);
@@ -270,6 +275,8 @@ for (const page of publicPages) {
   expect(has(html, /<meta name="format-detection" content="telephone=no"/), `${page}: format-detection がありません`);
   expect(has(html, /<meta name="description"/), `${page}: description がありません`);
   expect(has(html, /<title>.+<\/title>/), `${page}: title がありません`);
+  expect(getTitle(html).includes("ICHIGEKI"), `${page}: title に ICHIGEKI がありません`);
+  expect(!html.includes("シュミ"), `${page}: 「シュミ」表記があります。「シミュ」に統一してください`);
   expect(has(html, /<link rel="manifest"/), `${page}: manifest link がありません`);
   expect(has(html, /<link rel="icon"/), `${page}: icon link がありません`);
   expect(has(html, /<link rel="apple-touch-icon"/), `${page}: apple-touch-icon link がありません`);
@@ -306,6 +313,7 @@ for (const page of sharePages) {
   expect(has(html, /property="og:title"/), `${page}: og:title がありません`);
   expect(has(html, /property="og:description"/), `${page}: og:description がありません`);
   expect(has(html, /property="og:image"/), `${page}: og:image がありません`);
+  expect(has(html, /property="og:site_name" content="ICHIGEKI 一撃スロパチ"/), `${page}: og:site_name が想定と違います`);
   expect(
     getAttribute(html, /<meta[^>]+property=["']og:url["'][^>]*>/i, "content") === expectedPageUrl(page),
     `${page}: og:url が公開URLと一致しません`
