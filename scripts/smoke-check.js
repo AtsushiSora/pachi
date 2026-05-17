@@ -245,6 +245,13 @@ for (const page of publicPages) {
   const html = read(page);
   expect(has(html, /<html lang="ja">/), `${page}: lang="ja" がありません`);
   expect(has(html, /<meta name="viewport"/), `${page}: viewport がありません`);
+  expect(has(html, /<meta name="theme-color"/), `${page}: theme-color がありません`);
+  expect(has(html, /<meta name="apple-mobile-web-app-capable" content="yes"/), `${page}: apple-mobile-web-app-capable がありません`);
+  expect(has(html, /<meta name="mobile-web-app-capable" content="yes"/), `${page}: mobile-web-app-capable がありません`);
+  expect(has(html, /<meta name="apple-mobile-web-app-status-bar-style"/), `${page}: apple-mobile-web-app-status-bar-style がありません`);
+  expect(has(html, /<meta name="apple-mobile-web-app-title" content="一撃スロパチ"/), `${page}: apple-mobile-web-app-title が想定と違います`);
+  expect(has(html, /<meta name="application-name" content="一撃スロパチ"/), `${page}: application-name が想定と違います`);
+  expect(has(html, /<meta name="format-detection" content="telephone=no"/), `${page}: format-detection がありません`);
   expect(has(html, /<meta name="description"/), `${page}: description がありません`);
   expect(has(html, /<title>.+<\/title>/), `${page}: title がありません`);
   expect(has(html, /<link rel="manifest"/), `${page}: manifest link がありません`);
