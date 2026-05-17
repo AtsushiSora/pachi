@@ -16,6 +16,7 @@
 - `howto.html`: 使い方
 - `safety.html`: 安心して使うために
 - `contact.html`: お問い合わせ
+- `about.html`: 運営者情報
 - `privacy.html`: プライバシーポリシー
 - `disclaimer.html`: 免責事項
 - `404.html`: ページ未検出

@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
           howto:     'howto.html',
           safety:    'safety.html',
           contact:   'contact.html',
+          about:     'about.html',
           privacy:   'privacy.html',
           disclaimer:'disclaimer.html',
           offline:   'offline.html',

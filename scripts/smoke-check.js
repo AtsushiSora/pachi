@@ -12,6 +12,7 @@ const publicPages = [
   "howto.html",
   "safety.html",
   "contact.html",
+  "about.html",
   "privacy.html",
   "disclaimer.html",
   "offline.html",
@@ -27,6 +28,7 @@ const sharePages = [
   "howto.html",
   "safety.html",
   "contact.html",
+  "about.html",
   "privacy.html",
   "disclaimer.html",
 ];
