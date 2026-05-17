@@ -629,6 +629,12 @@ function spendSpinCost() {
   investedBalls += cost - fromBalls;
 }
 
+function setStartButtonActive(active) {
+  document.getElementById('startLabel').textContent = active ? 'STOP' : 'START';
+  document.getElementById('startSub').textContent   = active ? 'ストップ' : 'スタート';
+  document.getElementById('startBtn').classList.toggle('stop', active);
+}
+
 // ========================
 // ラウンド振り分け
 // ========================
@@ -835,9 +841,7 @@ function applyTheme(type, btn) {
 function toggleSim() {
   if (running) {
     running = false;
-    document.getElementById('startLabel').textContent = 'START';
-    document.getElementById('startSub').textContent   = 'スタート';
-    document.getElementById('startBtn').classList.remove('stop');
+    setStartButtonActive(false);
     updateHp();
   } else {
     if (starting) return;
@@ -857,10 +861,8 @@ async function startSim() {
   starting = true;
   running = true;
   const startBtn = document.getElementById('startBtn');
-  document.getElementById('startLabel').textContent = 'STOP';
-  document.getElementById('startSub').textContent   = 'ストップ';
+  setStartButtonActive(true);
   startBtn.disabled = false;
-  startBtn.classList.add('stop');
   useHp();
   starting = false;
   await sleep(0);
@@ -873,9 +875,7 @@ async function startSim() {
   } finally {
     running = false;
     starting = false;
-    document.getElementById('startLabel').textContent = 'START';
-    document.getElementById('startSub').textContent   = 'スタート';
-    document.getElementById('startBtn').classList.remove('stop');
+    setStartButtonActive(false);
     updateHp();
   }
 }
@@ -932,9 +932,7 @@ function resetSim() {
   running = false;
   spins = 0; totalPayout = 0; currentBalls = 0; investedBalls = 0; chainCount = 0;
   document.getElementById('logBody').innerHTML = '';
-  document.getElementById('startLabel').textContent = 'START';
-  document.getElementById('startSub').textContent   = 'スタート';
-  document.getElementById('startBtn').classList.remove('stop');
+  setStartButtonActive(false);
   document.getElementById('hpEmptyMsg').classList.remove('show');
   setMode('normal');
   resetBigWin();
