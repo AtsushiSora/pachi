@@ -83,6 +83,16 @@ function has(html, pattern) {
   return pattern.test(html);
 }
 
+function appearsInOrder(text, labels) {
+  let cursor = -1;
+  for (const label of labels) {
+    const index = text.indexOf(label, cursor + 1);
+    if (index === -1) return false;
+    cursor = index;
+  }
+  return true;
+}
+
 for (const file of requiredFiles) {
   expect(exists(file), `${file} が見つかりません`);
 }
@@ -144,6 +154,10 @@ expect(pkg.private === true, "package.json: private が true ではありませ�
 expect(pkg.engines && pkg.engines.node === ">=22", "package.json: engines.node が >=22 ではありません");
 expect(read(".nvmrc").trim() === "22", ".nvmrc: Nodeバージョンが22ではありません");
 expect(indexHtml.includes("v2.0"), "index.html: 表示バージョン v2.0 がありません");
+expect(
+  appearsInOrder(indexHtml, ["全国チャレンジ", "実戦シミュレーター", "スペックシミュレーター", "使い方", "エンターテインメント専用", "スマホに追加"]),
+  "index.html: TOP導線の順番が想定と違います"
+);
 expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
 expect(exists("APP_RELEASE_CHECKLIST.md"), "APP_RELEASE_CHECKLIST.md が見つかりません");
 const appChecklist = read("APP_RELEASE_CHECKLIST.md");
