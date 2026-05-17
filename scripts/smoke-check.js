@@ -309,6 +309,13 @@ expect(rankingHtml.includes("normalizeRankingEntry"), "ranking.html: ランキ�
 expect(rankingHtml.includes("diff === score - Number(usedBalls || 0)"), "ranking.html: 差玉検査がありません");
 expect(rankingHtml.includes("diff, used_balls"), "ranking.html: 差玉と使用玉を取得していません");
 expect(rankingHtml.includes("window.supabase") && rankingHtml.includes("renderRanking([], \"local\")"), "ranking.html: Supabase未読込時のローカル表示がありません");
+expect(rankingHtml.includes('data-limit="10"') && rankingHtml.includes('data-limit="30"'), "ranking.html: TOP10/TOP30切り替えがありません");
+expect(rankingHtml.includes('data-mode="score"') && rankingHtml.includes('data-mode="chain"') && rankingHtml.includes('data-mode="spins"'), "ranking.html: ランキング種目切り替えが不足しています");
+expect(appearsInOrder(rankingHtml, ['data-mode="score"', 'data-mode="chain"', 'data-mode="spins"']), "ranking.html: ランキング種目の順番が想定と違います");
+expect(rankingHtml.includes('title: "一撃ランキング"') && rankingHtml.includes('title: "連チャン王"') && rankingHtml.includes('title: "ハマり王"'), "ranking.html: ランキング種目タイトルが不足しています");
+expect(rankingHtml.includes('order: "score"') && rankingHtml.includes('order: "chain_count"') && rankingHtml.includes('order: "spins"'), "ranking.html: ランキング並び替え対象が不足しています");
+expect(rankingHtml.includes(".podium-card.rank-1 { order: 1;") && rankingHtml.includes(".podium-card.rank-2 { order: 2;") && rankingHtml.includes(".podium-card.rank-3 { order: 3;"), "ranking.html: スマホの表彰台順が1,2,3ではありません");
+expect(rankingHtml.includes("mergeRankingData(data)") && rankingHtml.includes("renderPodium(rankingData)"), "ranking.html: ランキング統合/表彰台表示が不足しています");
 expect(challengeHtml.includes("window.supabase") && challengeHtml.includes("Supabase client is not available"), "challenge.html: Supabase未読込時のローカル登録 fallback がありません");
 expect(challengeHtml.includes('SUPABASE_KEY = "sb_publishable_'), "challenge.html: publishable key が設定されていません");
 expect(rankingHtml.includes('SUPABASE_KEY = "sb_publishable_'), "ranking.html: publishable key が設定されていません");
