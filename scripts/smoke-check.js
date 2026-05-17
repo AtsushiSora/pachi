@@ -144,6 +144,10 @@ expect(pkg.engines && pkg.engines.node === ">=22", "package.json: engines.node �
 expect(read(".nvmrc").trim() === "22", ".nvmrc: Nodeバージョンが22ではありません");
 expect(indexHtml.includes("v2.0"), "index.html: 表示バージョン v2.0 がありません");
 expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
+const changelog = read("CHANGELOG.md");
+for (const word of ["お問い合わせ", "運営者情報", "Supabase未読込時", "構造化データ", "PWAアセット"]) {
+  expect(changelog.includes(word), `CHANGELOG.md: ${word} の記載がありません`);
+}
 expect(rankingHtml.includes("normalizeRankingEntry"), "ranking.html: ランキング表示の検査関数がありません");
 expect(rankingHtml.includes("diff === score - Number(usedBalls || 0)"), "ranking.html: 差玉検査がありません");
 expect(rankingHtml.includes("diff, used_balls"), "ranking.html: 差玉と使用玉を取得していません");
