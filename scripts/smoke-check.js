@@ -40,6 +40,13 @@ const noindexPages = [
 ];
 
 const adPages = publicPages.filter(page => page !== "offline.html");
+const legalLinks = [
+  "about.html",
+  "privacy.html",
+  "disclaimer.html",
+  "safety.html",
+  "contact.html",
+];
 
 const requiredFiles = [
   "manifest.json",
@@ -268,6 +275,9 @@ expect(pkg.private === true, "package.json: private が true ではありませ�
 expect(pkg.engines && pkg.engines.node === ">=22", "package.json: engines.node が >=22 ではありません");
 expect(read(".nvmrc").trim() === "22", ".nvmrc: Nodeバージョンが22ではありません");
 expect(indexHtml.includes("v2.0"), "index.html: 表示バージョン v2.0 がありません");
+for (const page of legalLinks) {
+  expect(indexHtml.includes(`href="${page}"`), `index.html: ${page} への導線がありません`);
+}
 expect(
   appearsInOrder(indexHtml, ["全国チャレンジ", "実戦シミュレーター", "スペックシミュレーター", "使い方", "エンターテインメント専用", "スマホに追加"]),
   "index.html: TOP導線の順番が想定と違います"
@@ -303,6 +313,24 @@ expect(aboutHtml.includes('"@type": "AboutPage"') && aboutHtml.includes('"@type"
 expect(contactHtml.includes('"@type": "ContactPage"') && contactHtml.includes("ichigekipachi@proton.me"), "contact.html: ContactPage構造化データがありません");
 expect(offlineHtml.includes('href="sim.html"') && offlineHtml.includes('href="app.html"') && offlineHtml.includes('href="howto.html"'), "offline.html: オフライン時の主要導線が不足しています");
 expect(notFoundHtml.includes('href="contact.html"'), "404.html: お問い合わせ導線がありません");
+
+const privacyHtml = read("privacy.html");
+const disclaimerHtml = read("disclaimer.html");
+const safetyHtml = read("safety.html");
+for (const page of ["privacy.html", "disclaimer.html", "safety.html", "contact.html", "about.html"]) {
+  const html = read(page);
+  expect(html.includes("ichigekipachi@proton.me"), `${page}: 連絡先メールアドレスがありません`);
+  expect(html.includes('href="index.html"'), `${page}: トップへ戻る導線がありません`);
+}
+for (const word of ["Google AdSense", "Google AdMob", "Cookie", "ランキング登録時", "Googleの広告に関するポリシー"]) {
+  expect(privacyHtml.includes(word), `privacy.html: ${word} の記載がありません`);
+}
+for (const word of ["実際のパチンコ・パチスロ機器での結果", "保証", "責任", "お問い合わせ"]) {
+  expect(disclaimerHtml.includes(word), `disclaimer.html: ${word} の記載がありません`);
+}
+for (const word of ["18歳以上", "保証するものではありません", "公的・専門的な支援先", "お問い合わせ"]) {
+  expect(safetyHtml.includes(word), `safety.html: ${word} の記載がありません`);
+}
 
 const googleSellerLine = "google.com, pub-2599640417413447, DIRECT, f08c47fec0942fa0";
 expect(read("ads.txt").trim() === googleSellerLine, "ads.txt: Google販売者情報が想定と違います");
