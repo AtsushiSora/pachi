@@ -243,10 +243,12 @@ for (const page of noindexPages) {
 const manifest = JSON.parse(read("manifest.json"));
 const pkg = JSON.parse(read("package.json"));
 const indexHtml = read("index.html");
+const simHtml = read("sim.html");
 const howtoHtml = read("howto.html");
 const appHtml = read("app.html");
 const rankingHtml = read("ranking.html");
 const challengeHtml = read("challenge.html");
+const mainJs = read("main.js");
 const aboutHtml = read("about.html");
 const contactHtml = read("contact.html");
 const offlineHtml = read("offline.html");
@@ -295,6 +297,26 @@ expect(appHtml.includes("addLog('実戦開始', 'log-normal');"), "app.html: 開
 expect(appHtml.includes("function setStartButtonActive(active)"), "app.html: START/STOP表示の共通処理がありません");
 expect(appHtml.includes("setStartButtonActive(true);"), "app.html: 開始時にSTOP表示へ切り替えていません");
 expect(appHtml.match(/setStartButtonActive\(false\);/g)?.length >= 3, "app.html: 停止時のSTART表示復帰が不足しています");
+expect(simHtml.includes('id="startBtn"') && simHtml.includes(">スタート</button>"), "sim.html: 試算開始ボタンの表示がスタートではありません");
+expect(
+  appearsInOrder(simHtml, ['id="startBtn"', 'class="setting-back-btn"', 'id="startMessage"']),
+  "sim.html: スタート下の戻る導線/メッセージ順が想定と違います"
+);
+expect(simHtml.includes('href="index.html" class="setting-back-btn"'), "sim.html: トップへ戻る導線がありません");
+expect(simHtml.includes('id="backBtn"') && simHtml.includes("← 設定に戻る"), "sim.html: プレイ画面の設定に戻るボタンがありません");
+expect(mainJs.includes('startBtn.addEventListener("click", simulate)'), "main.js: スペックシミュレーターのスタート処理が接続されていません");
+expect(mainJs.includes('backBtn.addEventListener("click"'), "main.js: スペックシミュレーターの戻る処理が接続されていません");
+for (const id of ["hitRate", "breakRate", "continueRate", "spinPer250"]) {
+  expect(simHtml.includes(`data-target="${id}"`), `sim.html: ${id} のスライダーがありません`);
+}
+for (const id of ["breakPayout", "failPayout", "payout1", "payout2", "payout3", "payout4", "ltPayout1", "ltPayout2"]) {
+  expect(simHtml.includes(`id="${id}"`), `sim.html: ${id} の入力欄がありません`);
+  expect(simHtml.includes(`data-target="${id}" min="0" max="10000" step="100"`), `sim.html: ${id} の出玉スライダーが100玉刻みではありません`);
+  expect(mainJs.includes(id), `main.js: ${id} が計算対象に含まれていません`);
+}
+expect(mainJs.includes("function snapPayoutInput(input)") && mainJs.includes("/ 100) * 100"), "main.js: 出玉入力の100玉刻み補正がありません");
+expect(mainJs.includes("const costPerSpin = 250 / Number(spinPer250.value);"), "main.js: 250玉あたり回転数が投資計算に使われていません");
+expect(mainJs.includes("showRetryAd()") && mainJs.includes("ichigekiSimRetryCount"), "main.js: スペックシミュレーターのもう一回広告制御がありません");
 expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
 expect(exists("APP_RELEASE_CHECKLIST.md"), "APP_RELEASE_CHECKLIST.md が見つかりません");
 const appChecklist = read("APP_RELEASE_CHECKLIST.md");
