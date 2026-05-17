@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "..");
+const siteUrl = "https://ichigekipachi.netlify.app";
 
 const publicPages = [
   "index.html",
@@ -124,6 +125,17 @@ function extractQuotedPaths(text) {
   return [...text.matchAll(/"([^"]+)"/g)].map(match => match[1]);
 }
 
+function expectedPageUrl(page) {
+  return page === "index.html" ? `${siteUrl}/` : `${siteUrl}/${page}`;
+}
+
+function getAttribute(html, selectorPattern, attr) {
+  const match = html.match(selectorPattern);
+  if (!match) return "";
+  const attrMatch = match[0].match(new RegExp(`${attr}=["']([^"']+)["']`, "i"));
+  return attrMatch ? attrMatch[1] : "";
+}
+
 function checkJavaScriptSyntax(label, code) {
   try {
     new Function(code);
@@ -143,6 +155,22 @@ function checkInlineScripts(page, html) {
     if (!code.trim()) continue;
     index++;
     checkJavaScriptSyntax(`${page}: inline script ${index}`, code);
+  }
+}
+
+function checkStructuredData(page, html) {
+  let index = 0;
+  const scripts = html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi);
+  for (const script of scripts) {
+    const attrs = script[1] || "";
+    const code = script[2] || "";
+    if (!/\btype\s*=\s*["']application\/ld\+json["']/i.test(attrs)) continue;
+    index++;
+    try {
+      JSON.parse(code);
+    } catch (error) {
+      errors.push(`${page}: JSON-LD ${index} の構文エラー: ${error.message}`);
+    }
   }
 }
 
@@ -168,6 +196,7 @@ for (const page of publicPages) {
   expect(has(html, /<link rel="icon"/), `${page}: icon link がありません`);
   expect(has(html, /<link rel="apple-touch-icon"/), `${page}: apple-touch-icon link がありません`);
   checkInlineScripts(page, html);
+  checkStructuredData(page, html);
 
   const localRefs = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)]
     .map(match => match[1])
@@ -185,8 +214,16 @@ for (const page of sharePages) {
   expect(has(html, /property="og:title"/), `${page}: og:title がありません`);
   expect(has(html, /property="og:description"/), `${page}: og:description がありません`);
   expect(has(html, /property="og:image"/), `${page}: og:image がありません`);
+  expect(
+    getAttribute(html, /<meta[^>]+property=["']og:url["'][^>]*>/i, "content") === expectedPageUrl(page),
+    `${page}: og:url が公開URLと一致しません`
+  );
   expect(has(html, /name="twitter:card"/), `${page}: twitter:card がありません`);
   expect(has(html, /<link rel="canonical"/), `${page}: canonical がありません`);
+  expect(
+    getAttribute(html, /<link[^>]+rel=["']canonical["'][^>]*>/i, "href") === expectedPageUrl(page),
+    `${page}: canonical が公開URLと一致しません`
+  );
 }
 
 for (const page of noindexPages) {
@@ -277,19 +314,17 @@ expect(securityTxt.includes("Canonical: https://ichigekipachi.netlify.app/.well-
 
 const sitemap = read("sitemap.xml");
 for (const page of sharePages) {
-  const url = page === "index.html"
-    ? "https://ichigekipachi.netlify.app/"
-    : `https://ichigekipachi.netlify.app/${page}`;
+  const url = expectedPageUrl(page);
   expect(sitemap.includes(`<loc>${url}</loc>`), `sitemap.xml: ${url} がありません`);
 }
 
 for (const page of noindexPages) {
-  const url = `https://ichigekipachi.netlify.app/${page}`;
+  const url = expectedPageUrl(page);
   expect(!sitemap.includes(`<loc>${url}</loc>`), `sitemap.xml: noindex の ${url} が含まれています`);
 }
 
 const robots = read("robots.txt");
-expect(robots.includes("Sitemap: https://ichigekipachi.netlify.app/sitemap.xml"), "robots.txt: Sitemap がありません");
+expect(robots.includes(`Sitemap: ${siteUrl}/sitemap.xml`), "robots.txt: Sitemap がありません");
 
 const netlify = read("netlify.toml");
 for (const file of ["/ads.txt", "/app-ads.txt", "/.well-known/security.txt"]) {
