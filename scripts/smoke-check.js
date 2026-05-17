@@ -161,6 +161,22 @@ function extractQuotedPaths(text) {
   return [...text.matchAll(/"([^"]+)"/g)].map(match => match[1]);
 }
 
+function extractSitemapEntries(xml) {
+  return [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(match => {
+    const block = match[1];
+    const valueFor = tag => {
+      const tagMatch = block.match(new RegExp(`<${tag}>([^<]+)<\\/${tag}>`));
+      return tagMatch ? tagMatch[1].trim() : "";
+    };
+    return {
+      loc: valueFor("loc"),
+      lastmod: valueFor("lastmod"),
+      changefreq: valueFor("changefreq"),
+      priority: valueFor("priority"),
+    };
+  });
+}
+
 function expectedPageUrl(page) {
   return page === "index.html" ? `${siteUrl}/` : `${siteUrl}/${page}`;
 }
@@ -580,9 +596,27 @@ expect(securityTxt.includes("Preferred-Languages: ja"), "security.txt: Preferred
 expect(securityTxt.includes("Canonical: https://ichigekipachi.netlify.app/.well-known/security.txt"), "security.txt: Canonical がありません");
 
 const sitemap = read("sitemap.xml");
+const sitemapEntries = extractSitemapEntries(sitemap);
+const sitemapUrls = sitemapEntries.map(entry => entry.loc);
+const expectedSitemapUrls = sharePages.map(expectedPageUrl);
+
+expect(sitemapEntries.length === expectedSitemapUrls.length, "sitemap.xml: 公開対象URL数が想定と違います");
 for (const page of sharePages) {
   const url = expectedPageUrl(page);
   expect(sitemap.includes(`<loc>${url}</loc>`), `sitemap.xml: ${url} がありません`);
+}
+
+for (const url of sitemapUrls) {
+  expect(expectedSitemapUrls.includes(url), `sitemap.xml: 想定外のURL ${url} が含まれています`);
+}
+
+expect(new Set(sitemapUrls).size === sitemapUrls.length, "sitemap.xml: URLが重複しています");
+
+for (const entry of sitemapEntries) {
+  expect(/^https:\/\/ichigekipachi\.netlify\.app\/(?:[a-z0-9-]+\.html)?$/.test(entry.loc), `sitemap.xml: loc の形式が想定と違います (${entry.loc})`);
+  expect(/^\d{4}-\d{2}-\d{2}$/.test(entry.lastmod), `sitemap.xml: ${entry.loc} の lastmod が YYYY-MM-DD ではありません`);
+  expect(["daily", "weekly", "monthly", "yearly"].includes(entry.changefreq), `sitemap.xml: ${entry.loc} の changefreq が想定外です`);
+  expect(/^(?:0\.[1-9]|1\.0)$/.test(entry.priority), `sitemap.xml: ${entry.loc} の priority が想定外です`);
 }
 
 for (const page of noindexPages) {
