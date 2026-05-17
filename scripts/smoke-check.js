@@ -39,6 +39,8 @@ const noindexPages = [
   "404.html",
 ];
 
+const adPages = publicPages.filter(page => page !== "offline.html");
+
 const requiredFiles = [
   "manifest.json",
   "sw.js",
@@ -305,6 +307,33 @@ expect(notFoundHtml.includes('href="contact.html"'), "404.html: お問い合わ�
 const googleSellerLine = "google.com, pub-2599640417413447, DIRECT, f08c47fec0942fa0";
 expect(read("ads.txt").trim() === googleSellerLine, "ads.txt: Google販売者情報が想定と違います");
 expect(read("app-ads.txt").trim() === googleSellerLine, "app-ads.txt: Google販売者情報が想定と違います");
+
+const adsConfig = read("ads-config.js");
+const adsJs = read("ads.js");
+expect(adsConfig.includes("enabled: true"), "ads-config.js: 広告が有効になっていません");
+expect(adsConfig.includes('provider: "adsense"'), "ads-config.js: provider が adsense ではありません");
+expect(adsConfig.includes('adsenseClient: "ca-pub-2599640417413447"'), "ads-config.js: AdSenseクライアントIDが想定と違います");
+expect(adsConfig.includes("footer:") && adsConfig.includes("register:"), "ads-config.js: footer/register slot がありません");
+expect(adsJs.includes("data-ad-placement") && adsJs.includes("adsbygoogle") && adsJs.includes("広告枠"), "ads.js: 広告描画/fallback処理が不足しています");
+
+for (const page of publicPages) {
+  const html = read(page);
+  expect(html.includes('class="footer-ad-band"') && html.includes('data-ad-placement="footer"'), `${page}: フッター広告枠がありません`);
+}
+
+for (const page of adPages) {
+  const html = read(page);
+  expect(html.includes('src="ads-config.js"'), `${page}: ads-config.js が読み込まれていません`);
+  expect(html.includes('src="ads.js"'), `${page}: ads.js が読み込まれていません`);
+}
+
+for (const page of sharePages) {
+  expect(read(page).includes("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"), `${page}: AdSense loader がありません`);
+}
+
+for (const page of ["challenge.html", "sim.html"]) {
+  expect(read(page).includes('data-ad-placement="register"'), `${page}: 登録/継続用広告枠がありません`);
+}
 
 const securityTxt = read(".well-known/security.txt");
 expect(securityTxt.includes("Contact: mailto:ichigekipachi@proton.me"), "security.txt: Contact がありません");
