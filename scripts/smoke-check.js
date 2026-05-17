@@ -128,6 +128,7 @@ for (const page of noindexPages) {
 const manifest = JSON.parse(read("manifest.json"));
 const pkg = JSON.parse(read("package.json"));
 const indexHtml = read("index.html");
+const howtoHtml = read("howto.html");
 const rankingHtml = read("ranking.html");
 const challengeHtml = read("challenge.html");
 const aboutHtml = read("about.html");
@@ -157,6 +158,10 @@ expect(indexHtml.includes("v2.0"), "index.html: 表示バージョン v2.0 が�
 expect(
   appearsInOrder(indexHtml, ["全国チャレンジ", "実戦シミュレーター", "スペックシミュレーター", "使い方", "エンターテインメント専用", "スマホに追加"]),
   "index.html: TOP導線の順番が想定と違います"
+);
+expect(
+  appearsInOrder(howtoHtml, ["全国チャレンジ", "実戦シミュレーター", "スペックシミュレーター"]),
+  "howto.html: モード説明の順番が想定と違います"
 );
 expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
 expect(exists("APP_RELEASE_CHECKLIST.md"), "APP_RELEASE_CHECKLIST.md が見つかりません");
