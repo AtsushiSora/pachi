@@ -475,11 +475,33 @@ const robots = read("robots.txt");
 expect(robots.includes(`Sitemap: ${siteUrl}/sitemap.xml`), "robots.txt: Sitemap がありません");
 
 const netlify = read("netlify.toml");
+expect(netlify.includes('publish = "."'), "netlify.toml: publish設定が想定と違います");
+for (const header of [
+  "Content-Security-Policy",
+  "X-Frame-Options",
+  "X-Content-Type-Options",
+  "Referrer-Policy",
+  "Strict-Transport-Security",
+  "Permissions-Policy",
+]) {
+  expect(netlify.includes(header), `netlify.toml: ${header} がありません`);
+}
+for (const source of [
+  "https://pagead2.googlesyndication.com",
+  "https://googleads.g.doubleclick.net",
+  "https://cdn.jsdelivr.net",
+  "https://fonts.googleapis.com",
+  "https://fonts.gstatic.com",
+  "https://qkacufmyiljfojlqrmke.supabase.co",
+]) {
+  expect(netlify.includes(source), `netlify.toml: CSPに ${source} がありません`);
+}
 for (const file of ["/ads.txt", "/app-ads.txt", "/.well-known/security.txt"]) {
   expect(netlify.includes(`for = "${file}"`), `netlify.toml: ${file} のheaders設定がありません`);
 }
 expect(netlify.includes('Content-Type = "text/plain; charset=utf-8"'), "netlify.toml: text/plain のContent-Type設定がありません");
 expect(netlify.includes('for = "/sw.js"') && netlify.includes("no-cache, no-store, must-revalidate"), "netlify.toml: sw.js のno-cache設定がありません");
+expect(netlify.includes('for = "/manifest.json"') && netlify.includes("public, max-age=3600"), "netlify.toml: manifest.json のキャッシュ設定がありません");
 
 const sw = read("sw.js");
 expect(/const CACHE_NAME = "ichigeki-pwa-v\d+";/.test(sw), "sw.js: CACHE_NAME の形式が想定と違います");
