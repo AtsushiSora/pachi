@@ -251,6 +251,8 @@ const aboutHtml = read("about.html");
 const contactHtml = read("contact.html");
 const offlineHtml = read("offline.html");
 const notFoundHtml = read("404.html");
+const supabaseSql = read("supabase-ranking.sql");
+const supabaseSecurity = read("SUPABASE_SECURITY.md");
 expect(manifest.name === "ICHIGEKI 一撃スロパチ", "manifest: name が想定と違います");
 expect(manifest.short_name === "一撃スロパチ", "manifest: short_name が想定と違います");
 expect(manifest.display === "standalone", "manifest: display が standalone ではありません");
@@ -308,6 +310,11 @@ expect(rankingHtml.includes("diff === score - Number(usedBalls || 0)"), "ranking
 expect(rankingHtml.includes("diff, used_balls"), "ranking.html: 差玉と使用玉を取得していません");
 expect(rankingHtml.includes("window.supabase") && rankingHtml.includes("renderRanking([], \"local\")"), "ranking.html: Supabase未読込時のローカル表示がありません");
 expect(challengeHtml.includes("window.supabase") && challengeHtml.includes("Supabase client is not available"), "challenge.html: Supabase未読込時のローカル登録 fallback がありません");
+expect(challengeHtml.includes('SUPABASE_KEY = "sb_publishable_'), "challenge.html: publishable key が設定されていません");
+expect(rankingHtml.includes('SUPABASE_KEY = "sb_publishable_'), "ranking.html: publishable key が設定されていません");
+expect(!challengeHtml.includes("service_role") && !rankingHtml.includes("service_role"), "Supabase: service_role key をHTMLへ含めないでください");
+expect(challengeHtml.includes("function isResultConsistent()") && challengeHtml.includes("diff === score - usedBalls"), "challenge.html: 登録前の差玉検査がありません");
+expect(challengeHtml.includes("saveLocalRanking(rankingEntry)"), "challenge.html: 登録失敗時のローカル保存がありません");
 expect(indexHtml.includes('"publisher"') && indexHtml.includes('"ICHIGEKI運営"'), "index.html: publisher構造化データがありません");
 expect(aboutHtml.includes('"@type": "AboutPage"') && aboutHtml.includes('"@type": "Organization"'), "about.html: AboutPage構造化データがありません");
 expect(contactHtml.includes('"@type": "ContactPage"') && contactHtml.includes("ichigekipachi@proton.me"), "contact.html: ContactPage構造化データがありません");
@@ -330,6 +337,31 @@ for (const word of ["実際のパチンコ・パチスロ機器での結果", "�
 }
 for (const word of ["18歳以上", "保証するものではありません", "公的・専門的な支援先", "お問い合わせ"]) {
   expect(safetyHtml.includes(word), `safety.html: ${word} の記載がありません`);
+}
+
+for (const word of [
+  "create table if not exists public.ranking",
+  "alter table public.ranking enable row level security",
+  "grant select, insert on public.ranking to anon",
+  "revoke update, delete on public.ranking from anon, authenticated",
+  "create policy ranking_select",
+  "create policy ranking_insert",
+  "diff = score - used_balls",
+  "char_length(nickname) <= 10",
+  "score <= 2000000",
+  "used_balls <= 2000000",
+  "ranking_diff_matches_score",
+  "ranking_nickname_is_clean",
+  "ranking_values_are_reasonable",
+  "ranking_score_idx",
+  "ranking_chain_idx",
+  "ranking_spins_idx",
+]) {
+  expect(supabaseSql.includes(word), `supabase-ranking.sql: ${word} の記載がありません`);
+}
+
+for (const word of ["SQL Editor", "Success. No rows returned", "publishable key", "secret key", "service_role key", "差玉"]) {
+  expect(supabaseSecurity.includes(word), `SUPABASE_SECURITY.md: ${word} の記載がありません`);
 }
 
 const googleSellerLine = "google.com, pub-2599640417413447, DIRECT, f08c47fec0942fa0";
