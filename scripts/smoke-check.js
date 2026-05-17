@@ -130,6 +130,33 @@ function normalizeLocalReference(value) {
   return normalized;
 }
 
+const anchorCache = new Map();
+
+function anchorsFor(file) {
+  if (anchorCache.has(file)) return anchorCache.get(file);
+  if (!exists(file)) return new Set();
+
+  const html = read(file);
+  const anchors = new Set(
+    [...html.matchAll(/\b(?:id|name)=["']([^"']+)["']/gi)].map(match => match[1])
+  );
+  anchorCache.set(file, anchors);
+  return anchors;
+}
+
+function getAnchorReference(currentPage, value) {
+  if (!value || !value.includes("#")) return null;
+  if (/^(https?:|mailto:|tel:|data:|javascript:)/i.test(value)) return null;
+
+  const [rawPath, rawHash] = value.split("#");
+  const hash = (rawHash || "").split("?")[0];
+  if (!hash) return null;
+
+  const file = rawPath ? normalizeLocalReference(value) : currentPage;
+  if (!file) return null;
+  return { file, hash: decodeURIComponent(hash) };
+}
+
 function extractQuotedPaths(text) {
   return [...text.matchAll(/"([^"]+)"/g)].map(match => match[1]);
 }
@@ -215,6 +242,18 @@ for (const page of publicPages) {
 
   for (const ref of localRefs) {
     expect(exists(ref), `${page}: ${ref} が見つかりません`);
+  }
+
+  const anchorRefs = [...html.matchAll(/\bhref=["']([^"']+)["']/gi)]
+    .map(match => match[1])
+    .map(value => getAnchorReference(page, value))
+    .filter(Boolean);
+
+  for (const ref of anchorRefs) {
+    expect(exists(ref.file), `${page}: ${ref.file} が見つかりません`);
+    if (exists(ref.file)) {
+      expect(anchorsFor(ref.file).has(ref.hash), `${page}: ${ref.file}#${ref.hash} のリンク先アンカーがありません`);
+    }
   }
 }
 
