@@ -55,6 +55,15 @@ const requiredFiles = [
   "screenshot-ranking.png",
 ];
 
+const scriptFiles = [
+  "presets.js",
+  "main.js",
+  "ads-config.js",
+  "ads.js",
+  "pwa.js",
+  "sw.js",
+];
+
 const errors = [];
 
 function read(file) {
@@ -115,8 +124,35 @@ function extractQuotedPaths(text) {
   return [...text.matchAll(/"([^"]+)"/g)].map(match => match[1]);
 }
 
+function checkJavaScriptSyntax(label, code) {
+  try {
+    new Function(code);
+  } catch (error) {
+    errors.push(`${label}: JavaScript構文エラー: ${error.message}`);
+  }
+}
+
+function checkInlineScripts(page, html) {
+  let index = 0;
+  const scripts = html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi);
+  for (const script of scripts) {
+    const attrs = script[1] || "";
+    const code = script[2] || "";
+    if (/\bsrc\s*=/.test(attrs)) continue;
+    if (/\btype\s*=\s*["']application\/ld\+json["']/i.test(attrs)) continue;
+    if (!code.trim()) continue;
+    index++;
+    checkJavaScriptSyntax(`${page}: inline script ${index}`, code);
+  }
+}
+
 for (const file of requiredFiles) {
   expect(exists(file), `${file} が見つかりません`);
+}
+
+for (const file of scriptFiles) {
+  expect(exists(file), `${file} が見つかりません`);
+  if (exists(file)) checkJavaScriptSyntax(file, read(file));
 }
 
 for (const page of publicPages) {
@@ -131,6 +167,7 @@ for (const page of publicPages) {
   expect(has(html, /<link rel="manifest"/), `${page}: manifest link がありません`);
   expect(has(html, /<link rel="icon"/), `${page}: icon link がありません`);
   expect(has(html, /<link rel="apple-touch-icon"/), `${page}: apple-touch-icon link がありません`);
+  checkInlineScripts(page, html);
 
   const localRefs = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)]
     .map(match => match[1])
