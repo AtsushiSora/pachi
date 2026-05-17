@@ -111,6 +111,10 @@ function normalizeLocalReference(value) {
   return normalized;
 }
 
+function extractQuotedPaths(text) {
+  return [...text.matchAll(/"([^"]+)"/g)].map(match => match[1]);
+}
+
 for (const file of requiredFiles) {
   expect(exists(file), `${file} が見つかりません`);
 }
@@ -252,6 +256,17 @@ expect(netlify.includes('for = "/sw.js"') && netlify.includes("no-cache, no-stor
 const sw = read("sw.js");
 for (const file of publicPages) {
   expect(sw.includes(`"/${file}"`), `sw.js: /${file} がキャッシュ対象にありません`);
+}
+
+const cachedAssets = extractQuotedPaths(sw).filter(value => value.startsWith("/"));
+for (const asset of cachedAssets) {
+  const file = normalizeLocalReference(asset);
+  if (!file) continue;
+  expect(exists(file), `sw.js: キャッシュ対象の ${asset} が見つかりません`);
+}
+
+for (const asset of ["/style.css", "/main.js", "/presets.js", "/ads-config.js", "/ads.js", "/pwa.js", "/manifest.json"]) {
+  expect(cachedAssets.includes(asset), `sw.js: ${asset} がキャッシュ対象にありません`);
 }
 
 if (errors.length) {
