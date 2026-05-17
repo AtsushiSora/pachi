@@ -297,6 +297,13 @@ expect(appHtml.includes("addLog('実戦開始', 'log-normal');"), "app.html: 開
 expect(appHtml.includes("function setStartButtonActive(active)"), "app.html: START/STOP表示の共通処理がありません");
 expect(appHtml.includes("setStartButtonActive(true);"), "app.html: 開始時にSTOP表示へ切り替えていません");
 expect(appHtml.match(/setStartButtonActive\(false\);/g)?.length >= 3, "app.html: 停止時のSTART表示復帰が不足しています");
+expect(appHtml.includes("let running   = false;") && appHtml.includes("let starting  = false;"), "app.html: 実戦開始の連打防止状態がありません");
+expect(appHtml.includes("if (running || starting) return;"), "app.html: 実戦開始の二重起動防止がありません");
+expect(appHtml.includes("useHp();") && appHtml.includes("function useHp()"), "app.html: 実戦開始時の体力消費がありません");
+expect(appHtml.includes("const HP_MAX        = 5;") && appHtml.includes("const HP_RECOVER_MS = 30 * 60 * 1000;"), "app.html: 体力上限/自然回復間隔が想定と違います");
+expect(appHtml.includes("recoverHp(HP_MAX)") && appHtml.includes("体力が全回復しました"), "app.html: 広告視聴時の体力全回復がありません");
+expect(appHtml.includes("hp >= HP_MAX") && appHtml.includes("体力はすでに満タンです"), "app.html: 体力満タン時の広告視聴ガードがありません");
+expect(appHtml.includes("localStorage.setItem('hp_count'") && appHtml.includes("localStorage.removeItem('hp_last_used')"), "app.html: 体力保存/全回復時刻リセットが不足しています");
 expect(simHtml.includes('id="startBtn"') && simHtml.includes(">スタート</button>"), "sim.html: 試算開始ボタンの表示がスタートではありません");
 expect(
   appearsInOrder(simHtml, ['id="startBtn"', 'class="setting-back-btn"', 'id="startMessage"']),
