@@ -311,6 +311,12 @@ function setVal(el, num, unit, cls) {
   if (cls) el.className = `stat-val ${cls}`;
 }
 
+function playSound(audio) {
+  if (!audio) return;
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+}
+
 // ========================
 // モード表示
 // ========================
@@ -476,8 +482,7 @@ async function simulate() {
 
     if (hit) {
       spinDisplay.classList.remove("warning");
-      hitSound.currentTime = 0;
-      hitSound.play().catch(() => {});
+      playSound(hitSound);
 
       addLog(`${spins.toLocaleString()}回転で当たり！`, "log-hit");
 
@@ -496,8 +501,7 @@ async function simulate() {
         break;
       }
 
-      rushSound.currentTime = 0;
-      rushSound.play().catch(() => {});
+      playSound(rushSound);
       addLog("RUSH突入！", "log-rush");
 
       // LT判定

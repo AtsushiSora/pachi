@@ -93,6 +93,24 @@ function appearsInOrder(text, labels) {
   return true;
 }
 
+function isLocalReference(value) {
+  return value &&
+    !value.startsWith("#") &&
+    !value.startsWith("//") &&
+    !/^(https?:|mailto:|tel:|data:|javascript:)/i.test(value);
+}
+
+function normalizeLocalReference(value) {
+  const cleanValue = value.split("#")[0].split("?")[0];
+  if (!cleanValue || cleanValue === "/") return null;
+
+  const relativeValue = cleanValue.startsWith("/") ? cleanValue.slice(1) : cleanValue;
+  const normalized = path.normalize(relativeValue);
+  if (!normalized || normalized === ".") return null;
+
+  return normalized;
+}
+
 for (const file of requiredFiles) {
   expect(exists(file), `${file} が見つかりません`);
 }
@@ -109,6 +127,16 @@ for (const page of publicPages) {
   expect(has(html, /<link rel="manifest"/), `${page}: manifest link がありません`);
   expect(has(html, /<link rel="icon"/), `${page}: icon link がありません`);
   expect(has(html, /<link rel="apple-touch-icon"/), `${page}: apple-touch-icon link がありません`);
+
+  const localRefs = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)]
+    .map(match => match[1])
+    .filter(isLocalReference)
+    .map(normalizeLocalReference)
+    .filter(Boolean);
+
+  for (const ref of localRefs) {
+    expect(exists(ref), `${page}: ${ref} が見つかりません`);
+  }
 }
 
 for (const page of sharePages) {
