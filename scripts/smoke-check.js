@@ -249,6 +249,7 @@ const appHtml = read("app.html");
 const rankingHtml = read("ranking.html");
 const challengeHtml = read("challenge.html");
 const mainJs = read("main.js");
+const pwaJs = read("pwa.js");
 const aboutHtml = read("about.html");
 const contactHtml = read("contact.html");
 const offlineHtml = read("offline.html");
@@ -261,9 +262,15 @@ expect(manifest.display === "standalone", "manifest: display が standalone で�
 expect(Array.isArray(manifest.icons) && manifest.icons.length >= 3, "manifest: icons が不足しています");
 expect(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3, "manifest: shortcuts が不足しています");
 expect(Array.isArray(manifest.screenshots) && manifest.screenshots.length >= 2, "manifest: screenshots が不足しています");
+expect(manifest.lang === "ja", "manifest: lang が ja ではありません");
+expect(Array.isArray(manifest.display_override) && manifest.display_override.includes("standalone"), "manifest: display_override に standalone がありません");
 expect(
   manifest.shortcuts.slice(0, 3).map(shortcut => shortcut.url).join(",") === "/ranking.html,/app.html,/sim.html",
   "manifest: shortcuts の順番が想定と違います"
+);
+expect(
+  manifest.shortcuts.slice(0, 3).map(shortcut => shortcut.name).join(",") === "全国チャレンジ,実戦シミュレーター,スペックシミュレーター",
+  "manifest: shortcuts の名前順が想定と違います"
 );
 expect(manifest.orientation === "portrait", "manifest: orientation が portrait ではありません");
 expect(manifest.scope === "/", "manifest: scope が / ではありません");
@@ -287,9 +294,20 @@ expect(
   "index.html: TOP導線の順番が想定と違います"
 );
 expect(
+  appearsInOrder(indexHtml, ['href="ranking.html"', 'href="app.html"', 'href="sim.html"', 'href="howto.html"', 'id="installCard"']),
+  "index.html: TOPリンクとスマホ追加カードの順番が想定と違います"
+);
+expect(indexHtml.includes("beforeinstallprompt") && indexHtml.includes("deferredInstallPrompt.prompt()"), "index.html: ホーム画面追加プロンプト処理がありません");
+expect(indexHtml.includes("appinstalled") && indexHtml.includes("card.hidden = true"), "index.html: インストール後にスマホ追加カードを隠す処理がありません");
+expect(indexHtml.includes('window.location.href = "howto.html#install"'), "index.html: スマホ追加手順への導線がありません");
+expect(
   appearsInOrder(howtoHtml, ["全国チャレンジ", "実戦シミュレーター", "スペックシミュレーター"]),
   "howto.html: モード説明の順番が想定と違います"
 );
+expect(howtoHtml.includes('id="install"') && howtoHtml.includes("Safari") && howtoHtml.includes("Chrome"), "howto.html: スマホ追加手順が不足しています");
+expect(pwaJs.includes("serviceWorker") && pwaJs.includes('navigator.serviceWorker.register("/sw.js")'), "pwa.js: Service Worker登録がありません");
+expect(pwaJs.includes("controllerchange") && pwaJs.includes("window.location.reload()"), "pwa.js: Service Worker更新時の再読込処理がありません");
+expect(pwaJs.includes("SKIP_WAITING") && pwaJs.includes("registration.update()"), "pwa.js: Service Worker更新反映処理がありません");
 expect(appHtml.includes("let fastMode  = false;"), "app.html: 高速モードの初期値がOFFではありません");
 expect(appHtml.includes('id="speedLabel">OFF</span>'), "app.html: 高速ボタンの初期表示がOFFではありません");
 expect(appHtml.includes("const normalSpeed = fastMode ? 1 : 80;"), "app.html: 高速OFF時の通常回転速度が想定と違います");
