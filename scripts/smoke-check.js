@@ -256,6 +256,7 @@ const offlineHtml = read("offline.html");
 const notFoundHtml = read("404.html");
 const supabaseSql = read("supabase-ranking.sql");
 const supabaseSecurity = read("SUPABASE_SECURITY.md");
+const releaseWorkflow = read(".github/workflows/release-check.yml");
 expect(manifest.name === "ICHIGEKI 一撃スロパチ", "manifest: name が想定と違います");
 expect(manifest.short_name === "一撃スロパチ", "manifest: short_name が想定と違います");
 expect(manifest.display === "standalone", "manifest: display が standalone ではありません");
@@ -285,6 +286,9 @@ expect(pkg.version === "2.0.0", "package.json: version が 2.0.0 ではありま
 expect(pkg.private === true, "package.json: private が true ではありません");
 expect(pkg.engines && pkg.engines.node === ">=22", "package.json: engines.node が >=22 ではありません");
 expect(read(".nvmrc").trim() === "22", ".nvmrc: Nodeバージョンが22ではありません");
+for (const word of ["workflow_dispatch", "push:", "pull_request:", "node-version-file: .nvmrc", "npm ci", "npm run release:check", "timeout-minutes: 10"]) {
+  expect(releaseWorkflow.includes(word), `.github/workflows/release-check.yml: ${word} の記載がありません`);
+}
 expect(indexHtml.includes("v2.0"), "index.html: 表示バージョン v2.0 がありません");
 for (const page of legalLinks) {
   expect(indexHtml.includes(`href="${page}"`), `index.html: ${page} への導線がありません`);
