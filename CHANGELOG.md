@@ -46,6 +46,7 @@
 - サイトマップのURL重複、対象ページ、更新日形式の公開前チェックを追加
 - PWAマニフェストの基本情報、アセット存在、Service Workerキャッシュ対象の公開前チェックを追加
 - ページタイトル、description、OGタイトル/説明文の重複と長さの公開前チェックを追加
+- ads.txt / app-ads.txt、security.txt、公開ページ内HTTPS URLの公開前チェックを追加
 
 ## v1.0.0
 

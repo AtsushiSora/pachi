@@ -165,9 +165,22 @@ function extractQuotedPaths(text) {
   return [...text.matchAll(/"([^"]+)"/g)].map(match => match[1]);
 }
 
+function extractAttributeValues(html, attrs) {
+  const attrPattern = attrs.join("|");
+  return [...html.matchAll(new RegExp(`\\b(?:${attrPattern})=["']([^"']+)["']`, "gi"))]
+    .map(match => match[1]);
+}
+
 function extractCoreAssets(text) {
   const match = text.match(/const CORE_ASSETS = \[([\s\S]*?)\];/);
   return match ? extractQuotedPaths(match[1]) : [];
+}
+
+function parseSecurityTxt(text) {
+  return text.trim().split(/\r?\n/).map(line => {
+    const index = line.indexOf(":");
+    return index === -1 ? [line, ""] : [line.slice(0, index), line.slice(index + 1).trim()];
+  });
 }
 
 function extractSitemapEntries(xml) {
@@ -326,6 +339,14 @@ for (const page of publicPages) {
   checkStructuredData(page, html);
   checkBlankTargetLinks(page, html);
   checkDuplicateIds(page, html);
+
+  const absoluteRefs = extractAttributeValues(html, ["href", "src", "content"])
+    .filter(value => /^https?:\/\//i.test(value));
+
+  for (const ref of absoluteRefs) {
+    expect(ref.startsWith("https://"), `${page}: 外部URLがHTTPSではありません (${ref})`);
+    expect(!/\s/.test(ref), `${page}: URLに空白が含まれています (${ref})`);
+  }
 
   const localRefs = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)]
     .map(match => match[1])
@@ -600,6 +621,13 @@ for (const word of ["SQL Editor", "Success. No rows returned", "publishable key"
 const googleSellerLine = "google.com, pub-2599640417413447, DIRECT, f08c47fec0942fa0";
 expect(read("ads.txt").trim() === googleSellerLine, "ads.txt: Google販売者情報が想定と違います");
 expect(read("app-ads.txt").trim() === googleSellerLine, "app-ads.txt: Google販売者情報が想定と違います");
+for (const file of ["ads.txt", "app-ads.txt"]) {
+  const content = read(file);
+  const lines = content.trim().split(/\r?\n/);
+  expect(lines.length === 1, `${file}: 販売者情報は1行だけにしてください`);
+  expect(/^google\.com, pub-\d{16}, DIRECT, f08c47fec0942fa0$/.test(lines[0]), `${file}: Google販売者情報の形式が想定と違います`);
+  expect(content.endsWith("\n"), `${file}: 末尾改行がありません`);
+}
 
 const adsConfig = read("ads-config.js");
 const adsJs = read("ads.js");
@@ -638,10 +666,25 @@ for (const page of ["challenge.html", "sim.html"]) {
 }
 
 const securityTxt = read(".well-known/security.txt");
+const securityEntries = parseSecurityTxt(securityTxt);
+const securityKeys = securityEntries.map(([key]) => key);
+expect(new Set(securityKeys).size === securityKeys.length, "security.txt: キーが重複しています");
 expect(securityTxt.includes("Contact: mailto:ichigekipachi@proton.me"), "security.txt: Contact がありません");
 expect(securityTxt.includes("Expires: 2027-05-17T00:00:00.000Z"), "security.txt: Expires がありません");
 expect(securityTxt.includes("Preferred-Languages: ja"), "security.txt: Preferred-Languages がありません");
 expect(securityTxt.includes("Canonical: https://ichigekipachi.netlify.app/.well-known/security.txt"), "security.txt: Canonical がありません");
+expect(securityTxt.includes("Policy: https://ichigekipachi.netlify.app/disclaimer.html"), "security.txt: Policy がありません");
+expect(Date.parse("2027-05-17T00:00:00.000Z") > Date.now(), "security.txt: Expires が過去の日付です");
+for (const [key, value] of securityEntries) {
+  expect(["Contact", "Expires", "Preferred-Languages", "Canonical", "Policy"].includes(key), `security.txt: 想定外のキー ${key} があります`);
+  if (/^https?:\/\//.test(value)) {
+    expect(value.startsWith("https://"), `security.txt: ${key} がHTTPSではありません`);
+    const localFile = normalizeLocalReference(value.replace(`${siteUrl}/`, ""));
+    if (value.startsWith(`${siteUrl}/`) && localFile) {
+      expect(exists(localFile), `security.txt: ${key} の参照先 ${localFile} が見つかりません`);
+    }
+  }
+}
 
 const sitemap = read("sitemap.xml");
 const sitemapEntries = extractSitemapEntries(sitemap);
