@@ -141,6 +141,10 @@ expect(manifest.display === "standalone", "manifest: display が standalone で�
 expect(Array.isArray(manifest.icons) && manifest.icons.length >= 3, "manifest: icons が不足しています");
 expect(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3, "manifest: shortcuts が不足しています");
 expect(Array.isArray(manifest.screenshots) && manifest.screenshots.length >= 2, "manifest: screenshots が不足しています");
+expect(
+  manifest.shortcuts.slice(0, 3).map(shortcut => shortcut.url).join(",") === "/ranking.html,/app.html,/sim.html",
+  "manifest: shortcuts の順番が想定と違います"
+);
 expect(manifest.orientation === "portrait", "manifest: orientation が portrait ではありません");
 expect(manifest.scope === "/", "manifest: scope が / ではありません");
 expect(manifest.start_url === "/", "manifest: start_url が / ではありません");
