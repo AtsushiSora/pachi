@@ -105,6 +105,7 @@ const manifest = JSON.parse(read("manifest.json"));
 const pkg = JSON.parse(read("package.json"));
 const indexHtml = read("index.html");
 const rankingHtml = read("ranking.html");
+const challengeHtml = read("challenge.html");
 expect(manifest.name === "ICHIGEKI 一撃スロパチ", "manifest: name が想定と違います");
 expect(manifest.short_name === "一撃スロパチ", "manifest: short_name が想定と違います");
 expect(manifest.display === "standalone", "manifest: display が standalone ではありません");
@@ -120,6 +121,8 @@ expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
 expect(rankingHtml.includes("normalizeRankingEntry"), "ranking.html: ランキング表示の検査関数がありません");
 expect(rankingHtml.includes("diff === score - Number(usedBalls || 0)"), "ranking.html: 差玉検査がありません");
 expect(rankingHtml.includes("diff, used_balls"), "ranking.html: 差玉と使用玉を取得していません");
+expect(rankingHtml.includes("window.supabase") && rankingHtml.includes("renderRanking([], \"local\")"), "ranking.html: Supabase未読込時のローカル表示がありません");
+expect(challengeHtml.includes("window.supabase") && challengeHtml.includes("Supabase client is not available"), "challenge.html: Supabase未読込時のローカル登録 fallback がありません");
 
 const googleSellerLine = "google.com, pub-2599640417413447, DIRECT, f08c47fec0942fa0";
 expect(read("ads.txt").trim() === googleSellerLine, "ads.txt: Google販売者情報が想定と違います");

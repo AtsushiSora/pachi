@@ -654,7 +654,9 @@
   <script>
     const SUPABASE_URL = "https://qkacufmyiljfojlqrmke.supabase.co";
     const SUPABASE_KEY = "sb_publishable_wEsGe95_6bgyp7uEvjRCiw_dYDXkgXj";
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = window.supabase
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+      : null;
 
     const rankingList = document.getElementById("rankingList");
     const rankingStatus = document.getElementById("rankingStatus");
@@ -803,7 +805,7 @@
     }
 
     async function loadPlayerRank(record) {
-      if (!record.best.score) return;
+      if (!record.best.score || !supabaseClient) return;
       try {
         const { count, error } = await supabaseClient
           .from("ranking")
@@ -884,6 +886,10 @@
     async function loadRanking() {
       const mode = getRankMode();
       rankingStatus.textContent = "読み込み中";
+      if (!supabaseClient) {
+        renderRanking([], "local");
+        return;
+      }
       try {
         let { data, error } = await supabaseClient
           .from("ranking")

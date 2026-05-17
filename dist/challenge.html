@@ -665,7 +665,9 @@
     // ========================
     const SUPABASE_URL = "https://qkacufmyiljfojlqrmke.supabase.co";
     const SUPABASE_KEY = "sb_publishable_wEsGe95_6bgyp7uEvjRCiw_dYDXkgXj";
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = window.supabase
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+      : null;
 
     // ========================
     // 固定スペック
@@ -1075,6 +1077,7 @@
       };
 
       try {
+        if (!supabaseClient) throw new Error("Supabase client is not available");
         const onlineEntry = {
           nickname,
           score: finalScore,
