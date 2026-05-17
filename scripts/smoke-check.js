@@ -202,6 +202,8 @@ expect(
 );
 expect(appHtml.includes("let fastMode  = false;"), "app.html: 高速モードの初期値がOFFではありません");
 expect(appHtml.includes('id="speedLabel">OFF</span>'), "app.html: 高速ボタンの初期表示がOFFではありません");
+expect(appHtml.includes("const normalSpeed = fastMode ? 1 : 80;"), "app.html: 高速OFF時の通常回転速度が想定と違います");
+expect(appHtml.includes("addLog('実戦開始', 'log-normal');"), "app.html: 開始ログがありません");
 expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
 expect(exists("APP_RELEASE_CHECKLIST.md"), "APP_RELEASE_CHECKLIST.md が見つかりません");
 const appChecklist = read("APP_RELEASE_CHECKLIST.md");

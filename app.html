@@ -850,6 +850,7 @@ async function startSim() {
   if (running || starting) return;
   if (hp <= 0) {
     document.getElementById('hpEmptyMsg').classList.add('show');
+    showRewardToast('体力がありません。広告で全回復できます');
     updateHp();
     return;
   }
@@ -862,19 +863,27 @@ async function startSim() {
   startBtn.classList.add('stop');
   useHp();
   starting = false;
+  await sleep(0);
 
-  await runOnce();
-
-  running = false;
-  starting = false;
-  document.getElementById('startLabel').textContent = 'START';
-  document.getElementById('startSub').textContent   = 'スタート';
-  document.getElementById('startBtn').classList.remove('stop');
-  updateHp();
+  try {
+    await runOnce();
+  } catch (error) {
+    console.error(error);
+    addLog('エラーが発生しました。もう一度お試しください', 'log-fail');
+  } finally {
+    running = false;
+    starting = false;
+    document.getElementById('startLabel').textContent = 'START';
+    document.getElementById('startSub').textContent   = 'スタート';
+    document.getElementById('startBtn').classList.remove('stop');
+    updateHp();
+  }
 }
 
 async function runOnce() {
-  const speed = fastMode ? 1 : 700;
+  const normalSpeed = fastMode ? 1 : 80;
+  const rushSpeed = fastMode ? 1 : 700;
+  addLog('実戦開始', 'log-normal');
 
   while (running) {
     spendSpinCost();
@@ -884,7 +893,7 @@ async function runOnce() {
     const hit = Math.random() < (1 / cfg.hitRate);
     if (!hit) {
       if (spins % 300 === 0) addLog(`${spins.toLocaleString()}回転…`, 'log-hama');
-      await sleep(1);
+      await sleep(normalSpeed);
       continue;
     }
 
@@ -907,7 +916,7 @@ async function runOnce() {
       const payout = getRandomPayout();
       addPayout(payout, 'RUSH');
 
-      await sleep(speed);
+      await sleep(rushSpeed);
 
       if (Math.random() >= cfg.continueRate / 100) {
         rush = false;
