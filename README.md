@@ -68,6 +68,8 @@ AdSense審査後、広告ユニットIDが発行されたら `ads-config.js` の
 `manifest.json` と `sw.js` でスマホのホーム画面追加に対応しています。
 Service Workerのキャッシュ内容を変えた時は、`sw.js` の `CACHE_NAME` を更新してください。
 
+スマホアプリ化の準備は `APP_RELEASE_CHECKLIST.md` にまとめています。
+
 ## セキュリティ連絡先
 
 - `SECURITY.md`: リポジトリ向けの連絡先

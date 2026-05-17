@@ -46,6 +46,7 @@ const requiredFiles = [
   "ads.txt",
   "app-ads.txt",
   ".well-known/security.txt",
+  "APP_RELEASE_CHECKLIST.md",
   "icon.svg",
   "icon-192.png",
   "icon-512.png",
@@ -144,6 +145,11 @@ expect(pkg.engines && pkg.engines.node === ">=22", "package.json: engines.node �
 expect(read(".nvmrc").trim() === "22", ".nvmrc: Nodeバージョンが22ではありません");
 expect(indexHtml.includes("v2.0"), "index.html: 表示バージョン v2.0 がありません");
 expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");
+expect(exists("APP_RELEASE_CHECKLIST.md"), "APP_RELEASE_CHECKLIST.md が見つかりません");
+const appChecklist = read("APP_RELEASE_CHECKLIST.md");
+for (const word of ["app-ads.txt", "プライバシーポリシーURL", "AdMob", "assetlinks.json", "18歳以上"]) {
+  expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
+}
 const changelog = read("CHANGELOG.md");
 for (const word of ["お問い合わせ", "運営者情報", "Supabase未読込時", "構造化データ", "PWAアセット"]) {
   expect(changelog.includes(word), `CHANGELOG.md: ${word} の記載がありません`);
