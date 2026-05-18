@@ -61,6 +61,7 @@ const requiredFiles = [
   "mobile-app/README.md",
   "mobile-app/STORE_LISTING_DRAFT.md",
   "mobile-app/SCREENSHOT_PLAN.md",
+  "mobile-app/PRIVACY_DISCLOSURE.md",
   "mobile-app/android/README.md",
   "mobile-app/ios/README.md",
   "icon.svg",
@@ -582,16 +583,20 @@ for (const word of ["iPhone Safari", "Android Chrome", "Netlify", "ランキン�
   expect(manualChecklist.includes(word), `MANUAL_TEST_CHECKLIST.md: ${word} の記載がありません`);
 }
 const mobileReadme = read("mobile-app/README.md");
-for (const word of ["Trusted Web Activity", "Capacitor", "assetlinks.json", "Google Play Console", "Apple Developer Program", "AdMob", "app-ads.txt", "Web/PWA", "STORE_LISTING_DRAFT.md", "SCREENSHOT_PLAN.md"]) {
+for (const word of ["Trusted Web Activity", "Capacitor", "assetlinks.json", "Google Play Console", "Apple Developer Program", "AdMob", "app-ads.txt", "Web/PWA", "STORE_LISTING_DRAFT.md", "SCREENSHOT_PLAN.md", "PRIVACY_DISCLOSURE.md"]) {
   expect(mobileReadme.includes(word), `mobile-app/README.md: ${word} の記載がありません`);
 }
 const storeListingDraft = read("mobile-app/STORE_LISTING_DRAFT.md");
-for (const word of ["アプリ名", "サブタイトル", "短い説明", "詳細説明", "18歳以上", "プライバシーポリシーURL", "サポートURL", "実際の賭博機能はありません"]) {
+for (const word of ["アプリ名", "サブタイトル", "短い説明", "詳細説明", "18歳以上", "プライバシーポリシーURL", "サポートURL", "実際の賭博機能はありません", "PRIVACY_DISCLOSURE.md"]) {
   expect(storeListingDraft.includes(word), `mobile-app/STORE_LISTING_DRAFT.md: ${word} の記載がありません`);
 }
 const screenshotPlan = read("mobile-app/SCREENSHOT_PLAN.md");
 for (const word of ["トップ", "全国ランキング", "全国チャレンジ結果", "スペックシミュレーター", "実戦シミュレーター", "Google Play", "App Store"]) {
   expect(screenshotPlan.includes(word), `mobile-app/SCREENSHOT_PLAN.md: ${word} の記載がありません`);
+}
+const privacyDisclosure = read("mobile-app/PRIVACY_DISCLOSURE.md");
+for (const word of ["Google Play", "App Store", "データセーフティ", "ニックネーム", "Supabase", "localStorage", "AdSense", "AdMob", "プライバシーポリシー"]) {
+  expect(privacyDisclosure.includes(word), `mobile-app/PRIVACY_DISCLOSURE.md: ${word} の記載がありません`);
 }
 const androidReadme = read("mobile-app/android/README.md");
 for (const word of ["package name", "SHA-256", "assetlinks.json", "Google Play Console", "Trusted Web Activity"]) {

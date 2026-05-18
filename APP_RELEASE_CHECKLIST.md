@@ -75,3 +75,4 @@ AdSense審査中は、Web版の広告枠がプレースホルダー表示でも�
 - `security.txt` と問い合わせメールが公開されている
 - `mobile-app/STORE_LISTING_DRAFT.md` の説明文をストア入力内容に反映している
 - `mobile-app/SCREENSHOT_PLAN.md` に沿って最新画面のスクリーンショットを用意している
+- `mobile-app/PRIVACY_DISCLOSURE.md` を見てデータ取扱い申告を確認している

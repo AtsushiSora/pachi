@@ -55,6 +55,7 @@ ICHIGEKI 一撃スロパチは、パチンコのスペック試算、実戦風�
 広告配信のため、広告サービスが端末情報や利用状況を扱う場合があります。
 
 詳細はプライバシーポリシーを参照します。
+ストアのデータ取扱い申告は `mobile-app/PRIVACY_DISCLOSURE.md` を確認します。
 
 プライバシーポリシーURL:
 https://ichigekipachi.netlify.app/privacy.html
@@ -75,4 +76,3 @@ https://ichigekipachi.netlify.app/disclaimer.html
 - 18歳以上対象の案内があります
 - プライバシーポリシー、免責事項、お問い合わせを公開しています
 - 広告は審査中または未設定時にプレースホルダー表示になります
-

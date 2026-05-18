@@ -23,6 +23,7 @@ Web版とアプリ版のフォルダは、今すぐ完全に分けません。
 5. Google Play ConsoleとApple Developer Programの準備範囲を決める
 6. `mobile-app/STORE_LISTING_DRAFT.md` を元にストア掲載文を調整する
 7. `mobile-app/SCREENSHOT_PLAN.md` に沿ってスクリーンショットを用意する
+8. `mobile-app/PRIVACY_DISCLOSURE.md` を元にストアのデータ取扱い申告を確認する
 
 ## Android候補
 
@@ -69,3 +70,4 @@ Web版はAdSense、アプリ版はAdMobを使います。
 
 - `mobile-app/STORE_LISTING_DRAFT.md`: ストア掲載文、説明、審査向け補足
 - `mobile-app/SCREENSHOT_PLAN.md`: ストア用スクリーンショットの撮影計画
+- `mobile-app/PRIVACY_DISCLOSURE.md`: Google Play / App Store向けのデータ取扱い整理
