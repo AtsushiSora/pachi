@@ -382,6 +382,13 @@
       border-color: #555;
     }
 
+    .modal-help {
+      font-size: 10px;
+      color: #666;
+      line-height: 1.7;
+      margin: -8px 0 14px;
+    }
+
     .modal-submit {
       width: 100%;
       height: 50px;
@@ -634,6 +641,7 @@
         placeholder="名前を入力（最大10文字）"
         maxlength="10"
       >
+      <div class="modal-help">ランキングに表示されます。本名、電話番号、メールアドレスなどの個人情報は入れないでください。</div>
       <div id="modalError" class="modal-error">ニックネームを入力してください</div>
       <button id="modalSubmit" class="modal-submit">ランキングに登録</button>
       <button id="modalShare" class="modal-share">結果をシェア</button>

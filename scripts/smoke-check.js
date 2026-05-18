@@ -595,7 +595,7 @@ for (const word of ["トップ", "全国ランキング", "全国チャレンジ
   expect(screenshotPlan.includes(word), `mobile-app/SCREENSHOT_PLAN.md: ${word} の記載がありません`);
 }
 const privacyDisclosure = read("mobile-app/PRIVACY_DISCLOSURE.md");
-for (const word of ["Google Play", "App Store", "データセーフティ", "ニックネーム", "Supabase", "localStorage", "AdSense", "AdMob", "プライバシーポリシー"]) {
+for (const word of ["Google Play", "App Store", "データセーフティ", "ニックネーム", "登録画面", "Supabase", "localStorage", "AdSense", "AdMob", "プライバシーポリシー"]) {
   expect(privacyDisclosure.includes(word), `mobile-app/PRIVACY_DISCLOSURE.md: ${word} の記載がありません`);
 }
 const androidReadme = read("mobile-app/android/README.md");
@@ -636,6 +636,7 @@ expect(challengeHtml.includes("function isResultConsistent()") && challengeHtml.
 expect(challengeHtml.includes("function normalizeRankingEntry(entry)") && challengeHtml.includes("score <= 2000000"), "challenge.html: ローカルランキング保存前の正規化がありません");
 expect(challengeHtml.includes("const normalizedEntry = normalizeRankingEntry(rankingEntry)") && challengeHtml.includes("saveLocalRanking(normalizedEntry)"), "challenge.html: 登録失敗時の正規化済みローカル保存がありません");
 expect(challengeHtml.includes('maxlength="10"') && challengeHtml.includes("function validateNickname(value)") && challengeHtml.includes("URLや宣伝文は使えません"), "challenge.html: ニックネーム制限が不足しています");
+expect(challengeHtml.includes("個人情報は入れないでください") && challengeHtml.includes("modal-help"), "challenge.html: ニックネーム欄の個人情報注意がありません");
 expect(challengeHtml.includes("function buildShareText()") && challengeHtml.includes("navigator.share") && challengeHtml.includes("showManualShareText(shareText)"), "challenge.html: 結果シェア/コピー fallback が不足しています");
 expect(challengeHtml.includes("function showAdBeforeRanking") && challengeHtml.includes("ランキングへ進む（3）") && challengeHtml.includes('data-ad-placement="register"'), "challenge.html: 登録後広告導線が不足しています");
 expect(challengeHtml.includes('get("start") === "1"') && challengeHtml.includes("requestAnimationFrame"), "challenge.html: ランキングからの自動開始がありません");
