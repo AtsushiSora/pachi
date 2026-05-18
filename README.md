@@ -56,6 +56,8 @@ Node.jsは `.nvmrc` に合わせて22系を使います。
 3. ランキング登録と結果シェアを確認
 4. Netlifyのデプロイ完了を確認
 
+公開後や審査待ち中の手動作業は `OPERATIONS.md` にまとめています。
+
 GitHub Actionsでも `main` へのpushとpull request時に `npm run release:check` を実行します。必要な時はActions画面から手動実行もできます。
 
 ## オンラインランキング
@@ -63,6 +65,7 @@ GitHub Actionsでも `main` へのpushとpull request時に `npm run release:che
 Supabaseを使っています。ランキング公開前またはセキュリティ調整時は、Supabase SQL Editorで `supabase-ranking.sql` を実行してください。
 
 詳しい手順は `SUPABASE_SECURITY.md` を参照してください。
+再実行が必要な時の運用手順は `OPERATIONS.md` を参照してください。
 
 ## 広告
 

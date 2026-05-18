@@ -20,6 +20,7 @@ ICHIGEKI 一撃スロパチをスマホアプリとして公開する時の確�
 6. ランキング登録、結果シェア、オフライン表示を確認する
 7. ランキングの差玉、使用玉、連チャン数が不自然でないことを確認する
 8. `MANUAL_TEST_CHECKLIST.md` の実機確認ログを残す
+9. `OPERATIONS.md` の手動作業を確認する
 
 ## PWAとして確認すること
 
@@ -76,3 +77,4 @@ AdSense審査中は、Web版の広告枠がプレースホルダー表示でも�
 - `mobile-app/STORE_LISTING_DRAFT.md` の説明文をストア入力内容に反映している
 - `mobile-app/SCREENSHOT_PLAN.md` に沿って最新画面のスクリーンショットを用意している
 - `mobile-app/PRIVACY_DISCLOSURE.md` を見てデータ取扱い申告を確認している
+- `OPERATIONS.md` のリリース手順と異常時の切り分けを確認している

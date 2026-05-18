@@ -57,6 +57,7 @@ const requiredFiles = [
   "app-ads.txt",
   ".well-known/security.txt",
   "APP_RELEASE_CHECKLIST.md",
+  "OPERATIONS.md",
   "MANUAL_TEST_CHECKLIST.md",
   "mobile-app/README.md",
   "mobile-app/STORE_LISTING_DRAFT.md",
@@ -575,8 +576,15 @@ for (const word of [`公開Webサイト: ${siteUrl}/`, "ichigekipachi@proton.me"
 for (const word of ["ランキングの差玉", "AdSense審査中", "SUPABASE_SECURITY.md", "security.txt"]) {
   expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
 }
-for (const word of ["MANUAL_TEST_CHECKLIST.md", "mobile-app/README.md"]) {
+for (const word of ["MANUAL_TEST_CHECKLIST.md", "mobile-app/README.md", "OPERATIONS.md"]) {
   expect(readme.includes(word), `README.md: ${word} の記載がありません`);
+}
+const operations = read("OPERATIONS.md");
+for (const word of ["Supabase SQLを再実行する", "AdSense審査結果を待つ", "実機確認", "npm run release:check", "GitHub Actions", "ランキング登録できない", "広告が出ない", "PWAが更新されない"]) {
+  expect(operations.includes(word), `OPERATIONS.md: ${word} の記載がありません`);
+}
+for (const word of ["OPERATIONS.md", "手動作業"]) {
+  expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
 }
 const manualChecklist = read("MANUAL_TEST_CHECKLIST.md");
 for (const word of ["iPhone Safari", "Android Chrome", "Netlify", "ランキング登録", "結果シェア", "オフライン", "広告", "PWA", "合否ログ"]) {
