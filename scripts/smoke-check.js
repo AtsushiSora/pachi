@@ -637,6 +637,7 @@ expect(challengeHtml.includes("function normalizeRankingEntry(entry)") && challe
 expect(challengeHtml.includes("const normalizedEntry = normalizeRankingEntry(rankingEntry)") && challengeHtml.includes("saveLocalRanking(normalizedEntry)"), "challenge.html: 登録失敗時の正規化済みローカル保存がありません");
 expect(challengeHtml.includes('maxlength="10"') && challengeHtml.includes("function validateNickname(value)") && challengeHtml.includes("URLや宣伝文は使えません"), "challenge.html: ニックネーム制限が不足しています");
 expect(challengeHtml.includes("個人情報は入れないでください") && challengeHtml.includes("modal-help"), "challenge.html: ニックネーム欄の個人情報注意がありません");
+expect(challengeHtml.includes("個人情報を含まない名前にしてください") && challengeHtml.includes("[0-9０-９]{8,}"), "challenge.html: 連絡先風ニックネームの検査がありません");
 expect(challengeHtml.includes("function buildShareText()") && challengeHtml.includes("navigator.share") && challengeHtml.includes("showManualShareText(shareText)"), "challenge.html: 結果シェア/コピー fallback が不足しています");
 expect(challengeHtml.includes("function showAdBeforeRanking") && challengeHtml.includes("ランキングへ進む（3）") && challengeHtml.includes('data-ad-placement="register"'), "challenge.html: 登録後広告導線が不足しています");
 expect(challengeHtml.includes('get("start") === "1"') && challengeHtml.includes("requestAnimationFrame"), "challenge.html: ランキングからの自動開始がありません");
@@ -678,6 +679,7 @@ for (const word of [
   "used_balls <= 2000000",
   "ranking_diff_matches_score",
   "ranking_nickname_is_clean",
+  "ranking_nickname_has_no_contact",
   "ranking_values_are_reasonable",
   "ranking_score_idx",
   "ranking_chain_idx",
@@ -686,7 +688,7 @@ for (const word of [
   expect(supabaseSql.includes(word), `supabase-ranking.sql: ${word} の記載がありません`);
 }
 
-for (const word of ["SQL Editor", "Success. No rows returned", "publishable key", "secret key", "service_role key", "差玉"]) {
+for (const word of ["SQL Editor", "Success. No rows returned", "publishable key", "secret key", "service_role key", "差玉", "電話番号"]) {
   expect(supabaseSecurity.includes(word), `SUPABASE_SECURITY.md: ${word} の記載がありません`);
 }
 

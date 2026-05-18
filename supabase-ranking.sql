@@ -48,6 +48,7 @@ with check (
   btrim(nickname) <> ''
   and char_length(nickname) <= 10
   and nickname = btrim(nickname)
+  and nickname !~* 'https?:|www\.|\.com|\.net|\.jp|@|[0-9０-９]{8,}|[0-9０-９]{2,4}[-ー−][0-9０-９]{2,4}[-ー−][0-9０-９]{3,4}'
   and score >= 0
   and score <= 2000000
   and chain_count >= 0
@@ -71,6 +72,22 @@ begin
     alter table public.ranking
       add constraint ranking_diff_matches_score
       check (diff = score - used_balls) not valid;
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'ranking_nickname_has_no_contact'
+      and conrelid = 'public.ranking'::regclass
+  ) then
+    alter table public.ranking
+      add constraint ranking_nickname_has_no_contact
+      check (
+        nickname !~* 'https?:|www\.|\.com|\.net|\.jp|@|[0-9０-９]{8,}|[0-9０-９]{2,4}[-ー−][0-9０-９]{2,4}[-ー−][0-9０-９]{3,4}'
+      ) not valid;
   end if;
 end $$;
 

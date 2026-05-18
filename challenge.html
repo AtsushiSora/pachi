@@ -895,6 +895,9 @@
       if (/https?:|www\.|\.com|\.net|\.jp/i.test(nickname)) {
         return { ok: false, message: "URLや宣伝文は使えません" };
       }
+      if (/@|[0-9０-９]{8,}|[0-9０-９]{2,4}[-ー−][0-9０-９]{2,4}[-ー−][0-9０-９]{3,4}/.test(nickname)) {
+        return { ok: false, message: "個人情報を含まない名前にしてください" };
+      }
       if (/(死ね|しね|殺|ころす|バカ|ばか|アホ|あほ|fuck|shit|sex|porn)/i.test(nickname)) {
         return { ok: false, message: "別のニックネームを入力してください" };
       }
