@@ -727,6 +727,7 @@ expect(styleCss.includes(".footer-ad-band") && styleCss.includes("position: fixe
 expect(styleCss.includes("body") && styleCss.includes("padding-bottom: 118px"), "style.css: フッター広告ぶんの下余白が不足しています");
 expect(styleCss.includes(".footer-ad-band.ad-live") && styleCss.includes(".footer-ad-band .adsbygoogle"), "style.css: AdSense表示時のフッター広告スタイルが不足しています");
 expect(appHtml.includes(".footer-ad-band") && appHtml.includes("position: fixed") && appHtml.includes("env(safe-area-inset-bottom)"), "app.html: 実戦ページのフッター広告固定設定が不足しています");
+expect(appHtml.includes("padding: 8px 12px calc(62px + env(safe-area-inset-bottom))"), "app.html: 実戦ページの下部ボタンが広告と被らない余白が不足しています");
 
 for (const page of publicPages) {
   const html = read(page);
