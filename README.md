@@ -85,6 +85,7 @@ AdSense審査後、広告ユニットIDが発行されたら `ads-config.js` の
 Service Workerのキャッシュ内容を変えた時は、`sw.js` の `CACHE_NAME` を更新してください。
 
 スマホアプリ化の準備は `APP_RELEASE_CHECKLIST.md` と `mobile-app/README.md` にまとめています。
+ストア掲載文は `mobile-app/STORE_LISTING_DRAFT.md`、スクリーンショット計画は `mobile-app/SCREENSHOT_PLAN.md` にあります。
 実機確認は `MANUAL_TEST_CHECKLIST.md` を使います。
 
 ## セキュリティ連絡先

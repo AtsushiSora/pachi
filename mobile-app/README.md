@@ -21,6 +21,8 @@ Web版とアプリ版のフォルダは、今すぐ完全に分けません。
 3. 広告ユニットIDを入れてWeb版の表示を確認する
 4. PWAとしてiPhone SafariとAndroid Chromeで確認する
 5. Google Play ConsoleとApple Developer Programの準備範囲を決める
+6. `mobile-app/STORE_LISTING_DRAFT.md` を元にストア掲載文を調整する
+7. `mobile-app/SCREENSHOT_PLAN.md` に沿ってスクリーンショットを用意する
 
 ## Android候補
 
@@ -63,3 +65,7 @@ Web版はAdSense、アプリ版はAdMobを使います。
 
 審査中の今は、プレースホルダー広告のままで問題ありません。
 
+## 提出資料
+
+- `mobile-app/STORE_LISTING_DRAFT.md`: ストア掲載文、説明、審査向け補足
+- `mobile-app/SCREENSHOT_PLAN.md`: ストア用スクリーンショットの撮影計画

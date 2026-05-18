@@ -73,3 +73,5 @@ AdSense審査中は、Web版の広告枠がプレースホルダー表示でも�
 - 秘密鍵や `service_role key` が公開ファイルに入っていない
 - `SUPABASE_SECURITY.md` の手順を見返せる
 - `security.txt` と問い合わせメールが公開されている
+- `mobile-app/STORE_LISTING_DRAFT.md` の説明文をストア入力内容に反映している
+- `mobile-app/SCREENSHOT_PLAN.md` に沿って最新画面のスクリーンショットを用意している
