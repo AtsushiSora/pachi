@@ -843,6 +843,8 @@ expect(netlify.includes('for = "/manifest.json"') && netlify.includes("public, m
 
 const sw = read("sw.js");
 expect(/const CACHE_NAME = "ichigeki-pwa-v\d+";/.test(sw), "sw.js: CACHE_NAME の形式が想定と違います");
+expect(sw.includes('const CACHE_NAME = "ichigeki-pwa-v17";'), "sw.js: PWAキャッシュバージョンが最新ではありません");
+expect(sw.includes('["script", "style", "worker", "manifest"].includes(request.destination)') && sw.includes("fetch(request)") && sw.includes("caches.open(CACHE_NAME).then(cache => cache.put(request, copy))"), "sw.js: JS/CSS/manifestのネットワーク優先更新がありません");
 for (const file of publicPages) {
   expect(sw.includes(`"/${file}"`), `sw.js: /${file} がキャッシュ対象にありません`);
 }

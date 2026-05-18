@@ -1,4 +1,4 @@
-const CACHE_NAME = "ichigeki-pwa-v16";
+const CACHE_NAME = "ichigeki-pwa-v17";
 const CORE_ASSETS = [
   "/",
   "/index.html",
@@ -68,6 +68,21 @@ self.addEventListener("fetch", event => {
           return response;
         })
         .catch(() => caches.match(request).then(cached => cached || caches.match("/offline.html") || caches.match("/index.html")))
+    );
+    return;
+  }
+
+  if (["script", "style", "worker", "manifest"].includes(request.destination)) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
