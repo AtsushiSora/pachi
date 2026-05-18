@@ -728,8 +728,9 @@ expect(adsJs.includes('target.classList.remove("ad-live")') && adsJs.includes('<
 expect(adsJs.includes("window.adsbygoogle.push({})"), "ads.js: AdSense表示開始処理がありません");
 expect(styleCss.includes(".footer-ad-band") && styleCss.includes("position: fixed") && styleCss.includes("env(safe-area-inset-bottom)"), "style.css: フッター広告の画面下固定設定が不足しています");
 expect(styleCss.includes("body") && styleCss.includes("padding-bottom: 118px"), "style.css: フッター広告ぶんの下余白が不足しています");
-expect(styleCss.includes(".footer-ad-band.ad-live") && styleCss.includes(".footer-ad-band .adsbygoogle"), "style.css: AdSense表示時のフッター広告スタイルが不足しています");
+expect(styleCss.includes("pointer-events: none") && styleCss.includes("pointer-events: auto") && styleCss.includes(".footer-ad-band.ad-live") && styleCss.includes(".footer-ad-band .adsbygoogle"), "style.css: AdSense表示時のフッター広告スタイルが不足しています");
 expect(appHtml.includes(".footer-ad-band") && appHtml.includes("position: fixed") && appHtml.includes("env(safe-area-inset-bottom)"), "app.html: 実戦ページのフッター広告固定設定が不足しています");
+expect(appHtml.includes("pointer-events: none") && appHtml.includes("pointer-events: auto"), "app.html: 実戦ページの空広告枠がボタン操作を妨げない設定がありません");
 expect(appHtml.includes("padding: 8px 12px calc(104px + env(safe-area-inset-bottom))") && appHtml.includes("align-items: flex-start"), "app.html: 実戦ページの下部ボタンが広告と被らない余白が不足しています");
 
 for (const page of publicPages) {

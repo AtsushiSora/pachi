@@ -74,6 +74,7 @@ body {
   font-family: "Noto Sans JP", sans-serif;
   font-size: 11px;
   letter-spacing: 1px;
+  pointer-events: none;
 }
 
 .footer-ad-band span {
@@ -89,6 +90,7 @@ body {
   border: none;
   box-shadow: none;
   padding: 0;
+  pointer-events: auto;
 }
 
 .footer-ad-band .adsbygoogle {
