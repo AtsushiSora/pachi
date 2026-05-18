@@ -512,6 +512,7 @@ expect(
 for (const rule of ["order: 1", "order: 2", "order: 3", "order: 4", "order: 5"]) {
   expect(indexHtml.includes(rule), `index.html: スマホTOP並び用の ${rule} がありません`);
 }
+expect(indexHtml.includes(".menu-ranking { order: 1;") && indexHtml.includes(".menu-practice { order: 2;") && indexHtml.includes(".menu-spec { order: 3;") && indexHtml.includes(".menu-howto { order: 4;"), "index.html: スマホ用メニュー順の固定指定が不足しています");
 expect(indexHtml.includes("beforeinstallprompt") && indexHtml.includes("deferredInstallPrompt.prompt()"), "index.html: ホーム画面追加プロンプト処理がありません");
 expect(indexHtml.includes("appinstalled") && indexHtml.includes("card.hidden = true"), "index.html: インストール後にスマホ追加カードを隠す処理がありません");
 expect(indexHtml.includes('window.location.href = "howto.html#install"'), "index.html: スマホ追加手順への導線がありません");
@@ -732,6 +733,9 @@ expect(styleCss.includes("pointer-events: none") && styleCss.includes("pointer-e
 expect(appHtml.includes(".footer-ad-band") && appHtml.includes("position: static") && appHtml.includes("flex-shrink: 0"), "app.html: 実戦ページのフッター広告を下部操作から外す設定が不足しています");
 expect(appHtml.includes("pointer-events: none") && appHtml.includes("pointer-events: auto"), "app.html: 実戦ページの空広告枠がボタン操作を妨げない設定がありません");
 expect(appHtml.includes('class="practice-page"') && appHtml.includes("padding: 8px 12px") && appHtml.includes("align-items: center"), "app.html: 実戦ページの下部ボタン配置が想定と違います");
+expect(appHtml.includes("@media (max-width: 700px)") && appHtml.includes("body.practice-page") && appHtml.includes("overflow-y: auto"), "app.html: スマホ幅で実戦ページがスクロール可能な1カラム表示になっていません");
+expect(!appHtml.includes("@media (max-width: 480px)") && !appHtml.includes("grid-template-columns: 1fr 180px; }"), "app.html: スマホ幅で2カラム設定が残っています");
+expect(appHtml.includes("margin: 14px auto calc(96px + env(safe-area-inset-bottom))"), "app.html: スマホ下部広告とブラウザバーの余白が不足しています");
 expect(appHtml.includes("addEventListener('click', toggleSim)") && appHtml.includes('id="startBtn" type="button"'), "app.html: 実戦ページのスタートボタン処理が安定接続されていません");
 expect(simHtml.includes('<body class="sim-page">'), "sim.html: シミュレーター専用の広告配置クラスがありません");
 

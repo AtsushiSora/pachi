@@ -226,6 +226,11 @@
       border-color: #333;
     }
 
+    .menu-ranking { order: 1; }
+    .menu-practice { order: 2; }
+    .menu-spec { order: 3; }
+    .menu-howto { order: 4; }
+
     .menu-btn-left {
       display: flex;
       align-items: center;
@@ -306,6 +311,15 @@
       letter-spacing: 2px;
       order: 8;
     }
+
+    @media (max-width: 640px) {
+      .top-menu { order: 3; }
+      .top-notice { order: 4; }
+      .top-install { order: 5; }
+      .top-footer { order: 6; }
+      .top-contact { order: 7; }
+      .top-version { order: 8; }
+    }
   </style>
 </head>
 <body>
@@ -325,7 +339,7 @@
     </section>
 
     <nav class="top-menu">
-      <a href="ranking.html" class="menu-btn">
+      <a href="ranking.html" class="menu-btn menu-ranking">
         <div class="menu-btn-left">
           <span class="menu-btn-icon">🏆</span>
           <div>
@@ -336,7 +350,7 @@
         <span class="menu-btn-arrow">→</span>
       </a>
 
-      <a href="app.html" class="menu-btn">
+      <a href="app.html" class="menu-btn menu-practice">
         <div class="menu-btn-left">
           <span class="menu-btn-icon">⚡</span>
           <div>
@@ -347,7 +361,7 @@
         <span class="menu-btn-arrow">→</span>
       </a>
 
-      <a href="sim.html" class="menu-btn">
+      <a href="sim.html" class="menu-btn menu-spec">
         <div class="menu-btn-left">
           <span class="menu-btn-icon">🎰</span>
           <div>
@@ -358,7 +372,7 @@
         <span class="menu-btn-arrow">→</span>
       </a>
 
-      <a href="howto.html" class="menu-btn">
+      <a href="howto.html" class="menu-btn menu-howto">
         <div class="menu-btn-left">
           <span class="menu-btn-icon">📖</span>
           <div>
