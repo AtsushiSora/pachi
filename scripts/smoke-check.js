@@ -543,7 +543,10 @@ for (const id of ["breakPayout", "failPayout", "payout1", "payout2", "payout3", 
   expect(simHtml.includes(`data-target="${id}" min="0" max="10000" step="100"`), `sim.html: ${id} の出玉スライダーが100玉刻みではありません`);
   expect(mainJs.includes(id), `main.js: ${id} が計算対象に含まれていません`);
 }
-expect(mainJs.includes("function snapPayoutInput(input)") && mainJs.includes("/ 100) * 100"), "main.js: 出玉入力の100玉刻み補正がありません");
+expect(mainJs.includes("function snapPayoutInput(input)") && mainJs.includes("if (limits.step) next = Math.round(next / limits.step) * limits.step"), "main.js: 出玉入力の100玉刻み補正がありません");
+expect(mainJs.includes("const inputLimits") && mainJs.includes("function clampSettingValue"), "main.js: スペック入力の範囲補正がありません");
+expect(mainJs.includes("breakRate: { min: 0, max: 100 }") && mainJs.includes("ltContinueRate: { min: 0, max: 100 }"), "main.js: 確率入力の0〜100%制限が不足しています");
+expect(mainJs.includes("clampAllNumberInputs();") && mainJs.match(/clampAllNumberInputs\(\);/g)?.length >= 3, "main.js: 開始前/読込時の入力補正が不足しています");
 expect(mainJs.includes("const costPerSpin = 250 / Number(spinPer250.value);"), "main.js: 250玉あたり回転数が投資計算に使われていません");
 expect(mainJs.includes("showRetryAd()") && mainJs.includes("ichigekiSimRetryCount"), "main.js: スペックシミュレーターのもう一回広告制御がありません");
 expect(exists("CHANGELOG.md"), "CHANGELOG.md が見つかりません");

@@ -58,6 +58,29 @@ const enableLtPayout1 = document.getElementById("enableLtPayout1");
 const enableLtPayout2 = document.getElementById("enableLtPayout2");
 let retryCount      = Number(sessionStorage.getItem("ichigekiSimRetryCount") || 0);
 
+const inputLimits = {
+  hitRate: { min: 1, max: 999 },
+  breakRate: { min: 0, max: 100 },
+  continueRate: { min: 0, max: 100 },
+  spinPer250: { min: 1, max: 40 },
+  breakPayout: { min: 0, max: 10000, step: 100 },
+  failPayout: { min: 0, max: 10000, step: 100 },
+  payout1: { min: 0, max: 10000, step: 100 },
+  payout2: { min: 0, max: 10000, step: 100 },
+  payout3: { min: 0, max: 10000, step: 100 },
+  payout4: { min: 0, max: 10000, step: 100 },
+  ratio1: { min: 0, max: 100 },
+  ratio2: { min: 0, max: 100 },
+  ratio3: { min: 0, max: 100 },
+  ratio4: { min: 0, max: 100 },
+  ltRate: { min: 0, max: 100 },
+  ltContinueRate: { min: 0, max: 100 },
+  ltPayout1: { min: 0, max: 10000, step: 100 },
+  ltPayout2: { min: 0, max: 10000, step: 100 },
+  ltRatio1: { min: 0, max: 100 },
+  ltRatio2: { min: 0, max: 100 },
+};
+
 // ========================
 // ±ボタン
 // ========================
@@ -69,8 +92,7 @@ document.querySelectorAll(".setting-slider").forEach(slider => {
   slider.addEventListener("input", () => {
     clearStartMessage();
     const target = document.getElementById(slider.dataset.target);
-    target.value = clampRatioValue(target.id, Number(slider.value));
-    if (isPayoutInput(target.id)) snapPayoutInput(target);
+    target.value = clampSettingValue(target.id, Number(slider.value));
     syncSettingSlider(target.id);
     updateRatioTotal();
     saveSettings();
@@ -85,8 +107,9 @@ document.querySelectorAll("input[type='number']").forEach(input => {
     saveSettings();
   });
   input.addEventListener("change", () => {
-    snapPayoutInput(input);
+    clampInput(input);
     syncSettingSlider(input.id);
+    updateRatioTotal();
     saveSettings();
   });
 });
@@ -107,9 +130,7 @@ function changeValue(button) {
   const target = document.getElementById(button.dataset.target);
   let value = Number(target.value);
   value += Number(button.dataset.change);
-  if (value < 0) value = 0;
-
-  value = clampRatioValue(target.id, value);
+  value = clampSettingValue(target.id, value);
 
   target.value = value;
   syncSettingSlider(target.id);
@@ -139,6 +160,31 @@ function clampRatioValue(targetId, value) {
   return value;
 }
 
+function clampSettingValue(targetId, value) {
+  const limits = inputLimits[targetId];
+  let next = Number(value);
+  if (!Number.isFinite(next)) next = limits?.min ?? 0;
+
+  if (limits) {
+    if (limits.step) next = Math.round(next / limits.step) * limits.step;
+    next = Math.max(limits.min, Math.min(limits.max, next));
+  } else if (next < 0) {
+    next = 0;
+  }
+
+  return clampRatioValue(targetId, next);
+}
+
+function clampInput(input) {
+  if (!input || input.type !== "number") return;
+  input.value = clampSettingValue(input.id, input.value);
+}
+
+function clampAllNumberInputs() {
+  document.querySelectorAll("input[type='number']").forEach(clampInput);
+  syncSettingSliders();
+}
+
 function syncSettingSlider(targetId) {
   const slider = document.querySelector(`.setting-slider[data-target="${targetId}"]`);
   if (!slider) return;
@@ -158,7 +204,7 @@ function isPayoutInput(id) {
 
 function snapPayoutInput(input) {
   if (!isPayoutInput(input.id)) return;
-  input.value = Math.max(0, Math.round(Number(input.value || 0) / 100) * 100);
+  input.value = clampSettingValue(input.id, input.value);
 }
 
 // ========================
@@ -240,6 +286,7 @@ function normalizeRatioGroup(items) {
 }
 
 function normalizeStartRatios() {
+  clampAllNumberInputs();
   normalizeRatioGroup([
     { input: ratio1, enabled: () => true },
     { input: ratio2, enabled: () => enablePayout2.checked },
@@ -281,6 +328,7 @@ function loadSettings() {
     if (input.type === "checkbox") input.checked = saved === "true";
     else input.value = saved;
   });
+  clampAllNumberInputs();
   syncSettingSliders();
 }
 
@@ -436,6 +484,7 @@ function showRetryAd() {
 // ========================
 async function simulate() {
   if (spinning) return;
+  clampAllNumberInputs();
   const validationMessage = validateStartSettings();
   if (validationMessage) {
     startMessage.textContent = validationMessage;
