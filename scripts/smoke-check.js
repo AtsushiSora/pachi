@@ -544,10 +544,11 @@ expect(appHtml.includes("hp >= HP_MAX") && appHtml.includes("体力はすでに�
 expect(appHtml.includes("localStorage.setItem('hp_count'") && appHtml.includes("localStorage.removeItem('hp_last_used')"), "app.html: 体力保存/全回復時刻リセットが不足しています");
 expect(simHtml.includes('id="startBtn"') && simHtml.includes(">スタート</button>"), "sim.html: 試算開始ボタンの表示がスタートではありません");
 expect(
-  appearsInOrder(simHtml, ['id="startBtn"', 'class="setting-back-btn"', 'id="startMessage"']),
+  appearsInOrder(simHtml, ['class="setting-actions"', 'id="startBtn"', 'class="setting-back-btn"', 'id="startMessage"']),
   "sim.html: スタート下の戻る導線/メッセージ順が想定と違います"
 );
 expect(simHtml.includes('href="index.html" class="setting-back-btn"'), "sim.html: トップへ戻る導線がありません");
+expect(styleCss.includes("body.sim-page #settingScreen .page-header") && styleCss.includes(".setting-actions"), "style.css: スペックシミュレーターのヘッダー/下部導線配置が不足しています");
 expect(simHtml.includes('id="backBtn"') && simHtml.includes("← 設定に戻る"), "sim.html: プレイ画面の設定に戻るボタンがありません");
 expect(mainJs.includes('startBtn.addEventListener("click", simulate)'), "main.js: スペックシミュレーターのスタート処理が接続されていません");
 expect(mainJs.includes('backBtn.addEventListener("click"'), "main.js: スペックシミュレーターの戻る処理が接続されていません");
