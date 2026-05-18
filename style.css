@@ -98,6 +98,20 @@ body {
   min-height: 54px;
 }
 
+body.sim-page {
+  padding-bottom: 24px;
+}
+
+body.sim-page .footer-ad-band {
+  position: static;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  z-index: 1;
+  width: min(calc(100% - 28px), 680px);
+  margin: 12px auto calc(14px + env(safe-area-inset-bottom));
+}
+
 .interstitial-ad-overlay {
   position: fixed;
   inset: 0;

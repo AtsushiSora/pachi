@@ -726,12 +726,14 @@ expect(adsJs.includes("slots[slotName]") && adsJs.includes("hasAdsenseConfig(slo
 expect(adsJs.includes('script[data-ichigeki-adsense]') && adsJs.includes("scriptLoading"), "ads.js: AdSense loader の重複読み込み防止がありません");
 expect(adsJs.includes('target.classList.remove("ad-live")') && adsJs.includes('<span>AD</span>広告枠'), "ads.js: 広告読み込み失敗時のfallbackがありません");
 expect(adsJs.includes("window.adsbygoogle.push({})"), "ads.js: AdSense表示開始処理がありません");
-expect(styleCss.includes(".footer-ad-band") && styleCss.includes("position: fixed") && styleCss.includes("env(safe-area-inset-bottom)"), "style.css: フッター広告の画面下固定設定が不足しています");
-expect(styleCss.includes("body") && styleCss.includes("padding-bottom: 118px"), "style.css: フッター広告ぶんの下余白が不足しています");
+expect(styleCss.includes(".footer-ad-band") && styleCss.includes("position: fixed") && styleCss.includes("env(safe-area-inset-bottom)"), "style.css: フッター広告の基本固定設定が不足しています");
+expect(styleCss.includes("body.sim-page") && styleCss.includes("body.sim-page .footer-ad-band") && styleCss.includes("position: static"), "style.css: シミュレーター画面の広告を操作ボタンから外す設定が不足しています");
 expect(styleCss.includes("pointer-events: none") && styleCss.includes("pointer-events: auto") && styleCss.includes(".footer-ad-band.ad-live") && styleCss.includes(".footer-ad-band .adsbygoogle"), "style.css: AdSense表示時のフッター広告スタイルが不足しています");
-expect(appHtml.includes(".footer-ad-band") && appHtml.includes("position: fixed") && appHtml.includes("env(safe-area-inset-bottom)"), "app.html: 実戦ページのフッター広告固定設定が不足しています");
+expect(appHtml.includes(".footer-ad-band") && appHtml.includes("position: static") && appHtml.includes("flex-shrink: 0"), "app.html: 実戦ページのフッター広告を下部操作から外す設定が不足しています");
 expect(appHtml.includes("pointer-events: none") && appHtml.includes("pointer-events: auto"), "app.html: 実戦ページの空広告枠がボタン操作を妨げない設定がありません");
-expect(appHtml.includes("padding: 8px 12px calc(104px + env(safe-area-inset-bottom))") && appHtml.includes("align-items: flex-start"), "app.html: 実戦ページの下部ボタンが広告と被らない余白が不足しています");
+expect(appHtml.includes('class="practice-page"') && appHtml.includes("padding: 8px 12px") && appHtml.includes("align-items: center"), "app.html: 実戦ページの下部ボタン配置が想定と違います");
+expect(appHtml.includes("addEventListener('click', toggleSim)") && appHtml.includes('id="startBtn" type="button"'), "app.html: 実戦ページのスタートボタン処理が安定接続されていません");
+expect(simHtml.includes('<body class="sim-page">'), "sim.html: シミュレーター専用の広告配置クラスがありません");
 
 for (const page of publicPages) {
   const html = read(page);
