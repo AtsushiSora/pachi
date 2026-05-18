@@ -774,12 +774,54 @@
       }
     }
 
+    function toSafeInteger(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return 0;
+      return Math.trunc(number);
+    }
+
+    function normalizeRankingEntry(entry) {
+      if (!entry || typeof entry !== "object") return null;
+      const score = toSafeInteger(entry.score);
+      const chainCount = toSafeInteger(entry.chain_count);
+      const spins = toSafeInteger(entry.spins);
+      const usedBalls = toSafeInteger(entry.used_balls);
+      const diff = toSafeInteger(entry.diff);
+      const nickname = normalizeNickname(entry.nickname || "NO NAME") || "NO NAME";
+
+      const reasonable =
+        score >= 0 && score <= 2000000 &&
+        chainCount >= 0 && chainCount <= 10000 &&
+        spins >= 0 && spins <= 2000000 &&
+        usedBalls >= 0 && usedBalls <= 2000000 &&
+        diff === score - usedBalls;
+
+      if (!reasonable) return null;
+
+      return {
+        ...entry,
+        nickname,
+        score,
+        chain_count: chainCount,
+        spins,
+        diff,
+        used_balls: usedBalls,
+        local_only: true,
+      };
+    }
+
     function saveLocalRanking(entry) {
       try {
-        const localRanking = JSON.parse(localStorage.getItem("ichigekiLocalRanking") || "[]");
-        localRanking.push(entry);
-        localRanking.sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
-        localStorage.setItem("ichigekiLocalRanking", JSON.stringify(localRanking.slice(0, 50)));
+        const saved = JSON.parse(localStorage.getItem("ichigekiLocalRanking") || "[]");
+        const localRanking = Array.isArray(saved) ? saved : [];
+        const nextEntry = normalizeRankingEntry(entry);
+        if (!nextEntry) return;
+        const cleaned = [...localRanking, nextEntry]
+          .map(normalizeRankingEntry)
+          .filter(Boolean)
+          .sort((a, b) => Number(b.score || 0) - Number(a.score || 0))
+          .slice(0, 50);
+        localStorage.setItem("ichigekiLocalRanking", JSON.stringify(cleaned));
       } catch {
         // ローカル保存できない場合も画面操作は止めない
       }
@@ -1075,6 +1117,14 @@
         created_at: new Date().toISOString(),
         local_only: true,
       };
+      const normalizedEntry = normalizeRankingEntry(rankingEntry);
+      if (!normalizedEntry) {
+        modalError.textContent = "ランキングに登録できない結果です";
+        modalError.style.display = "block";
+        modalSubmit.disabled = false;
+        modalSubmit.textContent = "ランキングに登録";
+        return;
+      }
 
       try {
         if (!supabaseClient) throw new Error("Supabase client is not available");
@@ -1102,7 +1152,7 @@
         showAdBeforeRanking(false);
       } catch (e) {
         console.error(e);
-        saveLocalRanking(rankingEntry);
+        saveLocalRanking(normalizedEntry);
         showAdBeforeRanking(true);
       }
     });

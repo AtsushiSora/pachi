@@ -595,7 +595,8 @@ for (const file of publicSourceFiles) {
   expect(!/service_role/i.test(content), `${file}: service_role を公開ファイルへ含めないでください`);
 }
 expect(challengeHtml.includes("function isResultConsistent()") && challengeHtml.includes("diff === score - usedBalls"), "challenge.html: 登録前の差玉検査がありません");
-expect(challengeHtml.includes("saveLocalRanking(rankingEntry)"), "challenge.html: 登録失敗時のローカル保存がありません");
+expect(challengeHtml.includes("function normalizeRankingEntry(entry)") && challengeHtml.includes("score <= 2000000"), "challenge.html: ローカルランキング保存前の正規化がありません");
+expect(challengeHtml.includes("const normalizedEntry = normalizeRankingEntry(rankingEntry)") && challengeHtml.includes("saveLocalRanking(normalizedEntry)"), "challenge.html: 登録失敗時の正規化済みローカル保存がありません");
 expect(challengeHtml.includes('maxlength="10"') && challengeHtml.includes("function validateNickname(value)") && challengeHtml.includes("URLや宣伝文は使えません"), "challenge.html: ニックネーム制限が不足しています");
 expect(challengeHtml.includes("function buildShareText()") && challengeHtml.includes("navigator.share") && challengeHtml.includes("showManualShareText(shareText)"), "challenge.html: 結果シェア/コピー fallback が不足しています");
 expect(challengeHtml.includes("function showAdBeforeRanking") && challengeHtml.includes("ランキングへ進む（3）") && challengeHtml.includes('data-ad-placement="register"'), "challenge.html: 登録後広告導線が不足しています");
