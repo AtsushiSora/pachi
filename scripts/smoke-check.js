@@ -509,6 +509,9 @@ expect(
   appearsInOrder(indexHtml, ['href="ranking.html"', 'href="app.html"', 'href="sim.html"', 'href="howto.html"', 'id="installCard"']),
   "index.html: TOPリンクとスマホ追加カードの順番が想定と違います"
 );
+for (const rule of ["order: 1", "order: 2", "order: 3", "order: 4", "order: 5"]) {
+  expect(indexHtml.includes(rule), `index.html: スマホTOP並び用の ${rule} がありません`);
+}
 expect(indexHtml.includes("beforeinstallprompt") && indexHtml.includes("deferredInstallPrompt.prompt()"), "index.html: ホーム画面追加プロンプト処理がありません");
 expect(indexHtml.includes("appinstalled") && indexHtml.includes("card.hidden = true"), "index.html: インストール後にスマホ追加カードを隠す処理がありません");
 expect(indexHtml.includes('window.location.href = "howto.html#install"'), "index.html: スマホ追加手順への導線がありません");
