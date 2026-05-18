@@ -19,6 +19,7 @@ ICHIGEKI 一撃スロパチをスマホアプリとして公開する時の確�
 5. `privacy.html`、`disclaimer.html`、`safety.html`、`about.html`、`contact.html` が公開されている
 6. ランキング登録、結果シェア、オフライン表示を確認する
 7. ランキングの差玉、使用玉、連チャン数が不自然でないことを確認する
+8. `MANUAL_TEST_CHECKLIST.md` の実機確認ログを残す
 
 ## PWAとして確認すること
 
@@ -38,6 +39,8 @@ ICHIGEKI 一撃スロパチをスマホアプリとして公開する時の確�
 - `app-ads.txt` の公開確認
 - Webサイト連携を使う場合は `assetlinks.json`
 
+Android側の詳細は `mobile-app/android/README.md` にまとめます。
+
 ## iOSアプリ化で必要になるもの
 
 - Apple Developer Program
@@ -46,6 +49,8 @@ ICHIGEKI 一撃スロパチをスマホアプリとして公開する時の確�
 - プライバシーポリシーURL
 - AdMobアプリIDと広告ユニットID
 - 年齢レーティングの設定
+
+iOS側の詳細は `mobile-app/ios/README.md` にまとめます。
 
 ## 広告IDが発行された後
 

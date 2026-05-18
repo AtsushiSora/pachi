@@ -57,6 +57,10 @@ const requiredFiles = [
   "app-ads.txt",
   ".well-known/security.txt",
   "APP_RELEASE_CHECKLIST.md",
+  "MANUAL_TEST_CHECKLIST.md",
+  "mobile-app/README.md",
+  "mobile-app/android/README.md",
+  "mobile-app/ios/README.md",
   "icon.svg",
   "icon-192.png",
   "icon-512.png",
@@ -559,14 +563,33 @@ const appChecklist = read("APP_RELEASE_CHECKLIST.md");
 for (const word of ["app-ads.txt", "プライバシーポリシーURL", "AdMob", "assetlinks.json", "18歳以上"]) {
   expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
 }
-for (const word of ["自動チェックで守っていること", "秘密鍵混入防止", "CSP", "広告ユニットID", "実機表示"]) {
+for (const word of ["自動チェックで守っていること", "秘密鍵混入防止", "CSP", "広告ユニットID", "実機確認"]) {
   expect(readme.includes(word), `README.md: ${word} の記載がありません`);
 }
-for (const word of [`公開Webサイト: ${siteUrl}/`, "ichigekipachi@proton.me", "npm run release:check", "Google Play Console", "Apple Developer Program"]) {
+for (const word of [`公開Webサイト: ${siteUrl}/`, "ichigekipachi@proton.me", "npm run release:check", "Google Play Console", "Apple Developer Program", "MANUAL_TEST_CHECKLIST.md"]) {
   expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
 }
 for (const word of ["ランキングの差玉", "AdSense審査中", "SUPABASE_SECURITY.md", "security.txt"]) {
   expect(appChecklist.includes(word), `APP_RELEASE_CHECKLIST.md: ${word} の記載がありません`);
+}
+for (const word of ["MANUAL_TEST_CHECKLIST.md", "mobile-app/README.md"]) {
+  expect(readme.includes(word), `README.md: ${word} の記載がありません`);
+}
+const manualChecklist = read("MANUAL_TEST_CHECKLIST.md");
+for (const word of ["iPhone Safari", "Android Chrome", "Netlify", "ランキング登録", "結果シェア", "オフライン", "広告", "PWA", "合否ログ"]) {
+  expect(manualChecklist.includes(word), `MANUAL_TEST_CHECKLIST.md: ${word} の記載がありません`);
+}
+const mobileReadme = read("mobile-app/README.md");
+for (const word of ["Trusted Web Activity", "Capacitor", "assetlinks.json", "Google Play Console", "Apple Developer Program", "AdMob", "app-ads.txt", "Web/PWA"]) {
+  expect(mobileReadme.includes(word), `mobile-app/README.md: ${word} の記載がありません`);
+}
+const androidReadme = read("mobile-app/android/README.md");
+for (const word of ["package name", "SHA-256", "assetlinks.json", "Google Play Console", "Trusted Web Activity"]) {
+  expect(androidReadme.includes(word), `mobile-app/android/README.md: ${word} の記載がありません`);
+}
+const iosReadme = read("mobile-app/ios/README.md");
+for (const word of ["Bundle ID", "Apple Developer Program", "WKWebView", "App Store", "プライバシーポリシーURL"]) {
+  expect(iosReadme.includes(word), `mobile-app/ios/README.md: ${word} の記載がありません`);
 }
 const changelog = read("CHANGELOG.md");
 for (const word of ["お問い合わせ", "運営者情報", "Supabase未読込時", "構造化データ", "PWAアセット"]) {

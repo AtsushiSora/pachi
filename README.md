@@ -52,7 +52,7 @@ Node.jsは `.nvmrc` に合わせて22系を使います。
 ## リリース前チェック
 
 1. `npm run release:check`
-2. スマホでトップ、ランキング、チャレンジ、スペック、実戦を確認
+2. `MANUAL_TEST_CHECKLIST.md` に沿ってスマホでトップ、ランキング、チャレンジ、スペック、実戦を確認
 3. ランキング登録と結果シェアを確認
 4. Netlifyのデプロイ完了を確認
 
@@ -84,7 +84,8 @@ AdSense審査後、広告ユニットIDが発行されたら `ads-config.js` の
 `manifest.json` と `sw.js` でスマホのホーム画面追加に対応しています。
 Service Workerのキャッシュ内容を変えた時は、`sw.js` の `CACHE_NAME` を更新してください。
 
-スマホアプリ化の準備は `APP_RELEASE_CHECKLIST.md` にまとめています。
+スマホアプリ化の準備は `APP_RELEASE_CHECKLIST.md` と `mobile-app/README.md` にまとめています。
+実機確認は `MANUAL_TEST_CHECKLIST.md` を使います。
 
 ## セキュリティ連絡先
 
