@@ -516,6 +516,10 @@ expect(appHtml.includes("let fastMode  = false;"), "app.html: 高速モードの
 expect(appHtml.includes('id="speedLabel">OFF</span>'), "app.html: 高速ボタンの初期表示がOFFではありません");
 expect(appHtml.includes("const normalSpeed = fastMode ? 1 : 80;"), "app.html: 高速OFF時の通常回転速度が想定と違います");
 expect(appHtml.includes("addLog('実戦開始', 'log-normal');"), "app.html: 開始ログがありません");
+expect(appHtml.includes("const cfgLimits") && appHtml.includes("function clampCfgValue"), "app.html: 実戦設定の範囲補正がありません");
+expect(appHtml.includes("function normalizeCfg()") && appHtml.includes("normalizeCfg();"), "app.html: 実戦開始前の設定補正がありません");
+expect(appHtml.includes("payout: snapToPayoutStep(round.payout)") && appHtml.includes("Math.max(0, Math.min(100"), "app.html: ラウンド入力の正規化が不足しています");
+expect(appHtml.includes("return Math.max(0, randRange(r.payout - 50, r.payout + 50));"), "app.html: ラウンド出玉のマイナス防止がありません");
 expect(appHtml.includes("function setStartButtonActive(active)"), "app.html: START/STOP表示の共通処理がありません");
 expect(appHtml.includes("setStartButtonActive(true);"), "app.html: 開始時にSTOP表示へ切り替えていません");
 expect(appHtml.match(/setStartButtonActive\(false\);/g)?.length >= 3, "app.html: 停止時のSTART表示復帰が不足しています");

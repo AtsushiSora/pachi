@@ -534,6 +534,15 @@ const cfg = {
   failPayout:   300,
 };
 
+const cfgLimits = {
+  spinPer250: { min: 1, max: 100 },
+  hitRate: { min: 1, max: 999 },
+  breakRate: { min: 0, max: 100 },
+  continueRate: { min: 0, max: 100 },
+  breakPayout: { min: 0, max: 99999, step: 100 },
+  failPayout: { min: 0, max: 99999, step: 100 },
+};
+
 // ラウンドデータ
 let rounds = [
   { label:'10R', payout:1500, ratio:100 },
@@ -687,6 +696,12 @@ function normalizeRounds() {
     return;
   }
 
+  rounds = rounds.map(round => ({
+    label: `${Math.max(1, parseInt(String(round.label).replace(/[^\d]/g, ''), 10) || 1)}R`,
+    payout: snapToPayoutStep(round.payout),
+    ratio: Math.max(0, Math.min(100, parseInt(round.ratio, 10) || 0)),
+  }));
+
   let total = rounds.reduce((s,r) => s + (parseInt(r.ratio, 10) || 0), 0);
   if (total <= 0) {
     rounds[0].ratio = 100;
@@ -709,9 +724,9 @@ function getRandomPayout() {
   let cum = 0;
   for (const r of rounds) {
     cum += r.ratio;
-    if (rand < cum) return randRange(r.payout - 50, r.payout + 50);
+    if (rand < cum) return Math.max(0, randRange(r.payout - 50, r.payout + 50));
   }
-  return rounds[0].payout;
+  return Math.max(0, rounds[0].payout);
 }
 
 function snapToPayoutStep(value) {
@@ -736,10 +751,25 @@ function snapRoundPayout(index, input) {
 const LONG_PRESS_DELAY = 400;
 let pressTimer = null, pressInterval = null, pressSpeed = 150;
 
+function clampCfgValue(key, value) {
+  const limits = cfgLimits[key];
+  let next = parseInt(value, 10);
+  if (!Number.isFinite(next)) next = limits?.min ?? 0;
+  if (!limits) return Math.max(0, next);
+  if (limits.step) next = Math.round(next / limits.step) * limits.step;
+  return Math.max(limits.min, Math.min(limits.max, next));
+}
+
+function normalizeCfg() {
+  Object.keys(cfgLimits).forEach(key => {
+    cfg[key] = clampCfgValue(key, cfg[key]);
+    syncUI(key);
+  });
+  syncFirstHitShares();
+}
+
 function adjCfg(key, delta) {
-  const maxMap = { spinPer250:100, hitRate:999, breakRate:100, continueRate:100, breakPayout:99999, failPayout:99999 };
-  const minMap = { spinPer250:1, hitRate:1, breakRate:0, continueRate:0, breakPayout:0, failPayout:0 };
-  cfg[key] = Math.max(minMap[key] ?? 1, Math.min(maxMap[key]||999, (cfg[key]||0)+delta));
+  cfg[key] = clampCfgValue(key, (cfg[key] || 0) + delta);
   syncUI(key);
   if (key === 'breakRate') syncFirstHitShares();
   if (key === 'spinPer250') updateStats();
@@ -760,11 +790,7 @@ function syncFirstHitShares() {
 }
 
 function onDirectInput(key, val) {
-  const v = parseInt(val);
-  if (isNaN(v)) return;
-  const maxMap = { spinPer250:100, hitRate:999, breakRate:100, continueRate:100, breakPayout:99999, failPayout:99999 };
-  const minMap = { spinPer250:1, hitRate:1, breakRate:0, continueRate:0, breakPayout:0, failPayout:0 };
-  cfg[key] = Math.max(minMap[key] ?? 1, Math.min(maxMap[key]||999, v));
+  cfg[key] = clampCfgValue(key, val);
   const sl = document.getElementById('sl-'+key);
   if (sl) sl.value = cfg[key];
   if (key === 'breakRate') syncFirstHitShares();
@@ -772,7 +798,7 @@ function onDirectInput(key, val) {
 }
 
 function onSlider(key, val) {
-  cfg[key] = parseInt(val);
+  cfg[key] = clampCfgValue(key, val);
   const inp = document.getElementById('cv-'+key);
   if (inp) inp.value = cfg[key];
   if (key === 'breakRate') syncFirstHitShares();
@@ -845,6 +871,7 @@ function toggleSim() {
     updateHp();
   } else {
     if (starting) return;
+    normalizeCfg();
     normalizeRounds();
     startSim();
   }
