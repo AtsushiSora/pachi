@@ -98,6 +98,27 @@ body {
   min-height: 54px;
 }
 
+.site-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 16px;
+  margin: 28px auto 0;
+  padding: 0 8px;
+}
+
+.site-link-row a {
+  color: #666;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.site-link-row a:hover,
+.site-link-row a:active {
+  color: #aaa;
+  text-decoration: underline;
+}
+
 .interstitial-ad-overlay {
   position: fixed;
   inset: 0;
