@@ -662,10 +662,12 @@ expect(challengeHtml.includes('get("start") === "1"') && challengeHtml.includes(
 expect(challengeHtml.includes("modalChain") && challengeHtml.includes("modalDiff") && challengeHtml.includes("modalUsed"), "challenge.html: 登録モーダルの結果詳細が不足しています");
 expect(juggleHtml.includes("全国ジャグ連チャレンジ") && juggleHtml.includes("1,000円=46枚") && juggleHtml.includes("100G以内"), "juggle.html: ジャグ連チャレンジの固定条件表示が不足しています");
 expect(juggleHtml.includes("const costPerGame = spec.medalsPerUnit / spec.gamesPerUnit;") && juggleHtml.includes("investmentYen") && juggleHtml.includes("heldMedals") && juggleHtml.includes("diffMedals"), "juggle.html: 投資・持ちメダル・差枚の計算表示が不足しています");
+expect(juggleHtml.includes("当たり後回転数") && juggleHtml.includes('id="sinceHitGames"') && juggleHtml.includes("state.currentChain > 0 ? state.gamesSinceHit : state.totalGames"), "juggle.html: 当たり後回転数の表示が不足しています");
 expect(juggleHtml.includes("juggle_ranking") && juggleHtml.includes("juggle_chain") && juggleHtml.includes("investment_yen") && juggleHtml.includes("invested_medals"), "juggle.html: オンラインジャグ連ランキング項目が不足しています");
 expect(juggleHtml.includes("function isResultConsistent(entry)") && juggleHtml.includes("diff === medals - investedMedals"), "juggle.html: 差枚の整合性検査がありません");
 expect(juggleHtml.includes('maxlength="10"') && juggleHtml.includes("function validateNickname(value)") && juggleHtml.includes("個人情報は入れないでください"), "juggle.html: ニックネーム制限が不足しています");
 expect(juggleHtml.includes("function buildShareText()") && juggleHtml.includes("navigator.share") && juggleHtml.includes("showManualShareText(shareText)"), "juggle.html: 結果シェア/コピー fallback が不足しています");
+expect(juggleHtml.includes("setTimeout(openResultModal, 350)") && juggleHtml.includes('id="resultModal"'), "juggle.html: 変動終了後の登録モーダル自動表示がありません");
 expect(indexHtml.includes('"publisher"') && indexHtml.includes('"ICHIGEKI運営"'), "index.html: publisher構造化データがありません");
 expect(aboutHtml.includes('"@type": "AboutPage"') && aboutHtml.includes('"@type": "Organization"'), "about.html: AboutPage構造化データがありません");
 expect(contactHtml.includes('"@type": "ContactPage"') && contactHtml.includes("ichigekipachi@proton.me"), "contact.html: ContactPage構造化データがありません");

@@ -534,8 +534,8 @@
           <div class="stat-value" id="actualRate">--</div>
         </div>
         <div class="stat-card">
-          <div class="cell-label">最大ジャグ連</div>
-          <div class="stat-value gold" id="maxChain">0<span class="stat-unit">連</span></div>
+          <div class="cell-label">当たり後回転数</div>
+          <div class="stat-value gold" id="sinceHitGames">0<span class="stat-unit">G</span></div>
         </div>
       </div>
     </section>
@@ -654,7 +654,7 @@
       bigCount: document.getElementById("bigCount"),
       regCount: document.getElementById("regCount"),
       actualRate: document.getElementById("actualRate"),
-      maxChain: document.getElementById("maxChain"),
+      sinceHitGames: document.getElementById("sinceHitGames"),
       currentChain: document.getElementById("currentChain"),
       resultStatus: document.getElementById("resultStatus"),
       resultDetail: document.getElementById("resultDetail"),
@@ -727,7 +727,7 @@
       els.bigCount.innerHTML = `${formatNumber(state.bigCount)}<span class="stat-unit">回</span>`;
       els.regCount.innerHTML = `${formatNumber(state.regCount)}<span class="stat-unit">回</span>`;
       els.actualRate.textContent = actual;
-      els.maxChain.innerHTML = `${formatNumber(state.maxChain)}<span class="stat-unit">連</span>`;
+      els.sinceHitGames.innerHTML = `${formatNumber(state.currentChain > 0 ? state.gamesSinceHit : state.totalGames)}<span class="stat-unit">G</span>`;
       els.currentChain.textContent = formatNumber(state.currentChain);
       els.registerBtn.disabled = !state.finished || !state.lastResult;
     }
@@ -788,6 +788,7 @@
       els.resultDetail.textContent = `${formatNumber(state.totalGames)}G / 差枚 ${signed(state.diff)}枚`;
       els.startBtn.textContent = "もう一回";
       renderAll();
+      setTimeout(openResultModal, 350);
     }
 
     function stepChallenge(resolve) {
