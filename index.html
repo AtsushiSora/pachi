@@ -10,9 +10,9 @@
   <meta name="apple-mobile-web-app-title" content="一撃スロパチ">
   <meta name="application-name" content="一撃スロパチ">
   <meta name="format-detection" content="telephone=no">
-  <meta name="description" content="パチンコのスペック試算、実戦風シミュレーター、全国ランキングチャレンジを楽しめるシミュレーターです。">
+  <meta name="description" content="ICHIGEKI 一撃スロパチは、パチンコのスペック試算、実戦風シミュレーター、全国ランキングチャレンジを楽しめるエンターテインメント用Webアプリです。">
   <meta property="og:title" content="ICHIGEKI 一撃スロパチ">
-  <meta property="og:description" content="スペック試算、実戦風シミュレーター、全国チャレンジをまとめたパチンコシミュレーター。">
+  <meta property="og:description" content="スペック試算、実戦風シミュレーター、全国チャレンジをまとめたエンターテインメント用パチンコシミュレーター。">
   <meta property="og:image" content="https://ichigekipachi.netlify.app/icon-512.png">
   <meta property="og:url" content="https://ichigekipachi.netlify.app/">
   <meta property="og:site_name" content="ICHIGEKI 一撃スロパチ">
@@ -30,7 +30,7 @@
       "url": "https://ichigekipachi.netlify.app/",
       "applicationCategory": "GameApplication",
       "operatingSystem": "iOS, Android, Web",
-      "description": "パチンコのスペック試算、実戦風シミュレーター、全国ランキングチャレンジを楽しめるシミュレーターです。",
+      "description": "パチンコのスペック試算、実戦風シミュレーター、全国ランキングチャレンジを楽しめるエンターテインメント用Webアプリです。",
       "publisher": {
         "@type": "Organization",
         "name": "ICHIGEKI運営",
@@ -119,7 +119,7 @@
       font-size: 11px;
       color: #6d6d6d;
       line-height: 1.8;
-      order: 4;
+      order: 5;
     }
 
     .top-notice strong {
@@ -140,7 +140,7 @@
       border-radius: 16px;
       padding: 14px 16px;
       margin-bottom: 14px;
-      order: 5;
+      order: 6;
     }
 
     .top-install[hidden] {
@@ -270,7 +270,7 @@
       gap: 20px;
       justify-content: center;
       flex-wrap: wrap;
-      order: 6;
+      order: 7;
     }
 
     .top-footer a {
@@ -293,7 +293,7 @@
       border-radius: 999px;
       padding: 10px 14px;
       transition: all 0.15s;
-      order: 7;
+      order: 8;
     }
 
     .top-contact:hover,
@@ -309,16 +309,54 @@
       font-size: 10px;
       color: #2a2a2a;
       letter-spacing: 2px;
-      order: 8;
+      order: 9;
+    }
+
+    .top-detail {
+      width: 100%;
+      background: #141414;
+      border: 1px solid #292929;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      order: 4;
+    }
+
+    .top-detail-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #d8d8d8;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .top-detail-list {
+      display: grid;
+      gap: 8px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .top-detail-list li {
+      font-size: 11px;
+      line-height: 1.75;
+      color: #777;
+    }
+
+    .top-detail-list strong {
+      color: #bdbdbd;
+      font-weight: 700;
     }
 
     @media (max-width: 640px) {
       .top-menu { order: 3; }
-      .top-notice { order: 4; }
-      .top-install { order: 5; }
-      .top-footer { order: 6; }
-      .top-contact { order: 7; }
-      .top-version { order: 8; }
+      .top-detail { order: 4; }
+      .top-notice { order: 5; }
+      .top-install { order: 6; }
+      .top-footer { order: 7; }
+      .top-contact { order: 8; }
+      .top-version { order: 9; }
     }
   </style>
 </head>
@@ -334,7 +372,8 @@
     <section class="top-intro">
       <div class="top-intro-title">パチンコの一撃を、気軽に試す。</div>
       <p class="top-intro-text">
-        スペック試算、実戦風シミュレーター、全国ランキングをまとめたエンタメ用シミュレーションアプリです。
+        スペック試算、実戦風シミュレーター、全国ランキングをまとめたエンターテインメント用シミュレーションアプリです。
+        数値を変えながら出玉の流れを確認したり、固定スペックで一撃記録に挑戦したりできます。
       </p>
     </section>
 
@@ -384,9 +423,18 @@
       </a>
     </nav>
 
+    <section class="top-detail">
+      <div class="top-detail-title">このサイトでできること</div>
+      <ul class="top-detail-list">
+        <li><strong>スペック試算：</strong>大当たり確率、突破率、継続率、出玉振り分けを変更し、結果の違いを比較できます。</li>
+        <li><strong>実戦風プレイ：</strong>体力、投資、持ち玉、差玉を見ながら、短時間で実戦風の流れを楽しめます。</li>
+        <li><strong>全国チャレンジ：</strong>固定スペックで一発勝負を行い、総出玉、連チャン数、初当たり回転数をランキングで確認できます。</li>
+      </ul>
+    </section>
+
     <section class="top-notice">
       <strong>エンターテインメント専用</strong>
-      実際の遊技結果を保証するものではありません。18歳未満の方の利用はご遠慮ください。
+      実際の遊技結果、収支、当選、機種性能を保証するものではありません。18歳未満の方の利用はご遠慮ください。
     </section>
 
     <section class="top-install" id="installCard">
