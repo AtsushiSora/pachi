@@ -661,6 +661,7 @@ expect(challengeHtml.includes("function showAdBeforeRanking") && challengeHtml.i
 expect(challengeHtml.includes('get("start") === "1"') && challengeHtml.includes("requestAnimationFrame"), "challenge.html: ランキングからの自動開始がありません");
 expect(challengeHtml.includes("modalChain") && challengeHtml.includes("modalDiff") && challengeHtml.includes("modalUsed"), "challenge.html: 登録モーダルの結果詳細が不足しています");
 expect(juggleHtml.includes("全国ジャグ連チャレンジ") && juggleHtml.includes("1,000円=46枚") && juggleHtml.includes("100G以内"), "juggle.html: ジャグ連チャレンジの固定条件表示が不足しています");
+expect(juggleHtml.includes("bigRate: 255") && juggleHtml.includes("regRate: 255") && juggleHtml.includes("1/128"), "juggle.html: BIG/REG確率または合算表示が想定と違います");
 expect(juggleHtml.includes("const costPerGame = spec.medalsPerUnit / spec.gamesPerUnit;") && juggleHtml.includes("investmentYen") && juggleHtml.includes("heldMedals") && juggleHtml.includes("diffMedals"), "juggle.html: 投資・持ちメダル・差枚の計算表示が不足しています");
 expect(juggleHtml.includes("当たり後回転数") && juggleHtml.includes('id="sinceHitGames"') && juggleHtml.includes("state.currentChain > 0 ? state.gamesSinceHit : state.totalGames"), "juggle.html: 当たり後回転数の表示が不足しています");
 expect(juggleHtml.includes("juggle_ranking") && juggleHtml.includes("juggle_chain") && juggleHtml.includes("investment_yen") && juggleHtml.includes("invested_medals"), "juggle.html: オンラインジャグ連ランキング項目が不足しています");
