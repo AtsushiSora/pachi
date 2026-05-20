@@ -10,6 +10,7 @@ const publicPages = [
   "app.html",
   "ranking.html",
   "challenge.html",
+  "juggle.html",
   "howto.html",
   "safety.html",
   "contact.html",
@@ -26,6 +27,7 @@ const sharePages = [
   "app.html",
   "ranking.html",
   "challenge.html",
+  "juggle.html",
   "howto.html",
   "safety.html",
   "contact.html",
@@ -419,6 +421,7 @@ const howtoHtml = read("howto.html");
 const appHtml = read("app.html");
 const rankingHtml = read("ranking.html");
 const challengeHtml = read("challenge.html");
+const juggleHtml = read("juggle.html");
 const mainJs = read("main.js");
 const pwaJs = read("pwa.js");
 const styleCss = read("style.css");
@@ -502,24 +505,25 @@ for (const page of legalLinks) {
   expect(indexHtml.includes(`href="${page}"`), `index.html: ${page} への導線がありません`);
 }
 expect(
-  appearsInOrder(indexHtml, ["全国チャレンジ", "実戦シミュレーター", "スペックシミュレーター", "使い方", "エンターテインメント専用", "スマホに追加"]),
+  appearsInOrder(indexHtml, ["全国チャレンジ", "全国ジャグ連チャレンジ", "実戦シミュレーター", "スペックシミュレーター", "使い方", "エンターテインメント専用", "スマホに追加"]),
   "index.html: TOP導線の順番が想定と違います"
 );
 expect(
-  appearsInOrder(indexHtml, ['href="ranking.html"', 'href="app.html"', 'href="sim.html"', 'href="howto.html"', 'id="installCard"']),
+  appearsInOrder(indexHtml, ['href="ranking.html"', 'href="juggle.html"', 'href="app.html"', 'href="sim.html"', 'href="howto.html"', 'id="installCard"']),
   "index.html: TOPリンクとスマホ追加カードの順番が想定と違います"
 );
 for (const rule of ["order: 1", "order: 2", "order: 3", "order: 4", "order: 5"]) {
   expect(indexHtml.includes(rule), `index.html: スマホTOP並び用の ${rule} がありません`);
 }
-expect(indexHtml.includes(".menu-ranking { order: 1;") && indexHtml.includes(".menu-practice { order: 2;") && indexHtml.includes(".menu-spec { order: 3;") && indexHtml.includes(".menu-howto { order: 4;"), "index.html: スマホ用メニュー順の固定指定が不足しています");
+expect(indexHtml.includes(".menu-ranking { order: 1;") && indexHtml.includes(".menu-juggle { order: 2;") && indexHtml.includes(".menu-practice { order: 3;") && indexHtml.includes(".menu-spec { order: 4;") && indexHtml.includes(".menu-howto { order: 5;"), "index.html: スマホ用メニュー順の固定指定が不足しています");
 expect(indexHtml.includes("beforeinstallprompt") && indexHtml.includes("deferredInstallPrompt.prompt()"), "index.html: ホーム画面追加プロンプト処理がありません");
 expect(indexHtml.includes("appinstalled") && indexHtml.includes("card.hidden = true"), "index.html: インストール後にスマホ追加カードを隠す処理がありません");
 expect(indexHtml.includes('window.location.href = "howto.html#install"'), "index.html: スマホ追加手順への導線がありません");
 expect(
-  appearsInOrder(howtoHtml, ["全国チャレンジ", "実戦シミュレーター", "スペックシミュレーター"]),
+  appearsInOrder(howtoHtml, ["全国チャレンジ", "全国ジャグ連チャレンジ", "実戦シミュレーター", "スペックシミュレーター"]),
   "howto.html: モード説明の順番が想定と違います"
 );
+expect(howtoHtml.includes("100G以内の当選で継続") && howtoHtml.includes("1,000円46枚"), "howto.html: ジャグ連チャレンジの説明が不足しています");
 expect(howtoHtml.includes('id="install"') && howtoHtml.includes("Safari") && howtoHtml.includes("Chrome"), "howto.html: スマホ追加手順が不足しています");
 expect(pwaJs.includes("serviceWorker") && pwaJs.includes('navigator.serviceWorker.register("/sw.js")'), "pwa.js: Service Worker登録がありません");
 expect(pwaJs.includes("controllerchange") && pwaJs.includes("window.location.reload()"), "pwa.js: Service Worker更新時の再読込処理がありません");
@@ -637,7 +641,8 @@ expect(rankingHtml.includes("mergeRankingData(data)") && rankingHtml.includes("r
 expect(challengeHtml.includes("window.supabase") && challengeHtml.includes("Supabase client is not available"), "challenge.html: Supabase未読込時のローカル登録 fallback がありません");
 expect(challengeHtml.includes('SUPABASE_KEY = "sb_publishable_'), "challenge.html: publishable key が設定されていません");
 expect(rankingHtml.includes('SUPABASE_KEY = "sb_publishable_'), "ranking.html: publishable key が設定されていません");
-expect(!challengeHtml.includes("service_role") && !rankingHtml.includes("service_role"), "Supabase: service_role key をHTMLへ含めないでください");
+expect(juggleHtml.includes('SUPABASE_KEY = "sb_publishable_'), "juggle.html: publishable key が設定されていません");
+expect(!challengeHtml.includes("service_role") && !rankingHtml.includes("service_role") && !juggleHtml.includes("service_role"), "Supabase: service_role key をHTMLへ含めないでください");
 const publicSourceFiles = [...new Set([...publicPages, ...scriptFiles, "manifest.json", "netlify.toml"])];
 for (const file of publicSourceFiles) {
   const content = read(file);
@@ -655,6 +660,12 @@ expect(challengeHtml.includes("function buildShareText()") && challengeHtml.incl
 expect(challengeHtml.includes("function showAdBeforeRanking") && challengeHtml.includes("ランキングへ進む（3）") && challengeHtml.includes('data-ad-placement="register"'), "challenge.html: 登録後広告導線が不足しています");
 expect(challengeHtml.includes('get("start") === "1"') && challengeHtml.includes("requestAnimationFrame"), "challenge.html: ランキングからの自動開始がありません");
 expect(challengeHtml.includes("modalChain") && challengeHtml.includes("modalDiff") && challengeHtml.includes("modalUsed"), "challenge.html: 登録モーダルの結果詳細が不足しています");
+expect(juggleHtml.includes("全国ジャグ連チャレンジ") && juggleHtml.includes("1,000円=46枚") && juggleHtml.includes("100G以内"), "juggle.html: ジャグ連チャレンジの固定条件表示が不足しています");
+expect(juggleHtml.includes("const costPerGame = spec.medalsPerUnit / spec.gamesPerUnit;") && juggleHtml.includes("investmentYen") && juggleHtml.includes("heldMedals") && juggleHtml.includes("diffMedals"), "juggle.html: 投資・持ちメダル・差枚の計算表示が不足しています");
+expect(juggleHtml.includes("juggle_ranking") && juggleHtml.includes("juggle_chain") && juggleHtml.includes("investment_yen") && juggleHtml.includes("invested_medals"), "juggle.html: オンラインジャグ連ランキング項目が不足しています");
+expect(juggleHtml.includes("function isResultConsistent(entry)") && juggleHtml.includes("diff === medals - investedMedals"), "juggle.html: 差枚の整合性検査がありません");
+expect(juggleHtml.includes('maxlength="10"') && juggleHtml.includes("function validateNickname(value)") && juggleHtml.includes("個人情報は入れないでください"), "juggle.html: ニックネーム制限が不足しています");
+expect(juggleHtml.includes("function buildShareText()") && juggleHtml.includes("navigator.share") && juggleHtml.includes("showManualShareText(shareText)"), "juggle.html: 結果シェア/コピー fallback が不足しています");
 expect(indexHtml.includes('"publisher"') && indexHtml.includes('"ICHIGEKI運営"'), "index.html: publisher構造化データがありません");
 expect(aboutHtml.includes('"@type": "AboutPage"') && aboutHtml.includes('"@type": "Organization"'), "about.html: AboutPage構造化データがありません");
 expect(contactHtml.includes('"@type": "ContactPage"') && contactHtml.includes("ichigekipachi@proton.me"), "contact.html: ContactPage構造化データがありません");
@@ -697,6 +708,14 @@ for (const word of [
   "ranking_score_idx",
   "ranking_chain_idx",
   "ranking_spins_idx",
+  "create table if not exists public.juggle_ranking",
+  "alter table public.juggle_ranking enable row level security",
+  "grant select, insert on public.juggle_ranking to anon",
+  "create policy juggle_ranking_insert",
+  "juggle_chain",
+  "diff = medals - invested_medals",
+  "juggle_ranking_diff_matches_medals",
+  "juggle_ranking_chain_idx",
 ]) {
   expect(supabaseSql.includes(word), `supabase-ranking.sql: ${word} の記載がありません`);
 }
@@ -841,7 +860,7 @@ expect(netlify.includes('for = "/manifest.json"') && netlify.includes("public, m
 
 const sw = read("sw.js");
 expect(/const CACHE_NAME = "ichigeki-pwa-v\d+";/.test(sw), "sw.js: CACHE_NAME の形式が想定と違います");
-expect(sw.includes('const CACHE_NAME = "ichigeki-pwa-v17";'), "sw.js: PWAキャッシュバージョンが最新ではありません");
+expect(sw.includes('const CACHE_NAME = "ichigeki-pwa-v18";'), "sw.js: PWAキャッシュバージョンが最新ではありません");
 expect(sw.includes('["script", "style", "worker", "manifest"].includes(request.destination)') && sw.includes("fetch(request)") && sw.includes("caches.open(CACHE_NAME).then(cache => cache.put(request, copy))"), "sw.js: JS/CSS/manifestのネットワーク優先更新がありません");
 for (const file of publicPages) {
   expect(sw.includes(`"/${file}"`), `sw.js: /${file} がキャッシュ対象にありません`);

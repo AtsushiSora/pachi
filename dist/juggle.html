@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0e0e0e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="一撃スロパチ">
+  <meta name="application-name" content="一撃スロパチ">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="ICHIGEKI 一撃スロパチの全国ジャグ連チャレンジ。設定6想定の固定スペックで100G以内の連続当選に挑戦できます。">
+  <meta property="og:title" content="全国ジャグ連チャレンジ | ICHIGEKI 一撃スロパチ">
+  <meta property="og:description" content="設定6想定、1000円46枚・約35Gの固定条件でジャグ連記録に挑戦するランキングページです。">
+  <meta property="og:image" content="https://ichigekipachi.netlify.app/icon-512.png">
+  <meta property="og:url" content="https://ichigekipachi.netlify.app/juggle.html">
+  <meta property="og:site_name" content="ICHIGEKI 一撃スロパチ">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image" content="https://ichigekipachi.netlify.app/icon-512.png">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2599640417413447"
+    crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "全国ジャグ連チャレンジ | ICHIGEKI 一撃スロパチ",
+      "url": "https://ichigekipachi.netlify.app/juggle.html",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "iOS, Android, Web",
+      "description": "設定6想定の固定スペックで100G以内の連続当選に挑戦するエンターテインメント用チャレンジです。",
+      "publisher": {
+        "@type": "Organization",
+        "name": "ICHIGEKI運営",
+        "email": "ichigekipachi@proton.me"
+      }
+    }
+  </script>
+  <title>全国ジャグ連チャレンジ | ICHIGEKI</title>
+  <link rel="manifest" href="/assets/manifest-DnuioZAN.json">
+  <link rel="canonical" href="https://ichigekipachi.netlify.app/juggle.html">
+  <link rel="icon" href="/assets/icon-B53LhDpb.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon-_1Ln8Szz.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #0e0e0e;
+      color: #e8e8e8;
+      font-family: "Noto Sans JP", sans-serif;
+      padding-bottom: 118px;
+    }
+
+    .mono { font-family: "DM Mono", monospace; }
+
+    .juggle-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 96px 1fr 96px;
+      align-items: center;
+      gap: 10px;
+      min-height: 58px;
+      padding: 10px 14px;
+      background: rgba(14, 14, 14, 0.94);
+      border-bottom: 1px solid #252525;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-brand {
+      text-align: center;
+      font-family: "DM Mono", monospace;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 4px;
+    }
+
+    .header-side {
+      color: #666;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .header-side:last-child {
+      text-align: right;
+    }
+
+    .page {
+      width: min(940px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 0;
+    }
+
+    .hero {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      background:
+        linear-gradient(135deg, rgba(255, 166, 0, 0.16), transparent 42%),
+        #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 18px;
+      margin-bottom: 14px;
+    }
+
+    .hero-kicker {
+      color: #ffa000;
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    .hero-title {
+      font-size: clamp(24px, 6vw, 40px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: 1px;
+    }
+
+    .hero-text {
+      color: #888;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .spec-grid,
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .spec-cell,
+    .stat-card {
+      background: #111;
+      border: 1px solid #282828;
+      border-radius: 12px;
+      padding: 12px;
+      min-width: 0;
+    }
+
+    .cell-label {
+      color: #666;
+      font-size: 10px;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .cell-value {
+      color: #e8e8e8;
+      font-family: "DM Mono", monospace;
+      font-size: 18px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .cell-value.gold,
+    .stat-value.gold { color: #ffa000; }
+
+    .cell-value.green,
+    .stat-value.green { color: #61d66d; }
+
+    .cell-value.red,
+    .stat-value.red { color: #ff5a4f; }
+
+    .panel {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .panel-title {
+      color: #888;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .stat-value {
+      font-family: "DM Mono", monospace;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .stat-unit {
+      color: #777;
+      font-size: 11px;
+      margin-left: 2px;
+    }
+
+    .result-banner {
+      display: grid;
+      gap: 10px;
+      align-items: center;
+      justify-items: center;
+      min-height: 176px;
+      background:
+        radial-gradient(circle at center, rgba(255, 166, 0, 0.2), transparent 56%),
+        #0f0f0f;
+      border: 1px solid #332611;
+      border-radius: 18px;
+      margin-bottom: 14px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .result-main {
+      color: #ffe177;
+      font-size: clamp(34px, 9vw, 58px);
+      font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 0 18px rgba(255, 166, 0, 0.35);
+    }
+
+    .result-sub {
+      color: #ffa000;
+      font-family: "DM Mono", monospace;
+      font-size: 18px;
+    }
+
+    .result-note {
+      color: #777;
+      font-size: 12px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .action-btn {
+      min-height: 58px;
+      border: 1px solid #333;
+      border-radius: 14px;
+      background: #1d1d1d;
+      color: #e8e8e8;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .action-btn.primary {
+      background: #e8e8e8;
+      color: #080808;
+      border-color: #e8e8e8;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .log-list,
+    .ranking-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .log-row,
+    .ranking-row {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid #4a3210;
+      border-radius: 50%;
+      color: #ffa000;
+      font-family: "DM Mono", monospace;
+      font-size: 14px;
+    }
+
+    .row-name {
+      color: #e8e8e8;
+      font-size: 14px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .row-meta {
+      color: #666;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .row-score {
+      text-align: right;
+      color: #ffa000;
+      font-family: "DM Mono", monospace;
+      font-size: 18px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .empty {
+      padding: 32px 12px;
+      color: #555;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0, 0, 0, 0.72);
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-card {
+      width: min(520px, 100%);
+      background: #1d1d1d;
+      border: 1px solid #333;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-title {
+      font-size: 21px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .modal-score {
+      color: #ffa000;
+      font-family: "DM Mono", monospace;
+      font-size: 42px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .modal-detail {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .input-label {
+      display: block;
+      color: #777;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .nickname-input,
+    .share-box {
+      width: 100%;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 12px;
+      color: #e8e8e8;
+      font: inherit;
+      font-size: 16px;
+      padding: 13px;
+    }
+
+    .share-box {
+      min-height: 118px;
+      resize: vertical;
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .modal-help,
+    .modal-error {
+      min-height: 20px;
+      margin: 8px 0 12px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .modal-help { color: #666; }
+    .modal-error { color: #ff5a4f; }
+
+    .modal-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .modal-btn {
+      min-height: 50px;
+      border: 1px solid #333;
+      border-radius: 12px;
+      background: #111;
+      color: #e8e8e8;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-btn.primary {
+      background: #e8e8e8;
+      color: #080808;
+      border-color: #e8e8e8;
+    }
+
+    .modal-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .legal-note {
+      color: #555;
+      font-size: 11px;
+      line-height: 1.8;
+      text-align: center;
+      margin: 18px 0 0;
+    }
+
+    @media (max-width: 720px) {
+      .juggle-header {
+        grid-template-columns: 74px 1fr 74px;
+      }
+
+      .page {
+        width: calc(100% - 20px);
+        padding-top: 14px;
+      }
+
+      .spec-grid,
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .actions,
+      .modal-detail {
+        grid-template-columns: 1fr;
+      }
+
+      .log-row,
+      .ranking-row {
+        grid-template-columns: 44px 1fr;
+      }
+
+      .row-score {
+        grid-column: 2;
+        text-align: left;
+      }
+    }
+  </style>
+  <link rel="stylesheet" crossorigin href="/assets/style-BDFafHCM.css">
+</head>
+<body>
+  <header class="juggle-header">
+    <a class="header-side" href="index.html">← 戻る</a>
+    <div class="header-brand">ICHIGEKI</div>
+    <div class="header-side">ジャグ連</div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="hero-kicker">JUGGLE CHAIN</div>
+      <h1 class="hero-title">全国ジャグ連チャレンジ</h1>
+      <p class="hero-text">
+        BIG/REGともに1/240、1,000円=46枚、1,000円で35G想定の固定条件です。
+        初当たり後、100G以内の当選をどこまで伸ばせるかを競います。
+      </p>
+      <div class="spec-grid">
+        <div class="spec-cell">
+          <div class="cell-label">BIG</div>
+          <div class="cell-value">1/240</div>
+        </div>
+        <div class="spec-cell">
+          <div class="cell-label">REG</div>
+          <div class="cell-value">1/240</div>
+        </div>
+        <div class="spec-cell">
+          <div class="cell-label">合算</div>
+          <div class="cell-value gold">1/120</div>
+        </div>
+        <div class="spec-cell">
+          <div class="cell-label">交換条件</div>
+          <div class="cell-value green">46枚</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">現在の結果</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="cell-label">投資</div>
+          <div class="stat-value gold" id="investmentYen">0<span class="stat-unit">円</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="cell-label">持ちメダル</div>
+          <div class="stat-value green" id="heldMedals">0<span class="stat-unit">枚</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="cell-label">差枚</div>
+          <div class="stat-value" id="diffMedals">0<span class="stat-unit">枚</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="cell-label">総ゲーム</div>
+          <div class="stat-value" id="totalGames">0<span class="stat-unit">G</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="cell-label">BIG</div>
+          <div class="stat-value" id="bigCount">0<span class="stat-unit">回</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="cell-label">REG</div>
+          <div class="stat-value" id="regCount">0<span class="stat-unit">回</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="cell-label">実測合算</div>
+          <div class="stat-value" id="actualRate">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="cell-label">最大ジャグ連</div>
+          <div class="stat-value gold" id="maxChain">0<span class="stat-unit">連</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="result-banner" aria-live="polite">
+      <div class="result-note" id="resultStatus">スタートで一撃勝負</div>
+      <div class="result-main"><span id="currentChain">0</span>連</div>
+      <div class="result-sub" id="resultDetail">100G以内に引けば継続</div>
+    </section>
+
+    <div class="actions">
+      <button class="action-btn primary" id="startBtn" type="button">スタート</button>
+      <button class="action-btn" id="registerBtn" type="button" disabled>結果を登録</button>
+    </div>
+
+    <section class="panel">
+      <div class="panel-title">全国ランキング TOP30</div>
+      <div class="ranking-list" id="rankingList">
+        <div class="empty">読み込み中...</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">履歴</div>
+      <div class="log-list" id="logList">
+        <div class="empty">まだチャレンジしていません</div>
+      </div>
+    </section>
+
+    <p class="legal-note">
+      エンターテインメント専用です。実際の遊技結果、収支、当選、機種性能を保証するものではありません。
+    </p>
+  </main>
+
+  <div class="modal" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-title" id="modalTitle">結果を登録する</div>
+      <div class="modal-score"><span id="modalChain">0</span>連</div>
+      <div class="modal-detail">
+        <div class="spec-cell">
+          <div class="cell-label">差枚</div>
+          <div class="cell-value" id="modalDiff">0枚</div>
+        </div>
+        <div class="spec-cell">
+          <div class="cell-label">総ゲーム</div>
+          <div class="cell-value" id="modalGames">0G</div>
+        </div>
+        <div class="spec-cell">
+          <div class="cell-label">投資</div>
+          <div class="cell-value" id="modalInvest">0円</div>
+        </div>
+      </div>
+
+      <label class="input-label" for="nicknameInput">ニックネーム</label>
+      <input class="nickname-input" id="nicknameInput" type="text" maxlength="10" placeholder="名前を入力（最大10文字）" autocomplete="nickname">
+      <div class="modal-help">個人情報は入れないでください。URLや宣伝文は使えません。</div>
+      <div class="modal-error" id="modalError"></div>
+
+      <div class="modal-actions">
+        <button class="modal-btn primary" id="submitRankingBtn" type="button">ランキングに登録</button>
+        <button class="modal-btn" id="shareBtn" type="button">結果をシェア</button>
+        <button class="modal-btn" id="closeModalBtn" type="button">閉じる</button>
+      </div>
+      <textarea class="share-box" id="shareBox" readonly hidden></textarea>
+    </div>
+  </div>
+
+  <footer class="footer-ad-band" data-ad-placement="footer"><span>AD</span>広告枠</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="ads-config.js"></script>
+  <script src="ads.js"></script>
+  <script src="pwa.js"></script>
+  <script>
+    const SUPABASE_URL = "https://qkacufmyiljfojlqrmke.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_wEsGe95_6bgyp7uEvjRCiw_dYDXkgXj";
+    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    const localRankingKey = "ichigekiJuggleLocalRanking";
+
+    const spec = {
+      bigRate: 240,
+      regRate: 240,
+      bigPayout: 252,
+      regPayout: 96,
+      yenPerUnit: 1000,
+      medalsPerUnit: 46,
+      gamesPerUnit: 35,
+      juggleLimit: 100,
+      maxGames: 20000
+    };
+
+    const costPerGame = spec.medalsPerUnit / spec.gamesPerUnit;
+    const state = {
+      running: false,
+      finished: false,
+      investmentYen: 0,
+      medals: 0,
+      investedMedals: 0,
+      diff: 0,
+      totalGames: 0,
+      bigCount: 0,
+      regCount: 0,
+      currentChain: 0,
+      maxChain: 0,
+      gamesSinceHit: 0,
+      totalPayout: 0,
+      lastResult: null,
+      logs: []
+    };
+
+    const els = {
+      investmentYen: document.getElementById("investmentYen"),
+      heldMedals: document.getElementById("heldMedals"),
+      diffMedals: document.getElementById("diffMedals"),
+      totalGames: document.getElementById("totalGames"),
+      bigCount: document.getElementById("bigCount"),
+      regCount: document.getElementById("regCount"),
+      actualRate: document.getElementById("actualRate"),
+      maxChain: document.getElementById("maxChain"),
+      currentChain: document.getElementById("currentChain"),
+      resultStatus: document.getElementById("resultStatus"),
+      resultDetail: document.getElementById("resultDetail"),
+      startBtn: document.getElementById("startBtn"),
+      registerBtn: document.getElementById("registerBtn"),
+      rankingList: document.getElementById("rankingList"),
+      logList: document.getElementById("logList"),
+      modal: document.getElementById("resultModal"),
+      modalChain: document.getElementById("modalChain"),
+      modalDiff: document.getElementById("modalDiff"),
+      modalGames: document.getElementById("modalGames"),
+      modalInvest: document.getElementById("modalInvest"),
+      nicknameInput: document.getElementById("nicknameInput"),
+      modalError: document.getElementById("modalError"),
+      submitRankingBtn: document.getElementById("submitRankingBtn"),
+      shareBtn: document.getElementById("shareBtn"),
+      closeModalBtn: document.getElementById("closeModalBtn"),
+      shareBox: document.getElementById("shareBox")
+    };
+
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString("ja-JP");
+    }
+
+    function signed(value) {
+      const number = Number(value || 0);
+      return `${number > 0 ? "+" : ""}${formatNumber(number)}`;
+    }
+
+    function resetState() {
+      state.running = false;
+      state.finished = false;
+      state.investmentYen = 0;
+      state.medals = 0;
+      state.investedMedals = 0;
+      state.diff = 0;
+      state.totalGames = 0;
+      state.bigCount = 0;
+      state.regCount = 0;
+      state.currentChain = 0;
+      state.maxChain = 0;
+      state.gamesSinceHit = 0;
+      state.totalPayout = 0;
+      state.lastResult = null;
+      state.logs = [];
+    }
+
+    function settleMoney() {
+      state.investedMedals = Math.round(state.investmentYen / spec.yenPerUnit * spec.medalsPerUnit);
+      state.medals = Math.max(0, Math.round(state.medals));
+      state.diff = state.medals - state.investedMedals;
+    }
+
+    function ensureMedals() {
+      if (state.medals >= costPerGame) return;
+      state.investmentYen += spec.yenPerUnit;
+      state.medals += spec.medalsPerUnit;
+      state.logs.unshift(`${formatNumber(state.totalGames)}G 投資 +${formatNumber(spec.yenPerUnit)}円`);
+    }
+
+    function updateStats() {
+      const hits = state.bigCount + state.regCount;
+      const actual = hits > 0 ? `1/${Math.max(1, Math.round(state.totalGames / hits))}` : "--";
+      const diffClass = state.diff > 0 ? "green" : state.diff < 0 ? "red" : "";
+      els.investmentYen.innerHTML = `${formatNumber(state.investmentYen)}<span class="stat-unit">円</span>`;
+      els.heldMedals.innerHTML = `${formatNumber(state.medals)}<span class="stat-unit">枚</span>`;
+      els.diffMedals.className = `stat-value ${diffClass}`;
+      els.diffMedals.innerHTML = `${signed(state.diff)}<span class="stat-unit">枚</span>`;
+      els.totalGames.innerHTML = `${formatNumber(state.totalGames)}<span class="stat-unit">G</span>`;
+      els.bigCount.innerHTML = `${formatNumber(state.bigCount)}<span class="stat-unit">回</span>`;
+      els.regCount.innerHTML = `${formatNumber(state.regCount)}<span class="stat-unit">回</span>`;
+      els.actualRate.textContent = actual;
+      els.maxChain.innerHTML = `${formatNumber(state.maxChain)}<span class="stat-unit">連</span>`;
+      els.currentChain.textContent = formatNumber(state.currentChain);
+      els.registerBtn.disabled = !state.finished || !state.lastResult;
+    }
+
+    function renderLogs() {
+      if (!state.logs.length) {
+        els.logList.innerHTML = '<div class="empty">まだチャレンジしていません</div>';
+        return;
+      }
+
+      els.logList.innerHTML = state.logs.slice(0, 12).map((log, index) => `
+        <div class="log-row">
+          <span class="rank-badge">${index + 1}</span>
+          <div>
+            <div class="row-name">${log}</div>
+            <div class="row-meta">${formatNumber(state.totalGames)}G時点</div>
+          </div>
+          <div class="row-score">${formatNumber(state.currentChain)}連</div>
+        </div>
+      `).join("");
+    }
+
+    function renderAll() {
+      settleMoney();
+      updateStats();
+      renderLogs();
+    }
+
+    function drawHit() {
+      const hitRoll = Math.random();
+      const combinedRate = (1 / spec.bigRate) + (1 / spec.regRate);
+      if (hitRoll >= combinedRate) return null;
+      return Math.random() < 0.5
+        ? { type: "BIG", payout: spec.bigPayout }
+        : { type: "REG", payout: spec.regPayout };
+    }
+
+    function makeResult() {
+      settleMoney();
+      return {
+        nickname: "",
+        juggle_chain: state.maxChain,
+        diff: state.diff,
+        total_games: state.totalGames,
+        investment_yen: state.investmentYen,
+        medals: state.medals,
+        invested_medals: state.investedMedals,
+        big_count: state.bigCount,
+        reg_count: state.regCount
+      };
+    }
+
+    function finishChallenge(message) {
+      state.running = false;
+      state.finished = true;
+      state.lastResult = makeResult();
+      els.resultStatus.textContent = message;
+      els.resultDetail.textContent = `${formatNumber(state.totalGames)}G / 差枚 ${signed(state.diff)}枚`;
+      els.startBtn.textContent = "もう一回";
+      renderAll();
+    }
+
+    function stepChallenge(resolve) {
+      if (!state.running) {
+        resolve();
+        return;
+      }
+
+      ensureMedals();
+      state.medals -= costPerGame;
+      state.totalGames++;
+      if (state.currentChain > 0) state.gamesSinceHit++;
+
+      const hit = drawHit();
+      if (hit) {
+        state.medals += hit.payout;
+        state.totalPayout += hit.payout;
+        if (hit.type === "BIG") state.bigCount++;
+        if (hit.type === "REG") state.regCount++;
+
+        if (state.currentChain === 0) {
+          state.currentChain = 1;
+        } else {
+          state.currentChain++;
+        }
+
+        state.maxChain = Math.max(state.maxChain, state.currentChain);
+        state.gamesSinceHit = 0;
+        state.logs.unshift(`${formatNumber(state.totalGames)}G ${hit.type} +${formatNumber(hit.payout)}枚`);
+        els.resultStatus.textContent = `${hit.type}当選`;
+        els.resultDetail.textContent = `${formatNumber(state.currentChain)}連 / 100G以内なら継続`;
+      }
+
+      settleMoney();
+
+      if (state.totalGames >= spec.maxGames) {
+        finishChallenge("上限ゲーム到達");
+        resolve();
+        return;
+      }
+
+      if (state.currentChain > 0 && state.gamesSinceHit >= spec.juggleLimit) {
+        state.logs.unshift(`${formatNumber(state.totalGames)}G 100G抜けで終了`);
+        finishChallenge("ジャグ連終了");
+        resolve();
+        return;
+      }
+
+      if (state.totalGames % 5 === 0 || hit) renderAll();
+      requestAnimationFrame(() => stepChallenge(resolve));
+    }
+
+    async function startChallenge() {
+      if (state.running) return;
+      resetState();
+      state.running = true;
+      els.startBtn.textContent = "実行中";
+      els.startBtn.disabled = true;
+      els.registerBtn.disabled = true;
+      els.resultStatus.textContent = "初当たり待ち";
+      els.resultDetail.textContent = "1,000円=46枚 / 35G想定";
+      renderAll();
+      await new Promise(resolve => stepChallenge(resolve));
+      els.startBtn.disabled = false;
+    }
+
+    function normalizeRankingEntry(entry) {
+      const nickname = String(entry.nickname || "").trim().slice(0, 10);
+      const juggleChain = Math.max(0, Math.min(10000, Number(entry.juggle_chain || 0)));
+      const totalGames = Math.max(0, Math.min(2000000, Number(entry.total_games || 0)));
+      const investmentYen = Math.max(0, Math.min(100000000, Number(entry.investment_yen || 0)));
+      const medals = Math.max(0, Math.min(2000000, Number(entry.medals || 0)));
+      const investedMedals = Math.max(0, Math.min(2000000, Number(entry.invested_medals || 0)));
+      const diff = medals - investedMedals;
+      return {
+        nickname,
+        juggle_chain: juggleChain,
+        diff,
+        total_games: totalGames,
+        investment_yen: investmentYen,
+        medals,
+        invested_medals: investedMedals,
+        big_count: Math.max(0, Math.min(10000, Number(entry.big_count || 0))),
+        reg_count: Math.max(0, Math.min(10000, Number(entry.reg_count || 0))),
+        created_at: entry.created_at || new Date().toISOString()
+      };
+    }
+
+    function isResultConsistent(entry) {
+      const medals = Number(entry.medals || 0);
+      const investedMedals = Number(entry.invested_medals || 0);
+      const diff = Number(entry.diff || 0);
+      return Number.isFinite(medals) && Number.isFinite(investedMedals) && diff === medals - investedMedals;
+    }
+
+    function readLocalRanking() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(localRankingKey) || "[]");
+        return Array.isArray(raw) ? raw.map(normalizeRankingEntry).filter(entry => entry.nickname && isResultConsistent(entry)) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveLocalRanking(entry) {
+      const rows = [normalizeRankingEntry(entry), ...readLocalRanking()]
+        .filter(row => row.nickname && isResultConsistent(row))
+        .sort(compareRanking)
+        .slice(0, 30);
+      localStorage.setItem(localRankingKey, JSON.stringify(rows));
+    }
+
+    function compareRanking(a, b) {
+      return Number(b.juggle_chain || 0) - Number(a.juggle_chain || 0)
+        || Number(b.diff || 0) - Number(a.diff || 0)
+        || Number(a.total_games || 0) - Number(b.total_games || 0);
+    }
+
+    function mergeRankingData(remoteRows) {
+      return [...(remoteRows || []), ...readLocalRanking()]
+        .map(normalizeRankingEntry)
+        .filter(entry => entry.nickname && isResultConsistent(entry))
+        .sort(compareRanking)
+        .slice(0, 30);
+    }
+
+    function renderRanking(rows) {
+      const ranking = mergeRankingData(rows);
+      if (!ranking.length) {
+        els.rankingList.innerHTML = '<div class="empty">まだランキングデータがありません</div>';
+        return;
+      }
+
+      els.rankingList.innerHTML = ranking.map((row, index) => `
+        <div class="ranking-row">
+          <span class="rank-badge">${index + 1}</span>
+          <div>
+            <div class="row-name">${escapeHtml(row.nickname)}</div>
+            <div class="row-meta">差枚 ${signed(row.diff)}枚 / ${formatNumber(row.total_games)}G / BIG ${formatNumber(row.big_count)} REG ${formatNumber(row.reg_count)}</div>
+          </div>
+          <div class="row-score">${formatNumber(row.juggle_chain)}連</div>
+        </div>
+      `).join("");
+    }
+
+    async function loadRanking() {
+      if (!supabaseClient) {
+        renderRanking([]);
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from("juggle_ranking")
+        .select("nickname,juggle_chain,diff,total_games,investment_yen,medals,invested_medals,big_count,reg_count,created_at")
+        .order("juggle_chain", { ascending: false })
+        .order("diff", { ascending: false })
+        .order("total_games", { ascending: true })
+        .limit(30);
+
+      if (error) {
+        renderRanking([]);
+        return;
+      }
+
+      renderRanking(data || []);
+    }
+
+    function validateNickname(value) {
+      const nickname = String(value || "").trim();
+      if (!nickname) return "ニックネームを入力してください。";
+      if (nickname.length > 10) return "10文字以内で入力してください。";
+      if (/https?:|www\.|\.com|\.net|\.jp|@/i.test(nickname)) return "URLや宣伝文は使えません。";
+      if (/[0-9０-９]{8,}|[0-9０-９]{2,4}[-ー−][0-9０-９]{2,4}[-ー−][0-9０-９]{3,4}/.test(nickname)) return "個人情報を含まない名前にしてください。";
+      return "";
+    }
+
+    function openResultModal() {
+      if (!state.lastResult) return;
+      els.modalChain.textContent = formatNumber(state.lastResult.juggle_chain);
+      els.modalDiff.textContent = `${signed(state.lastResult.diff)}枚`;
+      els.modalGames.textContent = `${formatNumber(state.lastResult.total_games)}G`;
+      els.modalInvest.textContent = `${formatNumber(state.lastResult.investment_yen)}円`;
+      els.modalError.textContent = "";
+      els.shareBox.hidden = true;
+      els.shareBox.value = "";
+      els.modal.classList.add("show");
+      setTimeout(() => els.nicknameInput.focus(), 0);
+    }
+
+    function closeResultModal() {
+      els.modal.classList.remove("show");
+    }
+
+    async function submitRanking() {
+      if (!state.lastResult) return;
+      const nicknameError = validateNickname(els.nicknameInput.value);
+      if (nicknameError) {
+        els.modalError.textContent = nicknameError;
+        return;
+      }
+
+      const rankingEntry = normalizeRankingEntry({
+        ...state.lastResult,
+        nickname: els.nicknameInput.value
+      });
+
+      if (!isResultConsistent(rankingEntry)) {
+        els.modalError.textContent = "結果の整合性が取れません。もう一度お試しください。";
+        return;
+      }
+
+      els.submitRankingBtn.disabled = true;
+      els.modalError.textContent = "";
+
+      if (!supabaseClient) {
+        saveLocalRanking(rankingEntry);
+        await loadRanking();
+        els.modalError.textContent = "端末内ランキングに保存しました。";
+        els.submitRankingBtn.disabled = false;
+        return;
+      }
+
+      const { error } = await supabaseClient.from("juggle_ranking").insert([rankingEntry]);
+      if (error) {
+        saveLocalRanking(rankingEntry);
+        await loadRanking();
+        els.modalError.textContent = "オンライン登録に失敗しました。端末内ランキングに保存しました。";
+        els.submitRankingBtn.disabled = false;
+        return;
+      }
+
+      await loadRanking();
+      closeResultModal();
+      els.submitRankingBtn.disabled = false;
+    }
+
+    function buildShareText() {
+      const result = state.lastResult || makeResult();
+      return [
+        "全国ジャグ連チャレンジ",
+        `${formatNumber(result.juggle_chain)}連`,
+        `差枚 ${signed(result.diff)}枚`,
+        `投資 ${formatNumber(result.investment_yen)}円 / ${formatNumber(result.total_games)}G`,
+        "https://ichigekipachi.netlify.app/juggle.html"
+      ].join("\n");
+    }
+
+    function showManualShareText(text) {
+      els.shareBox.hidden = false;
+      els.shareBox.value = text;
+      els.shareBox.select();
+    }
+
+    async function shareResult() {
+      const shareText = buildShareText();
+      if (navigator.share) {
+        try {
+          await navigator.share({ text: shareText, title: "全国ジャグ連チャレンジ" });
+          return;
+        } catch {
+          // 手動コピー欄に切り替える
+        }
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareText);
+        els.modalError.textContent = "結果をコピーしました。";
+      } catch {
+        showManualShareText(shareText);
+        els.modalError.textContent = "コピーできない場合は、表示された文章を選択してください。";
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    els.startBtn.addEventListener("click", startChallenge);
+    els.registerBtn.addEventListener("click", openResultModal);
+    els.closeModalBtn.addEventListener("click", closeResultModal);
+    els.submitRankingBtn.addEventListener("click", submitRanking);
+    els.shareBtn.addEventListener("click", shareResult);
+    els.modal.addEventListener("click", event => {
+      if (event.target === els.modal) closeResultModal();
+    });
+
+    renderAll();
+    loadRanking();
+  </script>
+</body>
+</html>

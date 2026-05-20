@@ -11,6 +11,7 @@ export default defineConfig(() => {
           app:       'app.html',
           ranking:   'ranking.html',
           challenge: 'challenge.html',
+          juggle:    'juggle.html',
           howto:     'howto.html',
           safety:    'safety.html',
           contact:   'contact.html',

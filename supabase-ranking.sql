@@ -136,3 +136,138 @@ on public.ranking (chain_count desc, score desc);
 
 create index if not exists ranking_spins_idx
 on public.ranking (spins desc, created_at asc);
+
+create table if not exists public.juggle_ranking (
+  id uuid primary key default gen_random_uuid(),
+  nickname text not null,
+  juggle_chain integer not null default 0,
+  diff integer not null default 0,
+  total_games integer not null default 0,
+  investment_yen integer not null default 0,
+  medals integer not null default 0,
+  invested_medals integer not null default 0,
+  big_count integer not null default 0,
+  reg_count integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
+alter table public.juggle_ranking
+  add column if not exists juggle_chain integer not null default 0,
+  add column if not exists diff integer not null default 0,
+  add column if not exists total_games integer not null default 0,
+  add column if not exists investment_yen integer not null default 0,
+  add column if not exists medals integer not null default 0,
+  add column if not exists invested_medals integer not null default 0,
+  add column if not exists big_count integer not null default 0,
+  add column if not exists reg_count integer not null default 0,
+  add column if not exists created_at timestamptz not null default now();
+
+alter table public.juggle_ranking enable row level security;
+
+grant select, insert on public.juggle_ranking to anon;
+revoke update, delete on public.juggle_ranking from anon, authenticated;
+
+drop policy if exists juggle_ranking_select on public.juggle_ranking;
+drop policy if exists juggle_ranking_insert on public.juggle_ranking;
+
+create policy juggle_ranking_select
+on public.juggle_ranking
+for select
+to anon
+using (true);
+
+create policy juggle_ranking_insert
+on public.juggle_ranking
+for insert
+to anon
+with check (
+  btrim(nickname) <> ''
+  and char_length(nickname) <= 10
+  and nickname = btrim(nickname)
+  and nickname !~* 'https?:|www\.|\.com|\.net|\.jp|@|[0-9０-９]{8,}|[0-9０-９]{2,4}[-ー−][0-9０-９]{2,4}[-ー−][0-9０-９]{3,4}'
+  and juggle_chain >= 0
+  and juggle_chain <= 10000
+  and diff between -2000000 and 2000000
+  and total_games between 0 and 2000000
+  and investment_yen between 0 and 100000000
+  and medals between 0 and 2000000
+  and invested_medals between 0 and 2000000
+  and big_count between 0 and 10000
+  and reg_count between 0 and 10000
+  and diff = medals - invested_medals
+  and created_at <= now() + interval '5 minutes'
+);
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'juggle_ranking_diff_matches_medals'
+      and conrelid = 'public.juggle_ranking'::regclass
+  ) then
+    alter table public.juggle_ranking
+      add constraint juggle_ranking_diff_matches_medals
+      check (diff = medals - invested_medals) not valid;
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'juggle_ranking_nickname_has_no_contact'
+      and conrelid = 'public.juggle_ranking'::regclass
+  ) then
+    alter table public.juggle_ranking
+      add constraint juggle_ranking_nickname_has_no_contact
+      check (
+        nickname !~* 'https?:|www\.|\.com|\.net|\.jp|@|[0-9０-９]{8,}|[0-9０-９]{2,4}[-ー−][0-9０-９]{2,4}[-ー−][0-9０-９]{3,4}'
+      ) not valid;
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'juggle_ranking_nickname_is_clean'
+      and conrelid = 'public.juggle_ranking'::regclass
+  ) then
+    alter table public.juggle_ranking
+      add constraint juggle_ranking_nickname_is_clean
+      check (
+        btrim(nickname) <> ''
+        and char_length(nickname) <= 10
+        and nickname = btrim(nickname)
+      ) not valid;
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'juggle_ranking_values_are_reasonable'
+      and conrelid = 'public.juggle_ranking'::regclass
+  ) then
+    alter table public.juggle_ranking
+      add constraint juggle_ranking_values_are_reasonable
+      check (
+        juggle_chain between 0 and 10000
+        and diff between -2000000 and 2000000
+        and total_games between 0 and 2000000
+        and investment_yen between 0 and 100000000
+        and medals between 0 and 2000000
+        and invested_medals between 0 and 2000000
+        and big_count between 0 and 10000
+        and reg_count between 0 and 10000
+      ) not valid;
+  end if;
+end $$;
+
+create index if not exists juggle_ranking_chain_idx
+on public.juggle_ranking (juggle_chain desc, diff desc, total_games asc);
